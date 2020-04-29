@@ -7,14 +7,14 @@
             android:title="@string/title_home" />
 
     <item
-            android:id="@+id/navigation_conversations"
-            android:icon="@drawable/ic_chat_black_24dp"
-            android:title="@string/title_conversations" />
-
-    <item
             android:id="@+id/navigation_contacts"
             android:icon="@drawable/ic_contacts_black_24dp"
             android:title="@string/title_contacts" />
+
+    <item
+            android:id="@+id/navigation_conversations"
+            android:icon="@drawable/ic_chat_black_24dp"
+            android:title="@string/title_conversations" />
 
     <item
             android:id="@+id/navigation_weather"
