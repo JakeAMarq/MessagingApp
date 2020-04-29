@@ -1,5 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/main_graph">
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/main_graph"
+        app:startDestination="@id/navigation_home">
 
+    <fragment
+            android:id="@+id/navigation_home"
+            android:name="edu.uw.tcss450.team4projectclient.ui.home.HomeFragment"
+            android:label="@string/title_home"
+            tools:layout="@layout/fragment_home" />
+    <fragment
+            android:id="@+id/navigation_contacts"
+            android:name="edu.uw.tcss450.team4projectclient.ui.contacts.ContactsFragment"
+            android:label="@string/title_contacts"
+            tools:layout="@layout/fragment_contacts">
+        <action
+                android:id="@+id/action_navigation_contacts_to_contactFragment"
+                app:destination="@id/contactFragment" />
+    </fragment>
+    <fragment
+            android:id="@+id/navigation_conversations"
+            android:name="edu.uw.tcss450.team4projectclient.ui.chat.ConversationsFragment"
+            android:label="@string/title_conversations"
+            tools:layout="@layout/fragment_conversations">
+        <action
+                android:id="@+id/action_navigation_conversations_to_chatFragment"
+                app:destination="@id/chatFragment" />
+    </fragment>
+    <fragment
+            android:id="@+id/navigation_weather"
+            android:name="edu.uw.tcss450.team4projectclient.ui.weather.WeatherFragment"
+            android:label="@string/title_weather"
+            tools:layout="@layout/fragment_weather" />
+    <fragment
+            android:id="@+id/contactFragment"
+            android:name="edu.uw.tcss450.team4projectclient.ui.contacts.ContactFragment"
+            android:label="fragment_contact"
+            tools:layout="@layout/fragment_contact" />
+    <fragment
+            android:id="@+id/chatFragment"
+            android:name="edu.uw.tcss450.team4projectclient.ui.chat.ChatFragment"
+            android:label="fragment_chat"
+            tools:layout="@layout/fragment_chat" />
 </navigation>
