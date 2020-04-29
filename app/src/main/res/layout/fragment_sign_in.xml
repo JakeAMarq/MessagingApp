@@ -56,7 +56,7 @@
             android:layout_height="43dp"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"
-            android:text="@string/button_login"
+            android:text="@string/button_sign_in"
             app:layout_constraintBottom_toTopOf="@+id/button_register"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
