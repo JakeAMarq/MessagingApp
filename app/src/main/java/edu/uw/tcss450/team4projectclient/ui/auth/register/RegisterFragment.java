@@ -124,8 +124,15 @@ public class RegisterFragment extends Fragment {
     private void validatePassword() {
         mPassWordValidator.processResult(
                 mPassWordValidator.apply(binding.editPassword1.getText().toString()),
-                this::verifyAuthWithServer,
+                this::validateNickName,
                 result -> binding.editPassword1.setError("Please enter a valid Password."));
+    }
+
+    private void validateNickName() {
+        mNameValidator.processResult(
+                mNameValidator.apply(binding.nickName.getText().toString().trim()),
+                this::verifyAuthWithServer,
+                result -> binding.editLast.setError("Please enter a valid last name."));
     }
 
     private void verifyAuthWithServer() {
@@ -133,17 +140,15 @@ public class RegisterFragment extends Fragment {
                 binding.editFirst.getText().toString(),
                 binding.editLast.getText().toString(),
                 binding.editEmail.getText().toString(),
-                binding.editPassword1.getText().toString());
+                binding.editPassword1.getText().toString(),
+                binding.nickName.getText().toString());
     }
 
     private void navigateToLogin() {
         RegisterFragmentDirections.ActionRegisterFragmentToSignInFragment directions =
                 RegisterFragmentDirections.actionRegisterFragmentToSignInFragment();
-
         directions.setEmail(binding.editEmail.getText().toString());
         directions.setPassword(binding.editPassword1.getText().toString());
-
         Navigation.findNavController(getView()).navigate(directions);
-
     }
 }

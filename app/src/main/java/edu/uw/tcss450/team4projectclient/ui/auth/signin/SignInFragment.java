@@ -59,7 +59,7 @@ public class SignInFragment extends Fragment {
 
 
 //        this.binding.buttonLogIn.setOnClickListener(this::attemptLogin);
-        this.binding.buttonLogIn.setOnClickListener(this::byPassLogin);
+        this.binding.buttonLogIn.setOnClickListener(this::attemptLogin);
         this.binding.buttonRegister.setOnClickListener(button -> navigateToRegisterFragment());
 
         mSignInModel.addResponseObserver(
