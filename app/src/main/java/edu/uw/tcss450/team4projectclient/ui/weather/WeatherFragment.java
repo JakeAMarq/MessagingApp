@@ -11,10 +11,13 @@ import android.view.ViewGroup;
 import edu.uw.tcss450.team4projectclient.R;
 
 /**
- * A simple {@link Fragment} subclass.
+ * Weather page
  */
 public class WeatherFragment extends Fragment {
 
+    /**
+     * Required empty public constructor
+     */
     public WeatherFragment() {
         // Required empty public constructor
     }

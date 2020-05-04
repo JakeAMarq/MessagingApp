@@ -11,15 +11,6 @@
             android:label="@string/title_home"
             tools:layout="@layout/fragment_home" />
     <fragment
-            android:id="@+id/navigation_contacts"
-            android:name="edu.uw.tcss450.team4projectclient.ui.contacts.ContactsFragment"
-            android:label="@string/title_contacts"
-            tools:layout="@layout/fragment_contacts">
-        <action
-                android:id="@+id/action_navigation_contacts_to_contactFragment"
-                app:destination="@id/contactFragment" />
-    </fragment>
-    <fragment
             android:id="@+id/navigation_conversations"
             android:name="edu.uw.tcss450.team4projectclient.ui.chat.ConversationsFragment"
             android:label="@string/title_conversations"
@@ -34,13 +25,22 @@
             android:label="@string/title_weather"
             tools:layout="@layout/fragment_weather" />
     <fragment
-            android:id="@+id/contactFragment"
-            android:name="edu.uw.tcss450.team4projectclient.ui.contacts.ContactFragment"
-            android:label="fragment_contact"
-            tools:layout="@layout/fragment_contact" />
+            android:id="@+id/navigation_contacts"
+            android:name="edu.uw.tcss450.team4projectclient.ui.contacts.ContactsFragment"
+            android:label="@string/title_contacts"
+            tools:layout="@layout/fragment_contacts" >
+        <action
+                android:id="@+id/action_navigation_contacts_to_contactFragment"
+                app:destination="@id/contactFragment" />
+    </fragment>
     <fragment
             android:id="@+id/chatFragment"
             android:name="edu.uw.tcss450.team4projectclient.ui.chat.ChatFragment"
             android:label="fragment_chat"
             tools:layout="@layout/fragment_chat" />
+    <fragment
+            android:id="@+id/contactFragment"
+            android:name="edu.uw.tcss450.team4projectclient.ui.contacts.ContactFragment"
+            android:label="fragment_contact"
+            tools:layout="@layout/fragment_contact" />
 </navigation>

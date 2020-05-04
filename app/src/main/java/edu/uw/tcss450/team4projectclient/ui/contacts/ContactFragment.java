@@ -11,10 +11,13 @@ import android.view.ViewGroup;
 import edu.uw.tcss450.team4projectclient.R;
 
 /**
- * A simple {@link Fragment} subclass.
+ * Contact page
  */
 public class ContactFragment extends Fragment {
 
+    /**
+     * Required empty public constructor
+     */
     public ContactFragment() {
         // Required empty public constructor
     }

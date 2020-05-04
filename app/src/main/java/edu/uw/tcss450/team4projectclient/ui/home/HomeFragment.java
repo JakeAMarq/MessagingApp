@@ -11,10 +11,13 @@ import android.view.ViewGroup;
 import edu.uw.tcss450.team4projectclient.R;
 
 /**
- * A simple {@link Fragment} subclass.
+ * Home page
  */
 public class HomeFragment extends Fragment {
 
+    /**
+     * Required empty public constructor
+     */
     public HomeFragment() {
         // Required empty public constructor
     }
