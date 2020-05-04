@@ -15,6 +15,8 @@ import androidx.navigation.Navigation;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Random;
+
 import edu.uw.tcss450.team4projectclient.databinding.FragmentRegisterBinding;
 import edu.uw.tcss450.team4projectclient.utils.PasswordValidator;
 
@@ -42,6 +44,9 @@ public class RegisterFragment extends Fragment {
                     .and(checkExcludeWhiteSpace())
                     .and(checkPwdDigit())
                     .and(checkPwdLowerCase().or(checkPwdUpperCase()));
+
+    // random six digit number
+    private int randomCode = new Random().nextInt(900000) + 100000;
 
     public RegisterFragment() {
         // Required empty public constructor
@@ -141,14 +146,18 @@ public class RegisterFragment extends Fragment {
                 binding.editLast.getText().toString(),
                 binding.editEmail.getText().toString(),
                 binding.editPassword1.getText().toString(),
-                binding.nickName.getText().toString());
+                binding.nickName.getText().toString(),
+                Integer.toString(randomCode));
     }
 
     private void navigateToLogin() {
-        RegisterFragmentDirections.ActionRegisterFragmentToSignInFragment directions =
-                RegisterFragmentDirections.actionRegisterFragmentToSignInFragment();
+        RegisterFragmentDirections.ActionRegisterFragmentToVerificationFragment directions =
+                RegisterFragmentDirections.actionRegisterFragmentToVerificationFragment(binding.editEmail.getText().toString(),
+                        binding.editPassword1.getText().toString(),
+                        Integer.toString(randomCode));
         directions.setEmail(binding.editEmail.getText().toString());
         directions.setPassword(binding.editPassword1.getText().toString());
+        directions.setVerificationCode(Integer.toString(randomCode));
         Navigation.findNavController(getView()).navigate(directions);
     }
 }

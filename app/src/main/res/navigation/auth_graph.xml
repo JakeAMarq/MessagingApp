@@ -30,8 +30,8 @@
             android:label="fragment_register"
             tools:layout="@layout/fragment_register" >
         <action
-                android:id="@+id/action_registerFragment_to_signInFragment"
-                app:destination="@id/signInFragment" />
+            android:id="@+id/action_registerFragment_to_verificationFragment"
+            app:destination="@id/verificationFragment" />
     </fragment>
     <activity
             android:id="@+id/mainActivity"
@@ -45,4 +45,24 @@
                 android:name="jwt"
                 app:argType="string" />
     </activity>
+    <fragment
+        android:id="@+id/verificationFragment"
+        android:name="edu.uw.tcss450.team4projectclient.ui.auth.register.VerificationFragment"
+        android:label="fragment_verification"
+        tools:layout="@layout/fragment_verification" >
+        <argument
+            android:name="email"
+            app:argType="string" />
+        <argument
+            android:name="password"
+            app:argType="string" />
+        <argument
+            android:name="verificationCode"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_verificationFragment_to_signInFragment"
+            app:destination="@id/signInFragment"
+            app:popUpTo="@id/registerFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
 </navigation>
