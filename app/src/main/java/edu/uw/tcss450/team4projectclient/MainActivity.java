@@ -13,6 +13,10 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import edu.uw.tcss450.team4projectclient.model.UserInfoViewModel;
 
+/**
+ * Activity containing NavHostFragment for res/navigation/main_graph and bottom navigation
+ * with res/menu/bottom_nav_menu
+ */
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;

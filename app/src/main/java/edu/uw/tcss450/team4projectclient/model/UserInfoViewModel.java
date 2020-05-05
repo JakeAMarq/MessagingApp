@@ -4,6 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
+/**
+ * ViewModel containing user's email and JWT
+ */
 public class UserInfoViewModel extends ViewModel {
 
     private final String mEmail;

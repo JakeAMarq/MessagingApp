@@ -5,7 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 
 /**
- *
+ * Activity containing NavHostFragment for res/navigation/auth_graph
  */
 public class AuthActivity extends AppCompatActivity {
 
