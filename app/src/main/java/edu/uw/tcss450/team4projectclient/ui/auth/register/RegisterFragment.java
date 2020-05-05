@@ -137,7 +137,7 @@ public class RegisterFragment extends Fragment {
         mNameValidator.processResult(
                 mNameValidator.apply(binding.nickName.getText().toString().trim()),
                 this::verifyAuthWithServer,
-                result -> binding.nickName.setError("Please enter a valid last nickname."));
+                result -> binding.nickName.setError("Please enter a valid nickname."));
     }
 
     private void verifyAuthWithServer() {
