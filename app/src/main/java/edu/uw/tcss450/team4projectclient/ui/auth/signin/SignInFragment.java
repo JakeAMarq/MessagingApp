@@ -72,24 +72,20 @@ public class SignInFragment extends Fragment {
         binding.editPassword.setText(args.getPassword().equals("default") ? "" : args.getPassword());
     }
 
-    private void byPassLogin(final View button) {
-        navigateToMainActivity("fakeemail@email.email", "fakeJwt");
-    }
-
     private void attemptLogin(final View button) {validateEmail();}
 
     private void validateEmail() {
         mEmailValidator.processResult(
                 mEmailValidator.apply(binding.editEmail.getText().toString().trim()),
                 this::validatePassword,
-                result -> binding.editEmail.setError("Please enter a valid Email address."));
+                result -> binding.editEmail.setError("Please enter a valid email address."));
     }
 
     private void validatePassword() {
         mPassWordValidator.processResult(
                 mPassWordValidator.apply(binding.editPassword.getText().toString()),
                 this::verifyAuthWithServer,
-                result -> binding.editPassword.setError("Please enter a valid Password."));
+                result -> binding.editPassword.setError("Please enter a valid password."));
     }
 
     private void verifyAuthWithServer() {

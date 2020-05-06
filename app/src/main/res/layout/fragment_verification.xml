@@ -8,24 +8,24 @@
     tools:context=".ui.auth.register.VerificationFragment">
 
     <TextView
-        android:id="@+id/verification_hint"
+        android:id="@+id/text_verification"
         android:layout_width="190dp"
         android:layout_height="33dp"
         android:layout_marginTop="16dp"
-        android:text="@string/hint_verification"
+        android:text="@string/text_verification"
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/verification_field"
-        tools:text="@string/hint_verification" />
+        app:layout_constraintTop_toBottomOf="@+id/edit_verification_code"
+        tools:text="@string/text_verification" />
 
     <EditText
-        android:id="@+id/verification_field"
+        android:id="@+id/edit_verification_code"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="@string/hint_code"
+        android:hint="@string/hint_verification_code"
         android:inputType="numberPassword"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -33,7 +33,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/verification_button"
+        android:id="@+id/button_verify"
         android:layout_width="244dp"
         android:layout_height="53dp"
         android:layout_marginBottom="32dp"

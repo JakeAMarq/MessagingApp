@@ -76,7 +76,7 @@ public class VerificationFragment extends Fragment {
         /**
          * when the user clicks the verify button, it checks their code if they have entered the correct code.
          */
-        this.binding.verificationButton.setOnClickListener(this::verify);
+        this.binding.buttonVerify.setOnClickListener(this::verify);
     }
 
     /**
@@ -88,7 +88,7 @@ public class VerificationFragment extends Fragment {
         /**
          * checks the user's input if it matches the sent verification code.
          */
-        if(binding.verificationField.getText().toString().equals(args.getVerificationCode())) {
+        if(binding.editVerificationCode.getText().toString().equals(args.getVerificationCode())) {
             VerificationFragmentDirections.ActionVerificationFragmentToSignInFragment directions =
                     VerificationFragmentDirections.actionVerificationFragmentToSignInFragment();
             directions.setEmail(args.getEmail());
@@ -99,7 +99,7 @@ public class VerificationFragment extends Fragment {
              * if code doesn't match the sent code the registration doesn't go through.
              */
         } else {
-            binding.verificationField.setError("Invalid code");
+            binding.editVerificationCode.setError("Invalid code");
         }
     }
 }

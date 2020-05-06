@@ -23,7 +23,6 @@ import org.json.JSONObject;
 import java.util.Random;
 
 import edu.uw.tcss450.team4projectclient.databinding.FragmentRegisterBinding;
-import edu.uw.tcss450.team4projectclient.ui.auth.register.RegisterViewModel;
 import edu.uw.tcss450.team4projectclient.utils.PasswordValidator;
 
 import static edu.uw.tcss450.team4projectclient.utils.PasswordValidator.*;
@@ -128,7 +127,7 @@ public class RegisterFragment extends Fragment {
                 }
             } else {
                 // navigate to login to login the user.
-                navigateToLogin();
+                navigateToVerification();
             }
         } else {
             Log.d("JSON Response", "No Response");
@@ -170,7 +169,7 @@ public class RegisterFragment extends Fragment {
         mEmailValidator.processResult(
                 mEmailValidator.apply(binding.editEmail.getText().toString().trim()),
                 this::validatePassword,
-                result -> binding.editEmail.setError("Please enter a valid Email address."));
+                result -> binding.editEmail.setError("Please enter a valid email address."));
     }
 
     /**
@@ -180,7 +179,7 @@ public class RegisterFragment extends Fragment {
         mPassWordValidator.processResult(
                 mPassWordValidator.apply(binding.editPassword1.getText().toString()),
                 this::validateNickName,
-                result -> binding.editPassword1.setError("Please enter a valid Password."));
+                result -> binding.editPassword1.setError("Please enter a valid password."));
     }
 
     /**
@@ -188,9 +187,9 @@ public class RegisterFragment extends Fragment {
      */
     private void validateNickName() {
         mNameValidator.processResult(
-                mNameValidator.apply(binding.nickName.getText().toString().trim()),
+                mNameValidator.apply(binding.editNickname.getText().toString().trim()),
                 this::verifyAuthWithServer,
-                result -> binding.nickName.setError("Please enter a valid nickname."));
+                result -> binding.editNickname.setError("Please enter a valid nickname."));
     }
 
     /**
@@ -202,14 +201,14 @@ public class RegisterFragment extends Fragment {
                 binding.editLast.getText().toString(),
                 binding.editEmail.getText().toString(),
                 binding.editPassword1.getText().toString(),
-                binding.nickName.getText().toString(),
+                binding.editNickname.getText().toString(),
                 Integer.toString(randomCode));
     }
 
     /**
      * Upon successful registration, the user navigates to the registration page.
      */
-    private void navigateToLogin() {
+    private void navigateToVerification() {
         RegisterFragmentDirections.ActionRegisterFragmentToVerificationFragment directions =
                 RegisterFragmentDirections.actionRegisterFragmentToVerificationFragment(binding.editEmail.getText().toString(),
                         binding.editPassword1.getText().toString(),
