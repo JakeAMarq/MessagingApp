@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
         BottomNavigationView navView = findViewById(R.id.nav_view);
         mAppBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.navigation_home,
-                R.id.navigation_conversations,
+                R.id.navigation_chat_room_list,
                 R.id.navigation_contacts,
                 R.id.navigation_weather)
                 .build();

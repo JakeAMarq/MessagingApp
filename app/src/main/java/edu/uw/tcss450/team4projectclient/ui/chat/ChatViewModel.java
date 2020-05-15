@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import edu.uw.tcss450.team4projectclient.R;
 import edu.uw.tcss450.team4projectclient.io.RequestQueueSingleton;
@@ -40,6 +41,14 @@ public class ChatViewModel extends AndroidViewModel {
     public ChatViewModel(@NonNull Application application) {
         super(application);
         mMessages = new HashMap<>();
+    }
+
+    public List<ChatRoom> getChatRooms() {
+        List<ChatRoom> result = new ArrayList<>();
+        for (int id : mMessages.keySet()) {
+            result.add(new ChatRoom(id, mMessages.get(id).getValue()));
+        }
+        return result;
     }
 
     /**
@@ -95,7 +104,7 @@ public class ChatViewModel extends AndroidViewModel {
                 Request.Method.GET,
                 url,
                 null, //no body for this get request
-                this::handelSuccess,
+                this::handleSuccess,
                 this::handleError) {
 
             @Override
@@ -141,7 +150,7 @@ public class ChatViewModel extends AndroidViewModel {
                 Request.Method.GET,
                 url,
                 null, //no body for this get request
-                this::handelSuccess,
+                this::handleSuccess,
                 this::handleError) {
 
             @Override
@@ -176,7 +185,7 @@ public class ChatViewModel extends AndroidViewModel {
         getOrCreateMapEntry(chatId).setValue(list);
     }
 
-    private void handelSuccess(final JSONObject response) {
+    private void handleSuccess(final JSONObject response) {
         List<ChatMessage> list;
         if (!response.has("chatId")) {
             throw new IllegalStateException("Unexpected response in ChatViewModel: " + response);

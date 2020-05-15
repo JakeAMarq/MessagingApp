@@ -24,8 +24,8 @@
             android:id="@+id/layout_inner"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_constraintBottom_toTopOf="@+id/text_title"
-            app:layout_constraintTop_toTopOf="@+id/text_title">
+            app:layout_constraintBottom_toTopOf="@+id/text_last_message"
+            app:layout_constraintTop_toTopOf="@+id/text_last_message">
 
             <TextView
                 android:id="@+id/text_message"
