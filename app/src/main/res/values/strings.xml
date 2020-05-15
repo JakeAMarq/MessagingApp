@@ -18,6 +18,7 @@
     <string name="title_conversations">Conversations</string>
     <string name="title_weather">Weather</string>
     <string name="title_home">Home</string>
+    <string name="title_chat">Chat</string>
 
     <string name="text_verification">A verification code has been sent to your email.</string>
 
