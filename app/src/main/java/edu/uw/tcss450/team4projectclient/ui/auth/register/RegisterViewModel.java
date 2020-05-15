@@ -26,6 +26,8 @@ import org.json.JSONObject;
 import java.nio.charset.Charset;
 import java.util.Objects;
 
+import edu.uw.tcss450.team4projectclient.R;
+
 public class RegisterViewModel extends AndroidViewModel {
 
     // keeps track of all fo the JSONObject responses.
@@ -95,7 +97,7 @@ public class RegisterViewModel extends AndroidViewModel {
                         final String password,
                         final String userName,
                         final String verification) {
-        String url = "https://team4-tcss450-project-server.herokuapp.com/auth";    // need back-end set up
+        String url = getApplication().getResources().getString(R.string.base_url) + "auth";
         System.out.println(verification);
         JSONObject body = new JSONObject();
         try {

@@ -89,8 +89,8 @@ public class SignInFragment extends Fragment {
         );
         //making sure the email and password are not empty
         SignInFragmentArgs args = SignInFragmentArgs.fromBundle(getArguments());
-        binding.editEmail.setText(args.getEmail().equals("default") ? "" : args.getEmail());
-        binding.editPassword.setText(args.getPassword().equals("default") ? "" : args.getPassword());
+        binding.editEmail.setText(args.getEmail().equals("default") ? "jakemarq@uw.edu" : args.getEmail());
+        binding.editPassword.setText(args.getPassword().equals("default") ? "Password1!" : args.getPassword());
     }
 
     private void attemptLogin(final View button) {validateEmail();}
