@@ -1,6 +1,5 @@
 package edu.uw.tcss450.team4projectclient.ui.conversations;
 
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

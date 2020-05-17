@@ -20,6 +20,7 @@ import org.json.JSONObject;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,6 +49,8 @@ public class ChatViewModel extends AndroidViewModel {
         for (int id : mMessages.keySet()) {
             result.add(new ChatRoom(id, mMessages.get(id).getValue()));
         }
+        // Puts chatroom with most recent messages first
+        result.sort((ChatRoom chatRoom1, ChatRoom chatRoom2) -> chatRoom2.getLastTimeStamp().compareTo(chatRoom1.getLastTimeStamp()));
         return result;
     }
 

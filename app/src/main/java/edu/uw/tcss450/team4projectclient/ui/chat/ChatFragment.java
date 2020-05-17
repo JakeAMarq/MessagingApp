@@ -21,8 +21,7 @@ import edu.uw.tcss450.team4projectclient.model.UserInfoViewModel;
  */
 public class ChatFragment extends Fragment {
 
-    //The chat ID for "global" chat
-    private static final int HARD_CODED_CHAT_ID = 1;
+    private ChatRoom mChatRoom;
     private ChatSendViewModel mSendModel;
     private ChatViewModel mChatModel;
     private UserInfoViewModel mUserModel;
@@ -38,7 +37,8 @@ public class ChatFragment extends Fragment {
         mSendModel = provider.get(ChatSendViewModel.class);
         mUserModel = provider.get(UserInfoViewModel.class);
         mChatModel = provider.get(ChatViewModel.class);
-        mChatModel.getFirstMessages(HARD_CODED_CHAT_ID, mUserModel.getJwt());
+        mChatRoom = ChatFragmentArgs.fromBundle(getArguments()).getChatRoom();
+        mChatModel.getFirstMessages(mChatRoom.getChatId(), mUserModel.getJwt());
     }
 
     @Override
@@ -61,18 +61,20 @@ public class ChatFragment extends Fragment {
         //Set the Adapter to hold a reference to the list FOR THIS chat ID that the ViewModel
         //holds.
         rv.setAdapter(new ChatRecyclerViewAdapter(
-                mChatModel.getMessageListByChatId(HARD_CODED_CHAT_ID),
+                mChatRoom.getMessages(),
                 mUserModel.getEmail()));
 
 
         //When the user scrolls to the top of the RV, the swiper list will "refresh"
         //The user is out of messages, go out to the service and get more
         binding.swipeContainer.setOnRefreshListener(() -> {
-            mChatModel.getNextMessages(HARD_CODED_CHAT_ID, mUserModel.getJwt());
+            mChatModel.getNextMessages(mChatRoom.getChatId(), mUserModel.getJwt());
         });
 
-        mChatModel.addMessageObserver(HARD_CODED_CHAT_ID, getViewLifecycleOwner(),
+//        mChatModel.addMessageObserver(HARD_CODED_CHAT_ID, getViewLifecycleOwner(),
+        mChatModel.addMessageObserver(mChatRoom.getChatId(), getViewLifecycleOwner(),
                 list -> {
+                    // TODO: Find solution for scroll position
                     /*
                      * This solution needs work on the scroll position. As a group,
                      * you will need to come up with some solution to manage the
@@ -87,7 +89,7 @@ public class ChatFragment extends Fragment {
 
         //Send button was clicked. Send the message via the SendViewModel
         binding.buttonSend.setOnClickListener(button -> {
-            mSendModel.sendMessage(HARD_CODED_CHAT_ID,
+            mSendModel.sendMessage(mChatRoom.getChatId(),
                     mUserModel.getJwt(),
                     binding.editMessage.getText().toString());
         });

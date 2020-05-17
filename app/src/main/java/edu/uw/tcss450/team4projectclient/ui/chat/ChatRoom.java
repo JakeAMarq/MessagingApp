@@ -31,6 +31,10 @@ public class ChatRoom implements Serializable {
         return mMessages.get(mMessages.size() - 1).getMessage();
     }
 
+    public String getLastTimeStamp() {
+        return mMessages.get(mMessages.size() - 1).getTimeStamp();
+    }
+
     public void addMessage(final ChatMessage message) {
         mMessages.add(message);
     }
