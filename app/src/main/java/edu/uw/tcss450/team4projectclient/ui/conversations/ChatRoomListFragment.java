@@ -12,9 +12,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.List;
+
 import edu.uw.tcss450.team4projectclient.R;
 import edu.uw.tcss450.team4projectclient.databinding.FragmentChatRoomListBinding;
 import edu.uw.tcss450.team4projectclient.model.UserInfoViewModel;
+import edu.uw.tcss450.team4projectclient.ui.chat.ChatMessage;
 import edu.uw.tcss450.team4projectclient.ui.chat.ChatViewModel;
 
 /**
@@ -52,16 +55,13 @@ public class ChatRoomListFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        FragmentChatRoomListBinding binding = FragmentChatRoomListBinding.bind(getView());
-        final RecyclerView rv = binding.listRoot;
-
         // TODO: Remove hardcoded chatrooms
         // ChatIds for hardcoded chatrooms
-        int[] chatIds = new int[]{1, 2, 3};
+        int[] chatIds = new int[]{1, 3, 2};
         for (int chatId : chatIds) {
             mChatModel.addMessageObserver(chatId,
                     getViewLifecycleOwner(),
-                    response -> rv.getAdapter().notifyDataSetChanged());
+                    response -> updateMessages());
             mChatModel.getFirstMessages(chatId, mUserModel.getJwt());
         }
 
@@ -69,6 +69,10 @@ public class ChatRoomListFragment extends Fragment {
             ((RecyclerView) view).setAdapter(
                     new ChatRoomRecyclerViewAdapter(mChatModel.getChatRooms()));
         }
+    }
 
+    public void updateMessages() {
+        final RecyclerView rv = FragmentChatRoomListBinding.bind(getView()).listRoot;
+        rv.setAdapter(new ChatRoomRecyclerViewAdapter(mChatModel.getChatRooms()));
     }
 }
