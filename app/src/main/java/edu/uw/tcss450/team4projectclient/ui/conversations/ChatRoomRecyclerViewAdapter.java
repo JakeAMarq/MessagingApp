@@ -40,6 +40,12 @@ public class ChatRoomRecyclerViewAdapter extends RecyclerView.Adapter<ChatRoomRe
         return mChatRooms.size();
     }
 
+    public void navigateToChatRoom(View view, ChatRoom chatRoom) {
+        Navigation.findNavController(view).navigate(
+                ChatRoomListFragmentDirections
+                        .actionNavigationChatRoomsToChatFragment(chatRoom));
+    }
+
     /**
      * Objects from this class represent an Individual row View from the List
      * of rows in the Chat Recycler View.
@@ -55,10 +61,7 @@ public class ChatRoomRecyclerViewAdapter extends RecyclerView.Adapter<ChatRoomRe
         }
 
         void setChatRoom(final ChatRoom chatRoom) {
-            binding.buttonOpenChatRoom.setOnClickListener(view ->
-                    Navigation.findNavController(mView).navigate(
-                            ChatRoomListFragmentDirections
-                                    .actionNavigationChatRoomsToChatFragment(chatRoom)));
+            binding.buttonOpenChatRoom.setOnClickListener(view -> navigateToChatRoom(mView, chatRoom));
             binding.textChatRoomTitle.setText("Chat Room ID: " + chatRoom.getChatId());
             binding.textLastMessage.setText(chatRoom.getLastMessage());
         }

@@ -13,15 +13,21 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import edu.uw.tcss450.team4projectclient.databinding.ActivityMainBinding;
 import edu.uw.tcss450.team4projectclient.model.NewMessageCountViewModel;
 import edu.uw.tcss450.team4projectclient.model.UserInfoViewModel;
 import edu.uw.tcss450.team4projectclient.services.PushReceiver;
+import edu.uw.tcss450.team4projectclient.ui.chat.ChatFragmentArgs;
 import edu.uw.tcss450.team4projectclient.ui.chat.ChatMessage;
+import edu.uw.tcss450.team4projectclient.ui.chat.ChatRoom;
 import edu.uw.tcss450.team4projectclient.ui.chat.ChatViewModel;
 
 /**
@@ -38,6 +44,10 @@ public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
 
+    private int mCurrentChatId;
+
+    private  Map<Integer, Integer> mUnreadMessageCounts; // keys are chatIds, values are the # of unread messages
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,6 +55,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         MainActivityArgs args = MainActivityArgs.fromBundle(getIntent().getExtras());
+
+        mCurrentChatId = 0;
+        mUnreadMessageCounts = new HashMap<>();
 
         new ViewModelProvider(
                 this,
@@ -66,12 +79,17 @@ public class MainActivity extends AppCompatActivity {
         mNewMessageModel = new ViewModelProvider(this).get(NewMessageCountViewModel.class);
 
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
-            if (destination.getId() == R.id.navigation_chat_room_list) {
+            if (destination.getId() == R.id.navigation_chat_room) {
                 //TODO: Adjust logic for multiple chat rooms
-                //When the user navigates to the chats page, reset the new message count.
-                //This will need some extra logic for your project as it should have
-                //multiple chat rooms.
-                mNewMessageModel.reset();
+                mCurrentChatId = ChatFragmentArgs.fromBundle(arguments).getChatRoom().getChatId();
+                //When the user navigates to a chat room, decrease the new message count by however
+                //many unread message are in that chat room.
+                if (mUnreadMessageCounts.containsKey(mCurrentChatId)) {
+                    mNewMessageModel.subtract(mUnreadMessageCounts.get(mCurrentChatId));
+                    mUnreadMessageCounts.put(mCurrentChatId, 0);
+                }
+            } else {
+                mCurrentChatId = 0;
             }
         });
 
@@ -114,7 +132,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
+    public void updateNewMessageCount() {
+        mNewMessageModel.reset();
+        for (int unread : mUnreadMessageCounts.values()) {
+            mNewMessageModel.add(unread);
+        }
+    }
     /**
      * A BroadcastReceiver that listens for messages sent from PushReceiver
      */
@@ -134,10 +157,18 @@ public class MainActivity extends AppCompatActivity {
             if (intent.hasExtra("chatMessage")) {
 
                 ChatMessage cm = (ChatMessage) intent.getSerializableExtra("chatMessage");
+                int chatId = intent.getIntExtra("chatid", 0);
 
                 //If the user is not on the chat screen, update the
                 // NewMessageCountView Model
-                if (nd.getId() != R.id.navigation_chat_room_list) {
+                if (mCurrentChatId != chatId) {
+                    Log.e("test", chatId + "");
+                    if (mUnreadMessageCounts.containsKey(chatId)) {
+                        mUnreadMessageCounts.put(chatId, mUnreadMessageCounts.get(chatId) + 1);
+                    } else {
+                        mUnreadMessageCounts.put(chatId, 1);
+                    }
+
                     mNewMessageModel.increment();
                 }
                 //Inform the view model holding chatroom messages of the new

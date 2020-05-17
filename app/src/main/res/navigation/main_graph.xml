@@ -17,7 +17,7 @@
             tools:layout="@layout/fragment_chat_room_list">
         <action
                 android:id="@+id/action_navigation_chat_rooms_to_chatFragment"
-                app:destination="@id/chatFragment" />
+                app:destination="@id/navigation_chat_room" />
     </fragment>
     <fragment
             android:id="@+id/navigation_weather"
@@ -34,7 +34,7 @@
                 app:destination="@id/contactFragment" />
     </fragment>
     <fragment
-            android:id="@+id/chatFragment"
+            android:id="@+id/navigation_chat_room"
             android:name="edu.uw.tcss450.team4projectclient.ui.chat.ChatFragment"
             android:label="fragment_chat"
             tools:layout="@layout/fragment_chat" >
