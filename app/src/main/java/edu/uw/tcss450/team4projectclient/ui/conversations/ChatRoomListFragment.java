@@ -45,10 +45,6 @@ public class ChatRoomListFragment extends Fragment {
 //        mChatModel.getFirstMessages(3, mUserModel.getJwt());
 
         View view = inflater.inflate(R.layout.fragment_chat_room_list, container, false);
-        if (view instanceof RecyclerView) {
-            ((RecyclerView) view).setAdapter(
-                    new ChatRoomRecyclerViewAdapter(mChatModel.getChatRooms()));
-        }
         return view;
     }
 
@@ -67,6 +63,11 @@ public class ChatRoomListFragment extends Fragment {
                     getViewLifecycleOwner(),
                     response -> rv.getAdapter().notifyDataSetChanged());
             mChatModel.getFirstMessages(chatId, mUserModel.getJwt());
+        }
+
+        if (view instanceof RecyclerView) {
+            ((RecyclerView) view).setAdapter(
+                    new ChatRoomRecyclerViewAdapter(mChatModel.getChatRooms()));
         }
 
     }

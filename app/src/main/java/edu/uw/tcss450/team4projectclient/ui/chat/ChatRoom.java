@@ -28,11 +28,11 @@ public class ChatRoom implements Serializable {
     }
 
     public String getLastMessage() {
-        return mMessages.get(mMessages.size() - 1).getMessage();
+        return mMessages.size() > 0 ? mMessages.get(mMessages.size() - 1).getMessage() : "";
     }
 
     public String getLastTimeStamp() {
-        return mMessages.get(mMessages.size() - 1).getTimeStamp();
+        return mMessages.size() > 0 ? mMessages.get(mMessages.size() - 1).getTimeStamp() : "";
     }
 
     public void addMessage(final ChatMessage message) {
