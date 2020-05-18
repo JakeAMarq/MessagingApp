@@ -10,5 +10,5 @@
     android:layout_marginRight="0dp"
     android:orientation="vertical"
     app:layoutManager="LinearLayoutManager"
-    tools:context="edu.uw.tcss450.team4projectclient.ui.conversations.ChatRoomListFragment"
+    tools:context="edu.uw.tcss450.team4projectclient.ui.chatrooms.ChatRoomListFragment"
     tools:listitem="@layout/fragment_chat_card" />

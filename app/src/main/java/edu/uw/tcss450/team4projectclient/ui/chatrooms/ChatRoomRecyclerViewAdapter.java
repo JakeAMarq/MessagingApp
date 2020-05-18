@@ -1,4 +1,4 @@
-package edu.uw.tcss450.team4projectclient.ui.conversations;
+package edu.uw.tcss450.team4projectclient.ui.chatrooms;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -61,10 +61,11 @@ public class ChatRoomRecyclerViewAdapter extends RecyclerView.Adapter<ChatRoomRe
         }
 
         void setChatRoom(final ChatRoom chatRoom) {
-            binding.buttonOpenChatRoom.setOnClickListener(view -> navigateToChatRoom(mView, chatRoom));
+            mView.setOnClickListener(view -> navigateToChatRoom(mView, chatRoom));
             binding.textChatRoomTitle.setText("Chat Room ID: " + chatRoom.getChatId());
             binding.textLastMessage.setText(chatRoom.getLastMessage());
         }
+
     }
 
 }

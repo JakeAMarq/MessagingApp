@@ -27,7 +27,6 @@ import edu.uw.tcss450.team4projectclient.model.UserInfoViewModel;
 import edu.uw.tcss450.team4projectclient.services.PushReceiver;
 import edu.uw.tcss450.team4projectclient.ui.chat.ChatFragmentArgs;
 import edu.uw.tcss450.team4projectclient.ui.chat.ChatMessage;
-import edu.uw.tcss450.team4projectclient.ui.chat.ChatRoom;
 import edu.uw.tcss450.team4projectclient.ui.chat.ChatViewModel;
 
 /**
@@ -138,6 +137,11 @@ public class MainActivity extends AppCompatActivity {
             mNewMessageModel.add(unread);
         }
     }
+
+    public void setActionBarTitle(String title) {
+        getSupportActionBar().setTitle(title);
+    }
+
     /**
      * A BroadcastReceiver that listens for messages sent from PushReceiver
      */

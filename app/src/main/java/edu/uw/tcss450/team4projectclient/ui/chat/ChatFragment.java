@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import edu.uw.tcss450.team4projectclient.MainActivity;
 import edu.uw.tcss450.team4projectclient.R;
 import edu.uw.tcss450.team4projectclient.databinding.FragmentChatBinding;
 import edu.uw.tcss450.team4projectclient.model.UserInfoViewModel;
@@ -34,11 +35,15 @@ public class ChatFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ViewModelProvider provider = new ViewModelProvider(getActivity());
+
         mSendModel = provider.get(ChatSendViewModel.class);
         mUserModel = provider.get(UserInfoViewModel.class);
         mChatModel = provider.get(ChatViewModel.class);
         mChatRoom = ChatFragmentArgs.fromBundle(getArguments()).getChatRoom();
         mChatModel.getFirstMessages(mChatRoom.getChatId(), mUserModel.getJwt());
+
+        ((MainActivity) getActivity())
+                .setActionBarTitle("Chat Room ID: " + mChatRoom.getChatId());
     }
 
     @Override

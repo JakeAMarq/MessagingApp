@@ -1,4 +1,4 @@
-package edu.uw.tcss450.team4projectclient.ui.conversations;
+package edu.uw.tcss450.team4projectclient.ui.chatrooms;
 
 import android.os.Bundle;
 
@@ -12,12 +12,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.List;
-
 import edu.uw.tcss450.team4projectclient.R;
 import edu.uw.tcss450.team4projectclient.databinding.FragmentChatRoomListBinding;
 import edu.uw.tcss450.team4projectclient.model.UserInfoViewModel;
-import edu.uw.tcss450.team4projectclient.ui.chat.ChatMessage;
 import edu.uw.tcss450.team4projectclient.ui.chat.ChatViewModel;
 
 /**
