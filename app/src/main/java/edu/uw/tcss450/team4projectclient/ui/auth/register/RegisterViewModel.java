@@ -87,16 +87,13 @@ public class RegisterViewModel extends AndroidViewModel {
      * @param email the user's email
      * @param password the user's password
      * @param userName the user's username/nickname
-     * @param verification, the user's verification code when they sign in ot verify email
      */
     public void connect(final String first,
                         final String last,
                         final String email,
                         final String password,
-                        final String userName,
-                        final String verification) {
+                        final String userName) {
         String url = "https://team4-tcss450-project-server.herokuapp.com/auth";    // need back-end set up
-        System.out.println(verification);
         JSONObject body = new JSONObject();
         try {
             // all of the data that is being passed to the backend.
@@ -105,11 +102,74 @@ public class RegisterViewModel extends AndroidViewModel {
             body.put("email", email);
             body.put("password", password);
             body.put("username", userName);
-            body.put("verification", verification);
         } catch (JSONException e) {
             e.printStackTrace();
         }
         // pushes the data to the backend.
+        Request request = new JsonObjectRequest(
+                Request.Method.POST,
+                url,
+                body,
+                mResponse::setValue,
+                this::handleError);
+
+        request.setRetryPolicy(new DefaultRetryPolicy(
+                10_000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+        // sending a request to connect to the backend.
+        Volley.newRequestQueue(getApplication().getApplicationContext()).add(request);
+    }
+
+
+    /**
+     * sends a verification email to the user.
+     * @param email the user''s email
+     */
+    public void verify(final String email) {
+        String url = "https://team4-tcss450-project-server.herokuapp.com/auth";
+        JSONObject body = new JSONObject();
+
+        try {
+            body.put("email", email);
+            body.put("verified","false");
+        } catch(JSONException e) {
+            e.printStackTrace();
+        }
+
+        Request request = new JsonObjectRequest(
+                Request.Method.POST,
+                url,
+                body,
+                mResponse::setValue,
+                this::handleError);
+
+        request.setRetryPolicy(new DefaultRetryPolicy(
+                10_000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+        // sending a request to connect to the backend.
+        Volley.newRequestQueue(getApplication().getApplicationContext()).add(request);
+    }
+
+    /**
+     * sets the users new password.
+     * @param password the user's password
+     */
+    public void resetPassword(final String email,
+                              final String password) {
+        String url = "https://team4-tcss450-project-server.herokuapp.com/auth";
+        JSONObject body = new JSONObject();
+
+        try {
+            body.put("email", email);
+            body.put("password", password);
+        } catch(JSONException e) {
+            e.printStackTrace();
+        }
+
         Request request = new JsonObjectRequest(
                 Request.Method.POST,
                 url,

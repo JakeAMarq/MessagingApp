@@ -201,21 +201,18 @@ public class RegisterFragment extends Fragment {
                 binding.editLast.getText().toString(),
                 binding.editEmail.getText().toString(),
                 binding.editPassword1.getText().toString(),
-                binding.editNickname.getText().toString(),
-                Integer.toString(randomCode));
+                binding.editNickname.getText().toString());
     }
 
     /**
-     * Upon successful registration, the user navigates to the registration page.
+     * Upon successful registration, the user navigates to the verification page.
      */
     private void navigateToVerification() {
         RegisterFragmentDirections.ActionRegisterFragmentToVerificationFragment directions =
                 RegisterFragmentDirections.actionRegisterFragmentToVerificationFragment(binding.editEmail.getText().toString(),
-                        binding.editPassword1.getText().toString(),
-                        Integer.toString(randomCode));
+                        binding.editPassword1.getText().toString());
         directions.setEmail(binding.editEmail.getText().toString());
         directions.setPassword(binding.editPassword1.getText().toString());
-        directions.setVerificationCode(Integer.toString(randomCode));
         Navigation.findNavController(getView()).navigate(directions);
     }
 }

@@ -138,6 +138,28 @@ public class SignInFragment extends Fragment {
     }
 
     /**
+     * Upon successful login, but without a verified email,
+     * the user navigates to the verification page.
+     * @param email
+     * @param password
+     * @param code
+     */
+    private void navigateToVerificationFragment(String email, String password, String code) {
+        SignInFragmentDirections.ActionSignInFragmentToVerificationFragment directions =
+                SignInFragmentDirections.actionSignInFragmentToVerificationFragment(email, password);
+        Navigation.findNavController(getView()).navigate(directions);
+    }
+
+    /**
+     * When the user has forgotten their password
+     * the user navigates to the reset password page.
+     */
+    private void navigateToResetPasswordFragment() {
+        //SignInFragmentDirections directions
+        //Navigation.findNavController(getView()).navigate(directions);
+    }
+
+    /**
      * An observer on the HTTP Response from the web server. This observer should be
      * attached to SignInViewModel.
      *
@@ -159,9 +181,17 @@ public class SignInFragment extends Fragment {
                 }
             } else {
                 try {
-                    navigateToMainActivity(
-                            binding.editEmail.getText().toString(),
-                            response.getString("token"));
+                    // Need to send unverified user to verification page
+                    if(response.getString("verified").equals("??????")) {
+                        navigateToMainActivity(
+                                binding.editEmail.getText().toString(),
+                                response.getString("token"));
+                    } else {
+                        navigateToVerificationFragment(
+                                binding.editEmail.getText().toString(),
+                                binding.editPassword.getText().toString(),
+                                response.getString(""));
+                    }
                 } catch (JSONException e) {
                     Log.e("JSON Parse Error", e.getMessage());
                 }

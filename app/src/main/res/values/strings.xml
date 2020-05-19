@@ -19,4 +19,12 @@
     <string name="title_home">Home</string>
 
     <string name="text_verification">A verification code has been sent to your email.</string>
+    <string name="button_forgot_password">forgot password</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="hint_email_sent">A code will be sent to your email.</string>
+    <string name="button_send">Send</string>
+    <string name="button_reset">Reset password</string>
+    <string name="hint_new_password">new password</string>
 </resources>
