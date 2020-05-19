@@ -1,51 +1,44 @@
-/**
- * Team 4
- * This class helps a user register for a new account.
- */
-
-package edu.uw.tcss450.team4projectclient.ui.auth.register;
+package edu.uw.tcss450.team4projectclient.ui.contacts;
 
 import android.app.Application;
+import android.util.Base64;
 import android.util.Log;
+
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.nio.charset.Charset;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
-
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.Request;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.nio.charset.Charset;
-import java.util.Objects;
-
 import edu.uw.tcss450.team4projectclient.R;
+import edu.uw.tcss450.team4projectclient.io.RequestQueueSingleton;
 
-public class RegisterViewModel extends AndroidViewModel {
-
+public class ContactsViewModel extends AndroidViewModel {
     // keeps track of all fo the JSONObject responses.
     private MutableLiveData<JSONObject> mResponse;
-
     /**
      * constructor that initializes a mutable live data object.
      * @param application
      */
-    public RegisterViewModel(@NonNull Application application) {
+    public ContactsViewModel(@NonNull Application application) {
         super(application);
-
         mResponse = new MutableLiveData<>();
         mResponse.setValue(new JSONObject());
     }
-
     /**
-     * adding an observer for the register class.
+     * adding an observer for the login class.
      * @param owner
      * @param observer
      */
@@ -53,9 +46,8 @@ public class RegisterViewModel extends AndroidViewModel {
                                     @NonNull Observer<? super JSONObject> observer) {
         mResponse.observe(owner, observer);
     }
-
     /**
-     * This method gets called in case an error happens during the registration process.
+     * This method gets called in case an error happens during the existing user login process.
      * @param error
      */
     private void handleError(final VolleyError error) {
@@ -81,50 +73,35 @@ public class RegisterViewModel extends AndroidViewModel {
             }
         }
     }
-
     /**
-     * This methods registers a user.
-     * @param first the user first name
-     * @param last the user last name
-     * @param email the user's email
-     * @param password the user's password
-     * @param userName the user's username/nickname
-     * @param verification, the user's verification code when they sign in ot verify email
+     * This methods sends request to check if user exists.
+     * @param nickname the user's email
      */
-    public void connect(final String first,
-                        final String last,
-                        final String email,
-                        final String password,
-                        final String userName,
-                        final String verification) {
-        String url = getApplication().getResources().getString(R.string.base_url) + "auth";
-        System.out.println(verification);
-        JSONObject body = new JSONObject();
-        try {
-            // all of the data that is being passed to the backend.
-            body.put("first", first);
-            body.put("last", last);
-            body.put("email", email);
-            body.put("password", password);
-            body.put("username", userName);
-            body.put("verification", verification);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        // pushes the data to the backend.
+    public void connect(final String nickname) {
+        String url = getApplication().getResources().getString(R.string.base_url) + "lookup_user?username=" + nickname;
+
+        // senda a get request to the link String url
         Request request = new JsonObjectRequest(
-                Request.Method.POST,
+                Request.Method.GET,
                 url,
-                body,
+                null,
                 mResponse::setValue,
                 this::handleError);
+            //Set email and password as headers with base 64 encoded
+//            @Override
+//            public Map<String, String> getHeaders() {
+//                Map<String, String> headers = new HashMap<>();
+//
+//
+//                headers.put("Authorization", auth);
+//                return headers;
+//            }
 
         request.setRetryPolicy(new DefaultRetryPolicy(
                 10_000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-
-        // sending a request to connect to the backend.
-        Volley.newRequestQueue(getApplication().getApplicationContext()).add(request);
+        RequestQueueSingleton.getInstance(getApplication().getApplicationContext())
+                .addToRequestQueue(request);
     }
 }

@@ -16,6 +16,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import edu.uw.tcss450.team4projectclient.databinding.FragmentSignInBinding;
+import edu.uw.tcss450.team4projectclient.model.PushyTokenViewModel;
+import edu.uw.tcss450.team4projectclient.model.UserInfoViewModel;
 import edu.uw.tcss450.team4projectclient.utils.PasswordValidator;
 import static edu.uw.tcss450.team4projectclient.utils.PasswordValidator.*;
 
@@ -29,6 +31,10 @@ import static edu.uw.tcss450.team4projectclient.utils.PasswordValidator.*;
  * A simple {@link Fragment} subclass.
  */
 public class SignInFragment extends Fragment {
+
+    private PushyTokenViewModel mPushyTokenViewModel;
+    private UserInfoViewModel mUserViewModel;
+
     // Binding to have access to all of the components in the xml.
     private FragmentSignInBinding binding;
     // This is the view model class to help with signing in
@@ -41,6 +47,7 @@ public class SignInFragment extends Fragment {
     private PasswordValidator mPassWordValidator = checkPwdLength(1)
             .and(checkExcludeWhiteSpace());
 
+    public static int memberId_a;
     public SignInFragment() {
         // Required empty public constructor
     }
@@ -53,6 +60,8 @@ public class SignInFragment extends Fragment {
         super.onCreate(savedInstanceState);
         // setting the view model
         mSignInModel = new ViewModelProvider(getActivity()).get(SignInViewModel.class);
+
+        mPushyTokenViewModel = new ViewModelProvider(getActivity()).get(PushyTokenViewModel.class);
     }
     /**
      * Sets up the view for the fragment
@@ -89,8 +98,17 @@ public class SignInFragment extends Fragment {
         );
         //making sure the email and password are not empty
         SignInFragmentArgs args = SignInFragmentArgs.fromBundle(getArguments());
-        binding.editEmail.setText(args.getEmail().equals("default") ? "" : args.getEmail());
-        binding.editPassword.setText(args.getPassword().equals("default") ? "" : args.getPassword());
+        //TODO: Remove hard-coded email and password
+        binding.editEmail.setText(args.getEmail().equals("default") ? "eliassalmo1234@gmail.com" : args.getEmail());//test1@test.com
+        binding.editPassword.setText(args.getPassword().equals("default") ? "Test12345!" : args.getPassword());
+
+        //don't allow sign in until pushy token retrieved
+        mPushyTokenViewModel.addTokenObserver(getViewLifecycleOwner(), token ->
+                binding.buttonLogIn.setEnabled(!token.isEmpty()));
+
+        mPushyTokenViewModel.addResponseObserver(
+                getViewLifecycleOwner(),
+                this::observePushyPutResponse);
     }
 
     private void attemptLogin(final View button) {validateEmail();}
@@ -144,9 +162,12 @@ public class SignInFragment extends Fragment {
      * @param response the Response from the server
      */
     private void observeResponse(final JSONObject response) {
+        Log.e("oooo", String.valueOf(response));
         if (response.length() > 0) {
             if (response.has("code")) {
                 try {
+
+
                     binding.editEmail.setError(
                             "Error Authenticating: " +
                                     new JSONObject(response.getString("data").
@@ -159,9 +180,15 @@ public class SignInFragment extends Fragment {
                 }
             } else {
                 try {
-                    navigateToMainActivity(
-                            binding.editEmail.getText().toString(),
-                            response.getString("token"));
+                    memberId_a = response.getInt("memberid");
+                    Log.e("memberid", String.valueOf(memberId_a));
+                    mUserViewModel = new ViewModelProvider(getActivity(),
+                            new UserInfoViewModel.UserInfoViewModelFactory(
+                                    binding.editEmail.getText().toString(),
+                                    response.getString("token")
+                            )).get(UserInfoViewModel.class);
+
+                    sendPushyToken();
                 } catch (JSONException e) {
                     Log.e("JSON Parse Error", e.getMessage());
                 }
@@ -169,6 +196,35 @@ public class SignInFragment extends Fragment {
         } else {
             Log.d("JSON Response", "No Response");
         }
+    }
+
+    /**
+     * An observer on the HTTP Response from the web server. This observer should be
+     * attached to PushyTokenViewModel.
+     *
+     * @param response the Response from the server
+     */
+    private void observePushyPutResponse(final JSONObject response) {
+        if (response.length() > 0) {
+            if (response.has("code")) {
+                //this error cannot be fixed by the user changing credentials...
+                binding.editEmail.setError(
+                        "Error Authenticating on Push Token. Please contact support");
+            } else {
+                navigateToMainActivity(
+                        binding.editEmail.getText().toString(),
+                        mUserViewModel.getJwt()
+                );
+            }
+        }
+    }
+
+
+    /**
+     * Helper to abstract the request to send the pushy token to the web service
+     */
+    private void sendPushyToken() {
+        mPushyTokenViewModel.sendTokenToWebservice(mUserViewModel.getJwt());
     }
 
 }

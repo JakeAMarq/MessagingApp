@@ -11,13 +11,13 @@
             android:label="@string/title_home"
             tools:layout="@layout/fragment_home" />
     <fragment
-            android:id="@+id/navigation_conversations"
-            android:name="edu.uw.tcss450.team4projectclient.ui.chat.ConversationsFragment"
+            android:id="@+id/navigation_chat_room_list"
+            android:name="edu.uw.tcss450.team4projectclient.ui.chatrooms.ChatRoomListFragment"
             android:label="@string/title_conversations"
-            tools:layout="@layout/fragment_conversations">
+            tools:layout="@layout/fragment_chat_room_list">
         <action
-                android:id="@+id/action_navigation_conversations_to_chatFragment"
-                app:destination="@id/chatFragment" />
+                android:id="@+id/action_navigation_chat_rooms_to_chatFragment"
+                app:destination="@id/navigation_chat_room" />
     </fragment>
     <fragment
             android:id="@+id/navigation_weather"
@@ -32,15 +32,37 @@
         <action
                 android:id="@+id/action_navigation_contacts_to_contactFragment"
                 app:destination="@id/contactFragment" />
+        <action
+            android:id="@+id/action_navigation_contacts_to_contactsPostFragment"
+            app:destination="@id/contactsPostFragment" />
     </fragment>
     <fragment
-            android:id="@+id/chatFragment"
+            android:id="@+id/navigation_chat_room"
             android:name="edu.uw.tcss450.team4projectclient.ui.chat.ChatFragment"
             android:label="fragment_chat"
-            tools:layout="@layout/fragment_chat" />
+            tools:layout="@layout/fragment_chat" >
+        <argument
+            android:name="chatRoom"
+            app:argType="edu.uw.tcss450.team4projectclient.ui.chat.ChatRoom" />
+    </fragment>
     <fragment
             android:id="@+id/contactFragment"
             android:name="edu.uw.tcss450.team4projectclient.ui.contacts.ContactFragment"
             android:label="fragment_contact"
-            tools:layout="@layout/fragment_contact" />
+            tools:layout="@layout/fragment_contact" >
+        <action
+            android:id="@+id/action_contactFragment_to_navigation_contacts"
+            app:destination="@id/navigation_contacts" />
+    </fragment>
+    <fragment
+        android:id="@+id/contactsPostFragment"
+        android:name="edu.uw.tcss450.team4projectclient.ui.contacts.ContactsPostFragment"
+        android:label="ContactsPostFragment" >
+        <argument
+            android:name="Contact"
+            app:argType="edu.uw.tcss450.team4projectclient.ui.contacts.ContactsPost" />
+        <action
+            android:id="@+id/action_contactsPostFragment_to_navigation_contacts3"
+            app:destination="@id/navigation_contacts" />
+    </fragment>
 </navigation>

@@ -1,18 +1,7 @@
-/**
- * Team 4
- * This class helps a user register for a new account.
- */
-
-package edu.uw.tcss450.team4projectclient.ui.auth.register;
+package edu.uw.tcss450.team4projectclient.ui.contacts;
 
 import android.app.Application;
 import android.util.Log;
-
-import androidx.annotation.NonNull;
-import androidx.lifecycle.AndroidViewModel;
-import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -26,9 +15,15 @@ import org.json.JSONObject;
 import java.nio.charset.Charset;
 import java.util.Objects;
 
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import edu.uw.tcss450.team4projectclient.R;
 
-public class RegisterViewModel extends AndroidViewModel {
+public class AddContactsViewModel extends AndroidViewModel {
 
     // keeps track of all fo the JSONObject responses.
     private MutableLiveData<JSONObject> mResponse;
@@ -37,7 +32,7 @@ public class RegisterViewModel extends AndroidViewModel {
      * constructor that initializes a mutable live data object.
      * @param application
      */
-    public RegisterViewModel(@NonNull Application application) {
+    public AddContactsViewModel(@NonNull Application application) {
         super(application);
 
         mResponse = new MutableLiveData<>();
@@ -45,7 +40,7 @@ public class RegisterViewModel extends AndroidViewModel {
     }
 
     /**
-     * adding an observer for the register class.
+     * adding an observer for the contacts class.
      * @param owner
      * @param observer
      */
@@ -55,7 +50,7 @@ public class RegisterViewModel extends AndroidViewModel {
     }
 
     /**
-     * This method gets called in case an error happens during the registration process.
+     * This method gets called in case an error happens during adding the contact.
      * @param error
      */
     private void handleError(final VolleyError error) {
@@ -83,31 +78,18 @@ public class RegisterViewModel extends AndroidViewModel {
     }
 
     /**
-     * This methods registers a user.
-     * @param first the user first name
-     * @param last the user last name
-     * @param email the user's email
-     * @param password the user's password
-     * @param userName the user's username/nickname
-     * @param verification, the user's verification code when they sign in ot verify email
+     * This methods adds a contact.
+     * @param id_a the first user's id
+     * @param id_b the second user's id
      */
-    public void connect(final String first,
-                        final String last,
-                        final String email,
-                        final String password,
-                        final String userName,
-                        final String verification) {
-        String url = getApplication().getResources().getString(R.string.base_url) + "auth";
-        System.out.println(verification);
+    public void connect(final Integer id_a,
+                        final Integer id_b) {
+        String url = getApplication().getResources().getString(R.string.base_url) + "add_user";
         JSONObject body = new JSONObject();
         try {
             // all of the data that is being passed to the backend.
-            body.put("first", first);
-            body.put("last", last);
-            body.put("email", email);
-            body.put("password", password);
-            body.put("username", userName);
-            body.put("verification", verification);
+            body.put("MemberID_A", id_a);
+            body.put("MemberID_B", id_b);
         } catch (JSONException e) {
             e.printStackTrace();
         }
