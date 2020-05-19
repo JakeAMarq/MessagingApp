@@ -123,10 +123,14 @@ public class WeatherFragment extends Fragment {
      */
     private void pullWeatherData() {
 
-//        binding.layoutWait.setVisibility(View.VISIBLE);
-//        zipcode = (binding.enterZipcode.getText().toString().isEmpty()) ?
-//                      "98401" : binding.enterZipcode.getText().toString();
-        mWeatherModel.connect(zipcode);
+        binding.layoutWait.setVisibility(View.VISIBLE);
+        if (binding.enterZipcode.getText().toString().isEmpty()) {
+            mWeatherModel.connect(zipcode);
+        } else {
+            mWeatherModel.connect(binding.enterZipcode.getText().toString());
+        }
+
+
     }
 
     /**
@@ -144,7 +148,7 @@ public class WeatherFragment extends Fragment {
                     // sets backend error response
                     binding.enterZipcode.setError(new JSONObject(response.getString("data")
                                          .replace("'", "\"")).getString("message"));
-                    binding.enterZipcode.setText("");
+
                     binding.layoutWait.setVisibility(View.GONE);
                 } catch (JSONException e) {
 
@@ -169,7 +173,10 @@ public class WeatherFragment extends Fragment {
                   String weather = json.getString("weather").replace('\\',' ');
                   //call class that will add all information to fragment
                   new Weather(new JSONObject(weather), binding);
-                    binding.layoutWait.setVisibility(View.GONE);
+                  if (!binding.enterZipcode.getText().toString().isEmpty()) {
+                      zipcode = binding.enterZipcode.getText().toString();
+                  }
+                  binding.layoutWait.setVisibility(View.GONE);
                 } catch (JSONException e) {
                     Log.e("JSON Parse Error", e.getMessage());
                 }
