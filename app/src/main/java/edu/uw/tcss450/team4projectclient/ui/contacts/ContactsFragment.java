@@ -235,7 +235,7 @@ public class ContactsFragment extends Fragment {
                     lastName = new ArrayList<>();
                     userName = new ArrayList<>();
                     memberId_b = new ArrayList<>();
-                   // myContacts = new ArrayList<>();
+                    myContacts = new ArrayList<>();
                     primaryKey = new ArrayList<>();
 
 
