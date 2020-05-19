@@ -123,9 +123,9 @@ public class WeatherFragment extends Fragment {
      */
     private void pullWeatherData() {
 
-        binding.layoutWait.setVisibility(View.VISIBLE);
-        zipcode = (binding.enterZipcode.getText().toString().isEmpty()) ?
-                      "98401" : binding.enterZipcode.getText().toString();
+//        binding.layoutWait.setVisibility(View.VISIBLE);
+//        zipcode = (binding.enterZipcode.getText().toString().isEmpty()) ?
+//                      "98401" : binding.enterZipcode.getText().toString();
         mWeatherModel.connect(zipcode);
     }
 
