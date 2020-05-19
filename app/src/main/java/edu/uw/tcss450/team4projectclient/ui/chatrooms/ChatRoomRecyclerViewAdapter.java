@@ -1,6 +1,5 @@
-package edu.uw.tcss450.team4projectclient.ui.conversations;
+package edu.uw.tcss450.team4projectclient.ui.chatrooms;
 
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,6 +40,12 @@ public class ChatRoomRecyclerViewAdapter extends RecyclerView.Adapter<ChatRoomRe
         return mChatRooms.size();
     }
 
+    public void navigateToChatRoom(View view, ChatRoom chatRoom) {
+        Navigation.findNavController(view).navigate(
+                ChatRoomListFragmentDirections
+                        .actionNavigationChatRoomsToChatFragment(chatRoom));
+    }
+
     /**
      * Objects from this class represent an Individual row View from the List
      * of rows in the Chat Recycler View.
@@ -56,13 +61,11 @@ public class ChatRoomRecyclerViewAdapter extends RecyclerView.Adapter<ChatRoomRe
         }
 
         void setChatRoom(final ChatRoom chatRoom) {
-            binding.buttonOpenChatRoom.setOnClickListener(view ->
-                    Navigation.findNavController(mView).navigate(
-                            ChatRoomListFragmentDirections
-                                    .actionNavigationChatRoomsToChatFragment(chatRoom)));
+            mView.setOnClickListener(view -> navigateToChatRoom(mView, chatRoom));
             binding.textChatRoomTitle.setText("Chat Room ID: " + chatRoom.getChatId());
             binding.textLastMessage.setText(chatRoom.getLastMessage());
         }
+
     }
 
 }

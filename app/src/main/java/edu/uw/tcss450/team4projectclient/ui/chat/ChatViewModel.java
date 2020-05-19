@@ -24,7 +24,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import edu.uw.tcss450.team4projectclient.R;
 import edu.uw.tcss450.team4projectclient.io.RequestQueueSingleton;
@@ -48,6 +47,8 @@ public class ChatViewModel extends AndroidViewModel {
         for (int id : mMessages.keySet()) {
             result.add(new ChatRoom(id, mMessages.get(id).getValue()));
         }
+        // Puts chatroom with most recent messages first
+        result.sort((ChatRoom chatRoom1, ChatRoom chatRoom2) -> chatRoom2.getLastTimeStamp().compareTo(chatRoom1.getLastTimeStamp()));
         return result;
     }
 
