@@ -124,14 +124,9 @@ public class WeatherFragment extends Fragment {
     private void pullWeatherData() {
 
         binding.layoutWait.setVisibility(View.VISIBLE);
-        if (binding.enterZipcode.getText().toString().isEmpty()) {
-            mWeatherModel.connect(zipcode);
-        } else {
-            zipcode = binding.enterZipcode.getText().toString();
-            mWeatherModel.connect(zipcode);
-        }
-
-
+        zipcode = (binding.enterZipcode.getText().toString().isEmpty()) ?
+                      "98401" : binding.enterZipcode.getText().toString();
+        mWeatherModel.connect(zipcode);
     }
 
     /**
@@ -149,7 +144,7 @@ public class WeatherFragment extends Fragment {
                     // sets backend error response
                     binding.enterZipcode.setError(new JSONObject(response.getString("data")
                                          .replace("'", "\"")).getString("message"));
-
+                    binding.enterZipcode.setText("");
                     binding.layoutWait.setVisibility(View.GONE);
                 } catch (JSONException e) {
 
