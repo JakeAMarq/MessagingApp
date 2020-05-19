@@ -19,7 +19,12 @@
     <string name="title_weather">Weather</string>
     <string name="title_home">Home</string>
     <string name="title_chat">Chat</string>
+    <string name="title_Search">Search</string>
 
+    <string name="enter_nickname">Enter user\'s nickname</string>
+    <string name="title_add">Add User</string>
+    <string name="add_new_contact_btn">ADD NEW CONTACT</string>
+    <string name="title_lookup_textview"> ADD CONTACT</string>
     <string name="text_verification">A verification code has been sent to your email.</string>
 
     <!-- TODO: Remove or change this placeholder text -->

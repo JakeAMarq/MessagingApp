@@ -13,6 +13,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -23,6 +26,7 @@ import edu.uw.tcss450.team4projectclient.model.UserInfoViewModel;
 import edu.uw.tcss450.team4projectclient.services.PushReceiver;
 import edu.uw.tcss450.team4projectclient.ui.chat.ChatMessage;
 import edu.uw.tcss450.team4projectclient.ui.chat.ChatViewModel;
+import edu.uw.tcss450.team4projectclient.ui.contacts.ContactsFragment;
 
 /**
  * Activity containing NavHostFragment for res/navigation/main_graph and bottom navigation
@@ -94,6 +98,24 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration) || super.onSupportNavigateUp();
     }
+
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.toolbar, menu);
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        int id = item.getItemId();
+//        if (id == R.id.add_contact) {
+//            //TODO open a settings fragment
+//            Log.d("SETTINGS", "Clicked");
+//
+//            return true;
+//        }
+//        return super.onOptionsItemSelected(item);
+//    }
 
     @Override
     public void onResume() {

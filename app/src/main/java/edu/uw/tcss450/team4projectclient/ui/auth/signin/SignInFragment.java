@@ -47,6 +47,7 @@ public class SignInFragment extends Fragment {
     private PasswordValidator mPassWordValidator = checkPwdLength(1)
             .and(checkExcludeWhiteSpace());
 
+    public static int memberId_a;
     public SignInFragment() {
         // Required empty public constructor
     }
@@ -98,8 +99,8 @@ public class SignInFragment extends Fragment {
         //making sure the email and password are not empty
         SignInFragmentArgs args = SignInFragmentArgs.fromBundle(getArguments());
         //TODO: Remove hard-coded email and password
-        binding.editEmail.setText(args.getEmail().equals("default") ? "test1@test.com" : args.getEmail());
-        binding.editPassword.setText(args.getPassword().equals("default") ? "test12345" : args.getPassword());
+        binding.editEmail.setText(args.getEmail().equals("default") ? "eliassalmo1234@gmail.com" : args.getEmail());//test1@test.com
+        binding.editPassword.setText(args.getPassword().equals("default") ? "Test12345!" : args.getPassword());
 
         //don't allow sign in until pushy token retrieved
         mPushyTokenViewModel.addTokenObserver(getViewLifecycleOwner(), token ->
@@ -161,9 +162,12 @@ public class SignInFragment extends Fragment {
      * @param response the Response from the server
      */
     private void observeResponse(final JSONObject response) {
+        Log.e("oooo", String.valueOf(response));
         if (response.length() > 0) {
             if (response.has("code")) {
                 try {
+
+
                     binding.editEmail.setError(
                             "Error Authenticating: " +
                                     new JSONObject(response.getString("data").
@@ -176,6 +180,8 @@ public class SignInFragment extends Fragment {
                 }
             } else {
                 try {
+                    memberId_a = response.getInt("memberid");
+                    Log.e("memberid", String.valueOf(memberId_a));
                     mUserViewModel = new ViewModelProvider(getActivity(),
                             new UserInfoViewModel.UserInfoViewModelFactory(
                                     binding.editEmail.getText().toString(),

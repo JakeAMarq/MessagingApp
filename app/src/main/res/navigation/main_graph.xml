@@ -32,6 +32,9 @@
         <action
                 android:id="@+id/action_navigation_contacts_to_contactFragment"
                 app:destination="@id/contactFragment" />
+        <action
+            android:id="@+id/action_navigation_contacts_to_contactsPostFragment"
+            app:destination="@id/contactsPostFragment" />
     </fragment>
     <fragment
             android:id="@+id/chatFragment"
@@ -46,5 +49,20 @@
             android:id="@+id/contactFragment"
             android:name="edu.uw.tcss450.team4projectclient.ui.contacts.ContactFragment"
             android:label="fragment_contact"
-            tools:layout="@layout/fragment_contact" />
+            tools:layout="@layout/fragment_contact" >
+        <action
+            android:id="@+id/action_contactFragment_to_navigation_contacts"
+            app:destination="@id/navigation_contacts" />
+    </fragment>
+    <fragment
+        android:id="@+id/contactsPostFragment"
+        android:name="edu.uw.tcss450.team4projectclient.ui.contacts.ContactsPostFragment"
+        android:label="ContactsPostFragment" >
+        <argument
+            android:name="Contact"
+            app:argType="edu.uw.tcss450.team4projectclient.ui.contacts.ContactsPost" />
+        <action
+            android:id="@+id/action_contactsPostFragment_to_navigation_contacts3"
+            app:destination="@id/navigation_contacts" />
+    </fragment>
 </navigation>
