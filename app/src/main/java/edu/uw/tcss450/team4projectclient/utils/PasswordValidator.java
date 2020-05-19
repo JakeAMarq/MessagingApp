@@ -46,6 +46,37 @@ public interface PasswordValidator
     }
 
     /**
+     * Returns a validator that when applied will validate the length of the String as equal to
+     * the length.
+     *
+     * When a String s is applied to the returning validator, it will evaluate to an Optional
+     * containing ValidationResult.SUCCESS when s.length() == length, otherwise
+     * ValidationResult.PWD_INVALID_LENGTH.
+     *
+     * @param length the length of the String needed for validation
+     * @return a validator that validates the length of the String
+     */
+    static PasswordValidator checkLength(int length) {
+        return password ->
+                Optional.of(password.length() == length ?
+                        ValidationResult.SUCCESS : ValidationResult.PWD_INVALID_LENGTH);
+    }
+    /**
+     * Returns a validator that when applied will validate the String as all numeric
+     *
+     * When a String s is applied to the returning validator, it will evaluate to an Optional
+     * containing ValidationResult.SUCCESS when the pwd is full numeric, otherwise
+     * ValidationResult.PWD_INVALID_LENGTH.
+     *
+     * @return a validator that validates the String
+     */
+    static PasswordValidator checkOnlyDigits() {
+        return password ->
+                Optional.of(password.matches("\\d+")?
+                        ValidationResult.SUCCESS : ValidationResult.PWD_NOT_NUMERIC);
+    }
+
+    /**
      * Returns a validator that when applied will validate that the String contains at least
      * one digit.
      *
@@ -273,7 +304,8 @@ public interface PasswordValidator
         PWD_MISSING_SPECIAL,
         PWD_INCLUDES_EXCLUDED,
         PWD_INCLUDES_WHITESPACE,
-        PWD_CLIENT_ERROR
+        PWD_CLIENT_ERROR,
+        PWD_NOT_NUMERIC
     }
 }
 
