@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import edu.uw.tcss450.team4projectclient.R;
 import edu.uw.tcss450.team4projectclient.io.RequestQueueSingleton;
 /**
  * Team 4
@@ -83,7 +84,7 @@ public class SignInViewModel extends AndroidViewModel {
      * @param password the user's password
      */
     public void connect(final String email, final String password) {
-        String url = "https://team4-tcss450-project-server.herokuapp.com/auth"; // need back-end set up
+        String url = getApplication().getResources().getString(R.string.base_url) + "auth";
 
         // senda a get request to the link String url
         Request request = new JsonObjectRequest(

@@ -42,7 +42,7 @@ public class VerificationFragment extends Fragment {
     /**
      * arguments.
      */
-    private VerificationFragmentArgs args = VerificationFragmentArgs.fromBundle(getArguments());
+    private VerificationFragmentArgs args;
 
     /**
      *
@@ -62,6 +62,7 @@ public class VerificationFragment extends Fragment {
         super.onCreate(savedInstanceState);
         mRegisterModel = new ViewModelProvider(getActivity())
                 .get(RegisterViewModel.class);
+        args = VerificationFragmentArgs.fromBundle(getArguments());
     }
 
     /**
@@ -93,7 +94,7 @@ public class VerificationFragment extends Fragment {
         );
 
         // send a verification code to this email
-        mRegisterModel.verify(args.getEmail());
+        mRegisterModel.verify(args.getEmail(), "false");
 
         /**
          * when the user clicks the verify button, it checks their code if they have entered the correct code.
@@ -101,6 +102,8 @@ public class VerificationFragment extends Fragment {
         this.binding.buttonVerify.setOnClickListener(this::verify);
         // disabling until the code is retrieved
         this.binding.buttonVerify.setActivated(false);
+        this.binding.buttonVerify.setClickable(false);
+
     }
 
 
@@ -127,6 +130,7 @@ public class VerificationFragment extends Fragment {
                 try {
                     verificationCode = response.getString("verification");
                     this.binding.buttonVerify.setActivated(true);
+                    this.binding.buttonVerify.setClickable(true);
                 } catch(JSONException e) {
                     e.printStackTrace();
                 }
@@ -145,6 +149,7 @@ public class VerificationFragment extends Fragment {
          * checks the user's input if it matches the sent verification code.
          */
         if(binding.editVerificationCode.getText().toString().equals(verificationCode)) {
+            mRegisterModel.verify(args.getEmail(), "true");
             VerificationFragmentDirections.ActionVerificationFragmentToSignInFragment directions =
                     VerificationFragmentDirections.actionVerificationFragmentToSignInFragment();
             directions.setEmail(args.getEmail());

@@ -26,6 +26,8 @@ import org.json.JSONObject;
 import java.nio.charset.Charset;
 import java.util.Objects;
 
+import edu.uw.tcss450.team4projectclient.R;
+
 public class RegisterViewModel extends AndroidViewModel {
 
     // keeps track of all fo the JSONObject responses.
@@ -127,7 +129,41 @@ public class RegisterViewModel extends AndroidViewModel {
      * sends a verification email to the user.
      * @param email the user''s email
      */
-    public void verify(final String email) {
+    public void verify(final String email,
+                       final String verified) {
+
+        String url = "https://team4-tcss450-project-server.herokuapp.com/auth";
+        JSONObject body = new JSONObject();
+
+        try {
+            body.put("email", email);
+            body.put("verified",verified);
+        } catch(JSONException e) {
+            e.printStackTrace();
+        }
+
+        Request request = new JsonObjectRequest(
+                Request.Method.POST,
+                url,
+                body,
+                mResponse::setValue,
+                this::handleError);
+
+        request.setRetryPolicy(new DefaultRetryPolicy(
+                10_000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+        // sending a request to connect to the backend.
+        Volley.newRequestQueue(getApplication().getApplicationContext()).add(request);
+    }
+
+    /**
+     * sends a verification email to the user.
+     * @param email the user''s email
+     */
+    public void verifyReset(final String email) {
+
         String url = "https://team4-tcss450-project-server.herokuapp.com/auth";
         JSONObject body = new JSONObject();
 

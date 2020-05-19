@@ -1,4 +1,4 @@
-package edu.uw.tcss450.team4projectclient;
+package edu.uw.tcss450.team4projectclient.ui.auth;
 
 import android.os.Bundle;
 
@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,6 +16,7 @@ import android.view.ViewGroup;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import edu.uw.tcss450.team4projectclient.R;
 import edu.uw.tcss450.team4projectclient.databinding.FragmentResetPasswordBinding;
 import edu.uw.tcss450.team4projectclient.ui.auth.register.RegisterViewModel;
 import edu.uw.tcss450.team4projectclient.utils.PasswordValidator;
@@ -60,10 +62,10 @@ public class ResetPasswordFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        this.binding = FragmentResetPasswordBinding.inflate(inflater);
-        binding.buttonReset.setActivated(false);
+        this.binding = FragmentResetPasswordBinding.inflate(inflater, container, false);
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_reset_password, container, false);
+        return this.binding.getRoot();
     }
 
     /**
@@ -89,6 +91,8 @@ public class ResetPasswordFragment extends Fragment {
 
         this.binding.buttonSend.setOnClickListener(this::sendCode);
         this.binding.buttonReset.setOnClickListener(this::validatePassword);
+        binding.buttonReset.setActivated(false);
+        binding.buttonReset.setClickable(false);
         // adds the observer to the class
         mRegisterModel.addResponseObserver(
                 getViewLifecycleOwner(),
@@ -109,7 +113,7 @@ public class ResetPasswordFragment extends Fragment {
             // storing the email used when the user pushed the button
             // so that changing the field later won't break things.
             chosenEmail = binding.editEmail.getText().toString();
-            mRegisterModel.verify(chosenEmail);
+            mRegisterModel.verifyReset(chosenEmail);
         } else {
             binding.editEmail.setError("Please enter an email address.");
         }
@@ -135,6 +139,11 @@ public class ResetPasswordFragment extends Fragment {
         // user entered the correct code.
         if(binding.editVerification.getText().toString().equals(verificationCode)) {
             mRegisterModel.resetPassword(chosenEmail, chosenPassword);
+            ResetPasswordFragmentDirections.ActionResetPasswordFragmentToSignInFragment directions =
+                    ResetPasswordFragmentDirections.actionResetPasswordFragmentToSignInFragment();
+            directions.setEmail(chosenEmail);
+            directions.setPassword(chosenPassword);
+            Navigation.findNavController(getView()).navigate(directions);
         } else {
             binding.editVerification.setError("Incorrect code"); // my kind of code
         }
@@ -164,6 +173,7 @@ public class ResetPasswordFragment extends Fragment {
                     if(response.has("verification")) {
                         verificationCode = response.getString("verification");
                         this.binding.buttonReset.setActivated(true);
+                        this.binding.buttonReset.setClickable(true);
                     }
                 } catch(JSONException e) {
                     e.printStackTrace();
