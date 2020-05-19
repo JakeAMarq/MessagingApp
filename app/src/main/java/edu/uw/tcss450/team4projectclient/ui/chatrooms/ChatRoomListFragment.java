@@ -18,11 +18,19 @@ import edu.uw.tcss450.team4projectclient.model.UserInfoViewModel;
 import edu.uw.tcss450.team4projectclient.ui.chat.ChatViewModel;
 
 /**
- * Conversations page
+ * Conversations page where user can see and navigate to multiple chat rooms
  */
 public class ChatRoomListFragment extends Fragment {
 
+    /**
+     * ChatViewModel containing a map of chatIds and list of messages for respective chat rooms
+     * Used to get messages from server
+     */
     private ChatViewModel mChatModel;
+
+    /**
+     * UserInfoViewModel containing user's email and JWT
+     */
     private UserInfoViewModel mUserModel;
 
     /**
@@ -40,10 +48,6 @@ public class ChatRoomListFragment extends Fragment {
         mChatModel = provider.get(ChatViewModel.class);
         mUserModel = provider.get(UserInfoViewModel.class);
 
-//        mChatModel.getFirstMessages(1, mUserModel.getJwt());
-//        mChatModel.getFirstMessages(2, mUserModel.getJwt());
-//        mChatModel.getFirstMessages(3, mUserModel.getJwt());
-
         View view = inflater.inflate(R.layout.fragment_chat_room_list, container, false);
         return view;
     }
@@ -53,7 +57,6 @@ public class ChatRoomListFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         // TODO: Remove hardcoded chatrooms
-        // ChatIds for hardcoded chatrooms
         int[] chatIds = new int[]{1, 3, 2};
         for (int chatId : chatIds) {
             mChatModel.addMessageObserver(chatId,
@@ -68,6 +71,9 @@ public class ChatRoomListFragment extends Fragment {
         }
     }
 
+    /**
+     * Refreshes the RecyclerView by attaching an entirely new adapter to it
+     */
     public void updateMessages() {
         final RecyclerView rv = FragmentChatRoomListBinding.bind(getView()).listRoot;
         rv.setAdapter(new ChatRoomRecyclerViewAdapter(mChatModel.getChatRooms()));

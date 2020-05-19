@@ -42,12 +42,16 @@ public class ChatViewModel extends AndroidViewModel {
         mMessages = new HashMap<>();
     }
 
+    /**
+     * Returns chat rooms sorted from most recent last message to oldest last message
+     * @return chat rooms sorted from most recent last message to oldest last message
+     */
     public List<ChatRoom> getChatRooms() {
         List<ChatRoom> result = new ArrayList<>();
         for (int id : mMessages.keySet()) {
             result.add(new ChatRoom(id, mMessages.get(id).getValue()));
         }
-        // Puts chatroom with most recent messages first
+        // Sorts chat rooms from most recent last message to oldest last message
         result.sort((ChatRoom chatRoom1, ChatRoom chatRoom2) -> chatRoom2.getLastTimeStamp().compareTo(chatRoom1.getLastTimeStamp()));
         return result;
     }

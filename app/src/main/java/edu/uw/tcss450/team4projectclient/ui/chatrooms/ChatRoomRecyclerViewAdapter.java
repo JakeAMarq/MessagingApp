@@ -14,11 +14,22 @@ import edu.uw.tcss450.team4projectclient.R;
 import edu.uw.tcss450.team4projectclient.databinding.FragmentChatCardBinding;
 import edu.uw.tcss450.team4projectclient.ui.chat.ChatRoom;
 
+/**
+ * RecyclerViewAdapter to display list of chat rooms in ChatRoomListFragment
+ */
 public class ChatRoomRecyclerViewAdapter extends RecyclerView.Adapter<ChatRoomRecyclerViewAdapter.ChatRoomViewHolder> {
+
+    /**
+     * The list of chat rooms being displayed
+     */
     private final List<ChatRoom> mChatRooms;
 
-    public ChatRoomRecyclerViewAdapter(List<ChatRoom> items) {
-        this.mChatRooms = items;
+    /**
+     * Creates an instance of ChatRoomRecyclerViewAdapter with a list of chat rooms
+     * @param chatRooms the chat rooms
+     */
+    public ChatRoomRecyclerViewAdapter(List<ChatRoom> chatRooms) {
+        this.mChatRooms = chatRooms;
     }
 
     @NonNull
@@ -40,6 +51,11 @@ public class ChatRoomRecyclerViewAdapter extends RecyclerView.Adapter<ChatRoomRe
         return mChatRooms.size();
     }
 
+    /**
+     * Navigates to ChatFragment containing messages from chatRoom
+     * @param view mView from ChatRoomViewHolder
+     * @param chatRoom chat room being passed to ChatFragment
+     */
     public void navigateToChatRoom(View view, ChatRoom chatRoom) {
         Navigation.findNavController(view).navigate(
                 ChatRoomListFragmentDirections
@@ -48,7 +64,7 @@ public class ChatRoomRecyclerViewAdapter extends RecyclerView.Adapter<ChatRoomRe
 
     /**
      * Objects from this class represent an Individual row View from the List
-     * of rows in the Chat Recycler View.
+     * of rows in the Chat Room Recycler View.
      */
     public class ChatRoomViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
@@ -61,6 +77,7 @@ public class ChatRoomRecyclerViewAdapter extends RecyclerView.Adapter<ChatRoomRe
         }
 
         void setChatRoom(final ChatRoom chatRoom) {
+            // Makes row clickable
             mView.setOnClickListener(view -> navigateToChatRoom(mView, chatRoom));
             binding.textChatRoomTitle.setText("Chat Room ID: " + chatRoom.getChatId());
             binding.textLastMessage.setText(chatRoom.getLastMessage());
