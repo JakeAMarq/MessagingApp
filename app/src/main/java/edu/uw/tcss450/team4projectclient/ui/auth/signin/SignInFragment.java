@@ -91,6 +91,7 @@ public class SignInFragment extends Fragment {
         // adding action to login button
         this.binding.buttonLogIn.setOnClickListener(this::attemptLogin);
         this.binding.buttonRegister.setOnClickListener(button -> navigateToRegisterFragment());
+        this.binding.buttonForgotPassword.setOnClickListener(this::navigateToResetPasswordFragment);
         // adds the observer to the class
         mSignInModel.addResponseObserver(
                 getViewLifecycleOwner(),
