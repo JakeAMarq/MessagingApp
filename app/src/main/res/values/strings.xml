@@ -13,14 +13,25 @@
     <string name="hint_password_again">Confirm password</string>
     <string name="hint_nickname">Nickname</string>
     <string name="hint_verification_code">Enter your code</string>
+    <string name="hint_zipcode">Enter a valid zipcode</string>
 
     <string name="title_contacts">Contacts</string>
     <string name="title_conversations">Conversations</string>
     <string name="title_weather">Weather</string>
     <string name="title_home">Home</string>
     <string name="title_chat">Chat</string>
-    <string name="text_verification">A verification code has been sent to your email.</string>
+    <string name="title_Search">Search</string>
     <string name="button_forgot_password">forgot password</string>
+
+    <string name="enter_nickname">Enter user\'s nickname</string>
+    <string name="title_add">Add User</string>
+    <string name="add_new_contact_btn">ADD NEW CONTACT</string>
+    <string name="title_lookup_textview"> ADD CONTACT</string>
+    <string name="text_verification">A verification code has been sent to your email.</string>
+    <string name="title_location_search">Location</string>
+    <string name="text_hourly_weather">Hourly</string>
+    <string name="text_daily_weather">Daily</string>
+
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
