@@ -166,4 +166,8 @@ public class PushyTokenViewModel extends AndroidViewModel {
             }
         }
     }
+
+    public void resetResponse() {
+        mResponse.setValue(new JSONObject());
+    }
 }

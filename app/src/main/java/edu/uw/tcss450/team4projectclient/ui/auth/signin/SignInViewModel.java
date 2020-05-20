@@ -78,6 +78,13 @@ public class SignInViewModel extends AndroidViewModel {
             }
         }
     }
+
+    /**
+     * resets the MutableLiveData
+     */
+    public void resetData() {
+        mResponse.setValue(new JSONObject());
+    }
     /**
      * This methods sends request to check if user exists.
      * @param email the user's email
