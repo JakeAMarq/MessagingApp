@@ -156,7 +156,6 @@ public class VerificationFragment extends Fragment {
             directions.setPassword(args.getPassword());
             Navigation.findNavController(getView()).navigate(directions);
 
-
              // if code doesn't match the sent code the registration doesn't go through
         } else {
             binding.editVerificationCode.setError("Invalid code");

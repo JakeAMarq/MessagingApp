@@ -215,6 +215,7 @@ public class SignInFragment extends Fragment {
                         navigateToVerificationFragment(
                                 binding.editEmail.getText().toString(),
                                 binding.editPassword.getText().toString());
+                        mSignInModel.resetData();
                     }
 
                 } catch (JSONException e) {
