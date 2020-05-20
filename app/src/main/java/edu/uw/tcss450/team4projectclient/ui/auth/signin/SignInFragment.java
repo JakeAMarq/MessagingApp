@@ -100,8 +100,8 @@ public class SignInFragment extends Fragment {
         //making sure the email and password are not empty
         SignInFragmentArgs args = SignInFragmentArgs.fromBundle(getArguments());
         //TODO: Remove hard-coded email and password
-        binding.editEmail.setText(args.getEmail().equals("default") ? "" : args.getEmail());//test1@test.com
-        binding.editPassword.setText(args.getPassword().equals("default") ? "" : args.getPassword());
+        binding.editEmail.setText(args.getEmail().equals("default") ? "test1@test.com" : args.getEmail());//test1@test.com
+        binding.editPassword.setText(args.getPassword().equals("default") ? "test12345" : args.getPassword());
 
         //don't allow sign in until pushy token retrieved
         mPushyTokenViewModel.addTokenObserver(getViewLifecycleOwner(), token ->

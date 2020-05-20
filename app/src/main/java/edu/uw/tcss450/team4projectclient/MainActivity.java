@@ -43,9 +43,17 @@ public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
 
+    /**
+     * Represents chatId of the chat room the user is currently in, 0 if user is not in a chat room
+     */
     private int mCurrentChatId;
 
-    private  Map<Integer, Integer> mUnreadMessageCounts; // keys are chatIds, values are the # of unread messages
+    /**
+     * HashMap representing the number of unread messages per chatroom
+     * Keys - chatIds
+     * Values - number of unread messages in respective chatroom
+     */
+    private  Map<Integer, Integer> mUnreadMessageCounts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +87,6 @@ public class MainActivity extends AppCompatActivity {
 
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
             if (destination.getId() == R.id.navigation_chat_room) {
-                //TODO: Adjust logic for multiple chat rooms
                 mCurrentChatId = ChatFragmentArgs.fromBundle(arguments).getChatRoom().getChatId();
                 //When the user navigates to a chat room, decrease the new message count by however
                 //many unread message are in that chat room.
@@ -131,13 +138,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void updateNewMessageCount() {
-        mNewMessageModel.reset();
-        for (int unread : mUnreadMessageCounts.values()) {
-            mNewMessageModel.add(unread);
-        }
-    }
-
+    /**
+     * Sets title of action bar
+     * @param title new title
+     */
     public void setActionBarTitle(String title) {
         getSupportActionBar().setTitle(title);
     }
