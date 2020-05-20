@@ -129,6 +129,7 @@ public class VerificationFragment extends Fragment {
                 // navigate to login to login the user.
                 try {
                     verificationCode = response.getString("verification");
+                    Log.e("verification code: ", verificationCode);
                     this.binding.buttonVerify.setActivated(true);
                     this.binding.buttonVerify.setClickable(true);
                 } catch(JSONException e) {

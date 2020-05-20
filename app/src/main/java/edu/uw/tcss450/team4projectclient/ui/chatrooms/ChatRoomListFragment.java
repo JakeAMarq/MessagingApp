@@ -33,6 +33,8 @@ public class ChatRoomListFragment extends Fragment {
      */
     private UserInfoViewModel mUserModel;
 
+    private ChatRoomViewModel mChatRoomModel;
+
     /**
      * Required empty public constructor
      */
@@ -46,6 +48,7 @@ public class ChatRoomListFragment extends Fragment {
                              Bundle savedInstanceState) {
         ViewModelProvider provider = new ViewModelProvider(getActivity());
         mChatModel = provider.get(ChatViewModel.class);
+        mChatRoomModel = provider.get(ChatRoomViewModel.class);
         mUserModel = provider.get(UserInfoViewModel.class);
 
         View view = inflater.inflate(R.layout.fragment_chat_room_list, container, false);
@@ -56,14 +59,17 @@ public class ChatRoomListFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // TODO: Remove hardcoded chatrooms
-        int[] chatIds = new int[]{1, 3, 2};
-        for (int chatId : chatIds) {
-            mChatModel.addMessageObserver(chatId,
-                    getViewLifecycleOwner(),
-                    response -> updateMessages());
-            mChatModel.getFirstMessages(chatId, mUserModel.getJwt());
-        }
+        mChatRoomModel.addObserver(getViewLifecycleOwner(), list -> {
+            for (int i = 0; i < list.size(); i++) {
+                int chatId = list.get(i);
+                mChatModel.addMessageObserver(chatId,
+                        getViewLifecycleOwner(),
+                        response -> updateMessages());
+                mChatModel.getFirstMessages(chatId, mUserModel.getJwt());
+            }
+        });
+
+        mChatRoomModel.getChatIds(mUserModel.getJwt());
 
         if (view instanceof RecyclerView) {
             ((RecyclerView) view).setAdapter(
