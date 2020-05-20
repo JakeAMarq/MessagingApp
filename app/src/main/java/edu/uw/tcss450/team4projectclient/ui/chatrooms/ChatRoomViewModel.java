@@ -29,10 +29,14 @@ import edu.uw.tcss450.team4projectclient.R;
 import edu.uw.tcss450.team4projectclient.io.RequestQueueSingleton;
 import edu.uw.tcss450.team4projectclient.ui.chat.ChatMessage;
 
+/**
+ * ViewModel that (for now) only serves to get the list of chatids for the chat rooms the user
+ * is a part of
+ */
 public class ChatRoomViewModel extends AndroidViewModel {
 
     /**
-     * List of chatIds associated with user.
+     * List of chatIds.
      */
     private MutableLiveData<List<Integer>> mChatIds;
 
@@ -41,10 +45,19 @@ public class ChatRoomViewModel extends AndroidViewModel {
         mChatIds = new MutableLiveData<>();
     }
 
+    /**
+     * Adds observer to mChatIds
+     * @param owner LifeCyclerOwner
+     * @param observer Observer function
+     */
     public void addObserver(LifecycleOwner owner, Observer<? super List<Integer>> observer) {
         mChatIds.observe(owner, observer);
     }
 
+    /**
+     * Requests to get chatid of every chat room the user is a part of from the server
+     * @param jwt User's JWT
+     */
     public void getChatIds(final String jwt) {
         String url = getApplication().getResources().getString(R.string.base_url) +
                 "chats/";
@@ -76,6 +89,10 @@ public class ChatRoomViewModel extends AndroidViewModel {
         //code here will run
     }
 
+    /**
+     * Handles successful request from getChatIds
+     * @param response JSONObject returned from request in getChatIds
+     */
     private void handleSuccess(final JSONObject response) {
         List<Integer> list = new ArrayList<>();
         if (!response.has("rows")) {
@@ -95,6 +112,10 @@ public class ChatRoomViewModel extends AndroidViewModel {
         }
     }
 
+    /**
+     * Handles error in request in getChatIds
+     * @param error VolleyError returned from request in getChatIds
+     */
     private void handleError(final VolleyError error) {
         if (Objects.isNull(error.networkResponse)) {
             Log.e("NETWORK ERROR", error.getMessage());
