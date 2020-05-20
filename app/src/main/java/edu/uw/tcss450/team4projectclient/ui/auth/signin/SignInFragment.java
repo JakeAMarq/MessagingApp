@@ -244,6 +244,7 @@ public class SignInFragment extends Fragment {
                         binding.editEmail.getText().toString(),
                         mUserViewModel.getJwt()
                 );
+                mPushyTokenViewModel.resetResponse();
             }
         }
     }
