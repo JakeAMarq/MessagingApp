@@ -9,7 +9,11 @@
             android:id="@+id/navigation_home"
             android:name="edu.uw.tcss450.team4projectclient.ui.home.HomeFragment"
             android:label="@string/title_home"
-            tools:layout="@layout/fragment_home" />
+            tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_navigation_home_to_colorFragment"
+            app:destination="@id/colorFragment" />
+    </fragment>
     <fragment
             android:id="@+id/navigation_chat_room_list"
             android:name="edu.uw.tcss450.team4projectclient.ui.chatrooms.ChatRoomListFragment"
@@ -65,4 +69,9 @@
             android:id="@+id/action_contactsPostFragment_to_navigation_contacts3"
             app:destination="@id/navigation_contacts" />
     </fragment>
+    <fragment
+        android:id="@+id/colorFragment"
+        android:name="edu.uw.tcss450.team4projectclient.ui.home.ColorFragment"
+        android:label="fragment_color"
+        tools:layout="@layout/fragment_color" />
 </navigation>

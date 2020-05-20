@@ -8,6 +8,36 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="OverlayThemeBanana" parent="Theme.MaterialComponents.Light.DarkActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="OverlayThemeVibrant" parent="Theme.MaterialComponents.Light.DarkActionBar">
+        <item name="colorPrimary">@color/vibrant_cyan</item>
+        <item name="colorPrimaryDark">@color/vibrant_green</item>
+        <item name="colorAccent">@color/vibrant_yellow</item>
+    </style>
+
+    <style name="OverlayThemeDark" parent="Theme.MaterialComponents.Light.DarkActionBar">
+        <item name="colorPrimary">@color/dark_black</item>
+        <item name="colorPrimaryDark">@color/dark_navy</item>
+        <item name="colorAccent">@color/dark_gray</item>
+    </style>
+
+    <style name="OverlayThemeFall" parent="Theme.MaterialComponents.Light.DarkActionBar">
+        <item name="colorPrimary">@color/fall_red</item>
+        <item name="colorPrimaryDark">@color/fall_brown</item>
+        <item name="colorAccent">@color/fall_orange</item>
+    </style>
+
+    <style name="OverlayThemeBlue" parent="Theme.MaterialComponents.Light.DarkActionBar">
+        <item name="colorPrimary">@color/ice_blue</item>
+        <item name="colorPrimaryDark">@color/ice_dark_blue</item>
+        <item name="colorAccent">@color/ice_light_blue</item>
+    </style>
+
     <style name="Widget.App.Button.OutlinedButton.IconOnly" parent="Widget.MaterialComponents.Button.OutlinedButton">
         <item name="iconPadding">0dp</item>
         <item name="android:insetTop">0dp</item>

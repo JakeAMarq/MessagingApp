@@ -39,4 +39,11 @@
     <string name="button_send">Send</string>
     <string name="button_reset">Reset password</string>
     <string name="hint_new_password">new password</string>
+    <string name="Settings_Change_Color">CHANGE COLOR THEME</string>
+    <string name="text_vibrant">Vibrant Theme</string>
+    <string name="text_dark">Dark Theme</string>
+    <string name="text_fall">Fall Theme</string>
+    <string name="text_ice">Ice Theme</string>
+    <string name="text_banana">Banana Theme</string>
+    <string name="prefs_theme_key">theme</string>
 </resources>

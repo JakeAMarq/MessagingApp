@@ -1,19 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primaryColor">#4527a0</color>
+    <color name="primaryColor">#FFE924</color>
     <color name="primaryLightColor">#7953d2</color>
-    <color name="primaryDarkColor">#000070</color>
+    <color name="primaryDarkColor">#24CF33</color>
+
     <color name="secondaryColor">#b7a57a</color>
     <color name="secondaryLightColor">#ead6a9</color>
     <color name="secondaryDarkColor">#86764e</color>
-    <color name="primaryTextColor">#ffffff</color>
+    <color name="primaryTextColor">#000000</color>
     <color name="secondaryTextColor">#000000</color>
+
+    <color name="textColorPrimary">#949F9F</color>
 
     <color name="secondaryTextColorFade">#222222</color>
 
     <color name="colorPrimary">@color/primaryColor</color>
     <color name="colorPrimaryDark">@color/primaryDarkColor</color>
-    <color name="colorAccent">@color/secondaryColor</color>
+    <color name="colorAccent">#AA0F7B</color>
     <color name="colorPrimaryAlpha">#226200EE</color>
+
+
+
+    <color name="vibrant_cyan">#0CFFD6</color>
+    <color name="vibrant_green">#5BFFA5</color>
+    <color name="vibrant_yellow">#F7FF1A</color>
+
+    <color name="dark_black">#01041E</color>
+    <color name="dark_navy">#030C51</color>
+    <color name="dark_gray">#738FA6</color>
+
+    <color name="fall_red">#8F0000</color>
+    <color name="fall_brown">#5A2E21</color>
+    <color name="fall_orange">#F6460E</color>
+
+    <color name="ice_blue">#5981BA</color>
+    <color name="ice_dark_blue">#273C70</color>
+    <color name="ice_light_blue">#50C2FF</color>
+
+
+
 
 </resources>
