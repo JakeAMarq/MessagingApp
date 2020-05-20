@@ -11,7 +11,7 @@
         android:id="@+id/imageView"
         android:layout_width="285dp"
         android:layout_height="309dp"
-        android:src="@drawable/banana"
+        android:src="@drawable/bannaphone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.571"
