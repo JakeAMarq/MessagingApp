@@ -1,10 +1,13 @@
 package edu.uw.tcss450.team4projectclient.ui.chatrooms;
 
+import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -24,12 +27,15 @@ public class ChatRoomRecyclerViewAdapter extends RecyclerView.Adapter<ChatRoomRe
      */
     private final List<ChatRoom> mChatRooms;
 
+    private final Context mCtx;
+
     /**
      * Creates an instance of ChatRoomRecyclerViewAdapter with a list of chat rooms
      * @param chatRooms the chat rooms
      */
-    public ChatRoomRecyclerViewAdapter(List<ChatRoom> chatRooms) {
+    public ChatRoomRecyclerViewAdapter(List<ChatRoom> chatRooms, Context context) {
         this.mChatRooms = chatRooms;
+        this.mCtx = context;
     }
 
     @NonNull
@@ -79,6 +85,29 @@ public class ChatRoomRecyclerViewAdapter extends RecyclerView.Adapter<ChatRoomRe
         void setChatRoom(final ChatRoom chatRoom) {
             // Makes row clickable
             mView.setOnClickListener(view -> navigateToChatRoom(mView, chatRoom));
+            binding.optionsMenuChatRoom.setOnClickListener(view -> {
+                //creating a popup menu
+                PopupMenu popup = new PopupMenu(mCtx, this.binding.optionsMenuChatRoom);
+                //inflating menu from xml resource
+                popup.inflate(R.menu.chat_room_menu);
+                //adding click listener
+                popup.setOnMenuItemClickListener(item -> {
+                    switch (item.getItemId()) {
+                        case R.id.menu_item_leave_chat_room:
+                            // TODO: Add leave chat room functionality
+                            break;
+                        case R.id.menu_item_add_user_to_chat_room:
+                            // TODO: Add add user functionality
+                            break;
+                        case R.id.menu_item_remove_user_from_chat_room:
+                            // TODO: Add remove user functionality
+                            break;
+                    }
+                    return false;
+                });
+                //displaying the popup
+                popup.show();
+            });
             binding.textChatRoomTitle.setText("Chat Room ID: " + chatRoom.getChatId());
             binding.textLastMessage.setText(chatRoom.getLastMessage());
         }

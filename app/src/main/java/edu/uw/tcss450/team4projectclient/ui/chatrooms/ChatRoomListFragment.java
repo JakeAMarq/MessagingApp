@@ -9,6 +9,8 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -42,17 +44,21 @@ public class ChatRoomListFragment extends Fragment {
         // Required empty public constructor
     }
 
-
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         ViewModelProvider provider = new ViewModelProvider(getActivity());
         mChatModel = provider.get(ChatViewModel.class);
         mChatRoomModel = provider.get(ChatRoomViewModel.class);
         mUserModel = provider.get(UserInfoViewModel.class);
 
-        View view = inflater.inflate(R.layout.fragment_chat_room_list, container, false);
-        return view;
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
+        return inflater.inflate(R.layout.fragment_chat_room_list, container, false);
     }
 
     @Override
@@ -73,8 +79,14 @@ public class ChatRoomListFragment extends Fragment {
 
         if (view instanceof RecyclerView) {
             ((RecyclerView) view).setAdapter(
-                    new ChatRoomRecyclerViewAdapter(mChatModel.getChatRooms()));
+                    new ChatRoomRecyclerViewAdapter(mChatModel.getChatRooms(), getActivity()));
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.conversations_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     /**
@@ -82,6 +94,8 @@ public class ChatRoomListFragment extends Fragment {
      */
     public void updateMessages() {
         final RecyclerView rv = FragmentChatRoomListBinding.bind(getView()).listRoot;
-        rv.setAdapter(new ChatRoomRecyclerViewAdapter(mChatModel.getChatRooms()));
+        rv.setAdapter(new ChatRoomRecyclerViewAdapter(mChatModel.getChatRooms(), getActivity()));
     }
+
+
 }
