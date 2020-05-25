@@ -29,13 +29,16 @@ public class ChatRoomRecyclerViewAdapter extends RecyclerView.Adapter<ChatRoomRe
 
     private final Context mCtx;
 
+    private final ChatRoomViewModel mChatRoomViewModel;
+
     /**
      * Creates an instance of ChatRoomRecyclerViewAdapter with a list of chat rooms
      * @param chatRooms the chat rooms
      */
-    public ChatRoomRecyclerViewAdapter(List<ChatRoom> chatRooms, Context context) {
+    public ChatRoomRecyclerViewAdapter(List<ChatRoom> chatRooms, Context context, ChatRoomViewModel chatRoomViewModel) {
         this.mChatRooms = chatRooms;
         this.mCtx = context;
+        this.mChatRoomViewModel = chatRoomViewModel;
     }
 
     @NonNull

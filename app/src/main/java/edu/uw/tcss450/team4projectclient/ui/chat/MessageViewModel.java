@@ -28,7 +28,7 @@ import java.util.Objects;
 import edu.uw.tcss450.team4projectclient.R;
 import edu.uw.tcss450.team4projectclient.io.RequestQueueSingleton;
 
-public class ChatViewModel extends AndroidViewModel {
+public class MessageViewModel extends AndroidViewModel {
 
     /**
      * A Map of Lists of Chat Messages.
@@ -37,7 +37,7 @@ public class ChatViewModel extends AndroidViewModel {
      */
     private Map<Integer, MutableLiveData<List<ChatMessage>>> mMessages;
 
-    public ChatViewModel(@NonNull Application application) {
+    public MessageViewModel(@NonNull Application application) {
         super(application);
         mMessages = new HashMap<>();
     }

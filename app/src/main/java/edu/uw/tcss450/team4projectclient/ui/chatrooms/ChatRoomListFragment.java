@@ -17,7 +17,7 @@ import android.view.ViewGroup;
 import edu.uw.tcss450.team4projectclient.R;
 import edu.uw.tcss450.team4projectclient.databinding.FragmentChatRoomListBinding;
 import edu.uw.tcss450.team4projectclient.model.UserInfoViewModel;
-import edu.uw.tcss450.team4projectclient.ui.chat.ChatViewModel;
+import edu.uw.tcss450.team4projectclient.ui.chat.MessageViewModel;
 
 /**
  * Conversations page where user can see and navigate to multiple chat rooms
@@ -28,7 +28,7 @@ public class ChatRoomListFragment extends Fragment {
      * ChatViewModel containing a map of chatIds and list of messages for respective chat rooms
      * Used to get messages from server
      */
-    private ChatViewModel mChatModel;
+    private MessageViewModel mChatModel;
 
     /**
      * UserInfoViewModel containing user's email and JWT
@@ -48,7 +48,7 @@ public class ChatRoomListFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ViewModelProvider provider = new ViewModelProvider(getActivity());
-        mChatModel = provider.get(ChatViewModel.class);
+        mChatModel = provider.get(MessageViewModel.class);
         mChatRoomModel = provider.get(ChatRoomViewModel.class);
         mUserModel = provider.get(UserInfoViewModel.class);
 
@@ -79,7 +79,7 @@ public class ChatRoomListFragment extends Fragment {
 
         if (view instanceof RecyclerView) {
             ((RecyclerView) view).setAdapter(
-                    new ChatRoomRecyclerViewAdapter(mChatModel.getChatRooms(), getActivity()));
+                    new ChatRoomRecyclerViewAdapter(mChatModel.getChatRooms(), getActivity(), mChatRoomModel));
         }
     }
 
@@ -94,7 +94,7 @@ public class ChatRoomListFragment extends Fragment {
      */
     public void updateMessages() {
         final RecyclerView rv = FragmentChatRoomListBinding.bind(getView()).listRoot;
-        rv.setAdapter(new ChatRoomRecyclerViewAdapter(mChatModel.getChatRooms(), getActivity()));
+        rv.setAdapter(new ChatRoomRecyclerViewAdapter(mChatModel.getChatRooms(), getActivity(), mChatRoomModel));
     }
 
 

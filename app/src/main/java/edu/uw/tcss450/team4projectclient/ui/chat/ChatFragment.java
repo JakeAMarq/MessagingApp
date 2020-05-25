@@ -24,7 +24,7 @@ public class ChatFragment extends Fragment {
 
     private ChatRoom mChatRoom;
     private ChatSendViewModel mSendModel;
-    private ChatViewModel mChatModel;
+    private MessageViewModel mChatModel;
     private UserInfoViewModel mUserModel;
 
     public ChatFragment() {
@@ -38,7 +38,7 @@ public class ChatFragment extends Fragment {
 
         mSendModel = provider.get(ChatSendViewModel.class);
         mUserModel = provider.get(UserInfoViewModel.class);
-        mChatModel = provider.get(ChatViewModel.class);
+        mChatModel = provider.get(MessageViewModel.class);
         mChatRoom = ChatFragmentArgs.fromBundle(getArguments()).getChatRoom();
         mChatModel.getFirstMessages(mChatRoom.getChatId(), mUserModel.getJwt());
 
