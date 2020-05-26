@@ -92,10 +92,10 @@ public class ChatRoomViewModel extends AndroidViewModel {
     /**
      *
      */
-    public void leaveChatRoom(final int chatid, final String email, final String jwt) {
+    public void leaveChatRoom(final int chatId, final String email, final String jwt) {
         String url = getApplication().getResources().getString(R.string.base_url) +
                 "chats/" +
-                chatid + "/" +
+                chatId + "/" +
                 email;
 
         Request request = new JsonObjectRequest(
@@ -104,7 +104,7 @@ public class ChatRoomViewModel extends AndroidViewModel {
                 null, //no body for this get request
                 response -> {
                     List<Integer> chatIds = mChatIds.getValue();
-                    chatIds.remove(Integer.valueOf(chatid));
+                    chatIds.remove(Integer.valueOf(chatId));
                     mChatIds.setValue(chatIds);
                 },
                 this::handleError) {

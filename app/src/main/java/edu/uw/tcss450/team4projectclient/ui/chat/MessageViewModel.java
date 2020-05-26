@@ -56,6 +56,10 @@ public class MessageViewModel extends AndroidViewModel {
         return result;
     }
 
+    public void clearChatRooms() {
+        mMessages.clear();
+    }
+
     /**
      * Register as an observer to listen to a specific chat room's list of messages.
      * @param chatId the chatid of the chat to observer
