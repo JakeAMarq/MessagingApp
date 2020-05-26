@@ -99,7 +99,7 @@ public class ChatRoomViewModel extends AndroidViewModel {
                 email;
 
         Request request = new JsonObjectRequest(
-                Request.Method.POST,
+                Request.Method.DELETE,
                 url,
                 null, //no body for this get request
                 response -> {

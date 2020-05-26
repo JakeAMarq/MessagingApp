@@ -212,8 +212,8 @@ public class MessageViewModel extends AndroidViewModel {
                 } else {
                     // this shouldn't happen but could with the asynchronous
                     // nature of the application
-                    Log.wtf("Chat message already received",
-                            "Or duplicate id:" + cMessage.getMessageId());
+//                    Log.wtf("Chat message already received",
+//                            "Or duplicate id:" + cMessage.getMessageId());
                 }
 
             }

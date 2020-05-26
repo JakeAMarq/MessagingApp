@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -28,7 +29,7 @@ public class ChatRoomListFragment extends Fragment {
      * ChatViewModel containing a map of chatIds and list of messages for respective chat rooms
      * Used to get messages from server
      */
-    private MessageViewModel mChatModel;
+    private MessageViewModel mMessageModel;
 
     /**
      * UserInfoViewModel containing user's email and JWT
@@ -36,6 +37,8 @@ public class ChatRoomListFragment extends Fragment {
     private UserInfoViewModel mUserModel;
 
     private ChatRoomViewModel mChatRoomModel;
+
+    private RecyclerView mRecyclerView;
 
     /**
      * Required empty public constructor
@@ -48,10 +51,9 @@ public class ChatRoomListFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ViewModelProvider provider = new ViewModelProvider(getActivity());
-        mChatModel = provider.get(MessageViewModel.class);
+        mMessageModel = provider.get(MessageViewModel.class);
         mChatRoomModel = provider.get(ChatRoomViewModel.class);
         mUserModel = provider.get(UserInfoViewModel.class);
-
     }
 
     @Override
@@ -64,14 +66,15 @@ public class ChatRoomListFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        mRecyclerView = FragmentChatRoomListBinding.bind(view).listRoot;
         mChatRoomModel.addObserver(getViewLifecycleOwner(), list -> {
+            Log.e("ChatRoomListFragment", "Chat room observer called");
             for (int i = 0; i < list.size(); i++) {
                 int chatId = list.get(i);
-                mChatModel.addMessageObserver(chatId,
+                mMessageModel.addMessageObserver(chatId,
                         getViewLifecycleOwner(),
                         response -> updateMessages());
-                mChatModel.getFirstMessages(chatId, mUserModel.getJwt());
+                mMessageModel.getFirstMessages(chatId, mUserModel.getJwt());
             }
         });
 
@@ -79,7 +82,7 @@ public class ChatRoomListFragment extends Fragment {
 
         if (view instanceof RecyclerView) {
             ((RecyclerView) view).setAdapter(
-                    new ChatRoomRecyclerViewAdapter(mChatModel.getChatRooms(), getActivity(), mChatRoomModel));
+                    new ChatRoomRecyclerViewAdapter(mMessageModel.getChatRooms(), getActivity()));
         }
     }
 
@@ -93,8 +96,7 @@ public class ChatRoomListFragment extends Fragment {
      * Refreshes the RecyclerView by attaching an entirely new adapter to it
      */
     public void updateMessages() {
-        final RecyclerView rv = FragmentChatRoomListBinding.bind(getView()).listRoot;
-        rv.setAdapter(new ChatRoomRecyclerViewAdapter(mChatModel.getChatRooms(), getActivity(), mChatRoomModel));
+        mRecyclerView.setAdapter(new ChatRoomRecyclerViewAdapter(mMessageModel.getChatRooms(), getActivity()));
     }
 
 

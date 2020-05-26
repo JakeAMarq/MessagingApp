@@ -1,13 +1,16 @@
 package edu.uw.tcss450.team4projectclient.ui.chatrooms;
 
+import android.app.AlertDialog;
 import android.content.Context;
-import android.util.Log;
+import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.PopupMenu;
+import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -15,6 +18,7 @@ import java.util.List;
 
 import edu.uw.tcss450.team4projectclient.R;
 import edu.uw.tcss450.team4projectclient.databinding.FragmentChatCardBinding;
+import edu.uw.tcss450.team4projectclient.model.UserInfoViewModel;
 import edu.uw.tcss450.team4projectclient.ui.chat.ChatRoom;
 
 /**
@@ -29,16 +33,20 @@ public class ChatRoomRecyclerViewAdapter extends RecyclerView.Adapter<ChatRoomRe
 
     private final Context mCtx;
 
-    private final ChatRoomViewModel mChatRoomViewModel;
+    private final ChatRoomViewModel mChatRoomModel;
+
+    private final UserInfoViewModel mUserModel;
 
     /**
      * Creates an instance of ChatRoomRecyclerViewAdapter with a list of chat rooms
      * @param chatRooms the chat rooms
      */
-    public ChatRoomRecyclerViewAdapter(List<ChatRoom> chatRooms, Context context, ChatRoomViewModel chatRoomViewModel) {
+    public ChatRoomRecyclerViewAdapter(List<ChatRoom> chatRooms, Context context) {
         this.mChatRooms = chatRooms;
         this.mCtx = context;
-        this.mChatRoomViewModel = chatRoomViewModel;
+        ViewModelProvider provider = new ViewModelProvider((FragmentActivity) mCtx);
+        mChatRoomModel = provider.get(ChatRoomViewModel.class);
+        mUserModel = provider.get(UserInfoViewModel.class);
     }
 
     @NonNull
@@ -71,6 +79,8 @@ public class ChatRoomRecyclerViewAdapter extends RecyclerView.Adapter<ChatRoomRe
                         .actionNavigationChatRoomsToChatFragment(chatRoom));
     }
 
+
+
     /**
      * Objects from this class represent an Individual row View from the List
      * of rows in the Chat Room Recycler View.
@@ -97,7 +107,8 @@ public class ChatRoomRecyclerViewAdapter extends RecyclerView.Adapter<ChatRoomRe
                 popup.setOnMenuItemClickListener(item -> {
                     switch (item.getItemId()) {
                         case R.id.menu_item_leave_chat_room:
-                            // TODO: Add leave chat room functionality
+                            // TODO: Remove chat room from client when user leaves it
+                            buildLeaveChatDialog(mCtx, chatRoom.getChatId()).show();
                             break;
                         case R.id.menu_item_add_user_to_chat_room:
                             // TODO: Add add user functionality
@@ -113,6 +124,19 @@ public class ChatRoomRecyclerViewAdapter extends RecyclerView.Adapter<ChatRoomRe
             });
             binding.textChatRoomTitle.setText("Chat Room ID: " + chatRoom.getChatId());
             binding.textLastMessage.setText(chatRoom.getLastMessage());
+        }
+
+        public AlertDialog.Builder buildLeaveChatDialog(Context c, int chatId) {
+
+            final AlertDialog.Builder builder = new AlertDialog.Builder(c);
+            builder.setTitle("Disclaimer!");
+            builder.setMessage("Are you sure you want to leave the chat room?");
+
+            builder.setPositiveButton("YES", (dialog, i) -> mChatRoomModel.leaveChatRoom(chatId, mUserModel.getEmail(), mUserModel.getJwt()));
+
+            builder.setNegativeButton("NO", (dialogInterface, i) -> {});
+
+            return builder;
         }
 
     }
