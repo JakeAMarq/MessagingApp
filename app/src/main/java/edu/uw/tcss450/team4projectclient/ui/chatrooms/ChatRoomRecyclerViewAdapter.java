@@ -117,10 +117,12 @@ public class ChatRoomRecyclerViewAdapter extends RecyclerView.Adapter<ChatRoomRe
                             buildLeaveChatDialog(mCtx, chatRoom.getId()).show();
                             break;
                         case R.id.menu_item_add_user_to_chat_room:
-
+                            // TODO: Add feedback when user is added
+                            buildAddUserToChatRoomDialog(mCtx, chatRoom.getId()).show();
                             break;
                         case R.id.menu_item_remove_user_from_chat_room:
-                            // TODO: Add remove user functionality
+                            // TODO: Add feedback when user is removed
+                            buildRemoveUserFromChatRoomDialog(mCtx, chatRoom.getId()).show();
                             break;
                         case R.id.menu_item_delete_chat_room:
                             buildDeleteChatDialog(mCtx, chatRoom.getId()).show();
@@ -135,7 +137,7 @@ public class ChatRoomRecyclerViewAdapter extends RecyclerView.Adapter<ChatRoomRe
             binding.textLastMessage.setText(chatRoom.getLastMessage());
         }
 
-        public AlertDialog.Builder buildLeaveChatDialog(final Context c, final int chatId) {
+        private AlertDialog.Builder buildLeaveChatDialog(final Context c, final int chatId) {
 
             final AlertDialog.Builder builder = new AlertDialog.Builder(c);
             builder.setTitle("Disclaimer!");
@@ -148,7 +150,7 @@ public class ChatRoomRecyclerViewAdapter extends RecyclerView.Adapter<ChatRoomRe
             return builder;
         }
 
-        public AlertDialog.Builder buildDeleteChatDialog(final Context c, final int chatId) {
+        private AlertDialog.Builder buildDeleteChatDialog(final Context c, final int chatId) {
 
             final AlertDialog.Builder builder = new AlertDialog.Builder(c);
             builder.setTitle("Disclaimer!");
@@ -157,6 +159,42 @@ public class ChatRoomRecyclerViewAdapter extends RecyclerView.Adapter<ChatRoomRe
             builder.setPositiveButton("YES", (dialog, i) -> mChatRoomModel.deleteChatRoom(chatId, mUserModel.getJwt()));
 
             builder.setNegativeButton("NO", (dialogInterface, i) -> {});
+
+            return builder;
+        }
+
+        private AlertDialog.Builder buildAddUserToChatRoomDialog(final Context c, final int chatId){
+            LayoutInflater inflater = LayoutInflater.from(c);
+            View subView = inflater.inflate(R.layout.dialog_add_user_to_chat_room, null);
+            final EditText subEditText = (EditText)subView.findViewById(R.id.edit_user_email);
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(c);
+            builder.setTitle("Add user to chat room");
+            builder.setView(subView);
+            AlertDialog alertDialog = builder.create();
+
+            builder.setPositiveButton("Add", (dialog, which) -> mChatRoomModel.addUserToChatRoom(chatId, subEditText.getText().toString(), mUserModel.getJwt()));
+
+            builder.setNegativeButton("Cancel", (dialog, which) -> {
+            });
+
+            return builder;
+        }
+
+        private AlertDialog.Builder buildRemoveUserFromChatRoomDialog(final Context c, final int chatId){
+            LayoutInflater inflater = LayoutInflater.from(c);
+            View subView = inflater.inflate(R.layout.dialog_add_user_to_chat_room, null);
+            final EditText subEditText = (EditText)subView.findViewById(R.id.edit_user_email);
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(c);
+            builder.setTitle("Remove user from chat room");
+            builder.setView(subView);
+            AlertDialog alertDialog = builder.create();
+
+            builder.setPositiveButton("Remove", (dialog, which) -> mChatRoomModel.removeUserFromChatRoom(chatId, subEditText.getText().toString(), mUserModel.getJwt()));
+
+            builder.setNegativeButton("Cancel", (dialog, which) -> {
+            });
 
             return builder;
         }
