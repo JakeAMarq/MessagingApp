@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 import edu.uw.tcss450.team4projectclient.R;
 import edu.uw.tcss450.team4projectclient.io.RequestQueueSingleton;
@@ -38,20 +39,25 @@ public class ChatRoomViewModel extends AndroidViewModel {
     /**
      * List of chatIds.
      */
-    private MutableLiveData<List<Integer>> mChatIds;
+    private MutableLiveData<Map<Integer, String>> mChatRooms;
 
     public ChatRoomViewModel(@NonNull Application application) {
         super(application);
-        mChatIds = new MutableLiveData<>();
+        mChatRooms = new MutableLiveData<>();
     }
 
     /**
      * Adds observer to mChatIds
-     * @param owner LifeCyclerOwner
+     * @param owner LifeCycleOwner
      * @param observer Observer function
      */
-    public void addObserver(LifecycleOwner owner, Observer<? super List<Integer>> observer) {
-        mChatIds.observe(owner, observer);
+    public void addObserver(LifecycleOwner owner, Observer<? super Map<Integer, String>> observer) {
+        mChatRooms.observe(owner, observer);
+    }
+
+    public String getChatRoomName(final int chatId) {
+        Map<Integer, String> chatRooms = mChatRooms.getValue();
+        return chatRooms.containsKey(chatId) ? chatRooms.get(chatId) : null;
     }
 
     /**
@@ -103,9 +109,9 @@ public class ChatRoomViewModel extends AndroidViewModel {
                 url,
                 null, //no body for this get request
                 response -> {
-                    List<Integer> chatIds = mChatIds.getValue();
-                    chatIds.remove(Integer.valueOf(chatId));
-                    mChatIds.setValue(chatIds);
+                    Map<Integer, String> chatRooms = mChatRooms.getValue();
+                    chatRooms.remove(chatId);
+                    mChatRooms.setValue(chatRooms);
                 },
                 this::handleError) {
 
@@ -148,9 +154,10 @@ public class ChatRoomViewModel extends AndroidViewModel {
                 response -> {
                     try {
                         int newChatId = response.getInt("chatid");
-                        List<Integer> chatIds = mChatIds.getValue();
-                        chatIds.add(newChatId);
-                        mChatIds.setValue(chatIds);
+                        String newChatName = response.getString("name");
+                        Map<Integer, String> chatRooms = mChatRooms.getValue();
+                        chatRooms.put(newChatId, newChatName);
+                        mChatRooms.setValue(chatRooms);
                     } catch (JSONException e) {
                         Log.e("JSON PARSE ERROR", "Found in addChatRoom handleSuccess");
                     }
@@ -188,9 +195,9 @@ public class ChatRoomViewModel extends AndroidViewModel {
                 url,
                 null, //no body for this get request
                 response -> {
-                    List<Integer> chatIds = mChatIds.getValue();
-                    chatIds.remove(Integer.valueOf(chatId));
-                    mChatIds.setValue(chatIds);
+                    Map<Integer, String> chatRooms = mChatRooms.getValue();
+                    chatRooms.remove(chatId);
+                    mChatRooms.setValue(chatRooms);
                 },
                 this::handleError) {
 
@@ -217,7 +224,7 @@ public class ChatRoomViewModel extends AndroidViewModel {
      * @param response JSONObject returned from request in getChatIds
      */
     private void handleSuccess(final JSONObject response) {
-        List<Integer> list = new ArrayList<>();
+        Map<Integer, String> chatRooms = new HashMap<>();
         if (!response.has("rows")) {
             throw new IllegalStateException("Unexpected response in ChatRoomViewModel: " + response);
         }
@@ -226,9 +233,10 @@ public class ChatRoomViewModel extends AndroidViewModel {
             for(int i = 0; i < messages.length(); i++) {
                 JSONObject message = messages.getJSONObject(i);
                 int chatId = message.getInt("chatid");
-                list.add(chatId);
+                String chatName = message.getString("name");
+                chatRooms.put(chatId, chatName);
             }
-            mChatIds.setValue(list);
+            mChatRooms.setValue(chatRooms);
         }catch (JSONException e) {
             Log.e("JSON PARSE ERROR", "Found in handle Success ChatRoomViewModel");
             Log.e("JSON PARSE ERROR", "Error: " + e.getMessage());

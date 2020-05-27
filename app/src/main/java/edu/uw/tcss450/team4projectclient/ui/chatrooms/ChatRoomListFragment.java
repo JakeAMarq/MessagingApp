@@ -67,17 +67,16 @@ public class ChatRoomListFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mRecyclerView = FragmentChatRoomListBinding.bind(view).listRoot;
-        mChatRoomModel.addObserver(getViewLifecycleOwner(), list -> {
+        mChatRoomModel.addObserver(getViewLifecycleOwner(), integerStringMap -> {
             Log.d("ChatRoomListFragment", "Chat room observer called");
             mMessageModel.clearChatRooms();
-            for (int i = 0; i < list.size(); i++) {
-                int chatId = list.get(i);
+            for (int chatId : integerStringMap.keySet()) {
                 mMessageModel.addMessageObserver(chatId,
                         getViewLifecycleOwner(),
                         response -> updateMessages());
                 mMessageModel.getFirstMessages(chatId, mUserModel.getJwt());
             }
-            if (list.isEmpty()) updateMessages();
+            if (integerStringMap.isEmpty()) updateMessages();
         });
 
         mChatRoomModel.getChatIds(mUserModel.getJwt());

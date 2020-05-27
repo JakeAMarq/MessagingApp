@@ -107,7 +107,6 @@ public class ChatRoomRecyclerViewAdapter extends RecyclerView.Adapter<ChatRoomRe
                 popup.setOnMenuItemClickListener(item -> {
                     switch (item.getItemId()) {
                         case R.id.menu_item_leave_chat_room:
-                            // TODO: Remove chat room from client when user leaves it
                             buildLeaveChatDialog(mCtx, chatRoom.getChatId()).show();
                             break;
                         case R.id.menu_item_add_user_to_chat_room:
@@ -122,11 +121,11 @@ public class ChatRoomRecyclerViewAdapter extends RecyclerView.Adapter<ChatRoomRe
                 //displaying the popup
                 popup.show();
             });
-            binding.textChatRoomTitle.setText("Chat Room ID: " + chatRoom.getChatId());
+            binding.textChatRoomTitle.setText(mChatRoomModel.getChatRoomName(chatRoom.getChatId()));
             binding.textLastMessage.setText(chatRoom.getLastMessage());
         }
 
-        public AlertDialog.Builder buildLeaveChatDialog(Context c, int chatId) {
+        public AlertDialog.Builder buildLeaveChatDialog(final Context c, final int chatId) {
 
             final AlertDialog.Builder builder = new AlertDialog.Builder(c);
             builder.setTitle("Disclaimer!");
