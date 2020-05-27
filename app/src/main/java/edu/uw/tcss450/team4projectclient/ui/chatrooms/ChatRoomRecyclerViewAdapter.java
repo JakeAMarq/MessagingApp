@@ -2,7 +2,6 @@ package edu.uw.tcss450.team4projectclient.ui.chatrooms;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -102,7 +101,7 @@ public class ChatRoomRecyclerViewAdapter extends RecyclerView.Adapter<ChatRoomRe
                 //creating a popup menu
                 PopupMenu popup = new PopupMenu(mCtx, this.binding.optionsMenuChatRoom);
                 //inflating menu from xml resource
-                popup.inflate(R.menu.chat_room_menu);
+                popup.inflate(R.menu.chat_room_owner_menu);
                 //adding click listener
                 popup.setOnMenuItemClickListener(item -> {
                     switch (item.getItemId()) {
@@ -114,6 +113,9 @@ public class ChatRoomRecyclerViewAdapter extends RecyclerView.Adapter<ChatRoomRe
                             break;
                         case R.id.menu_item_remove_user_from_chat_room:
                             // TODO: Add remove user functionality
+                            break;
+                        case R.id.menu_item_delete_chat_room:
+                            buildDeleteChatDialog(mCtx, chatRoom.getChatId()).show();
                             break;
                     }
                     return false;
@@ -132,6 +134,19 @@ public class ChatRoomRecyclerViewAdapter extends RecyclerView.Adapter<ChatRoomRe
             builder.setMessage("Are you sure you want to leave the chat room?");
 
             builder.setPositiveButton("YES", (dialog, i) -> mChatRoomModel.leaveChatRoom(chatId, mUserModel.getEmail(), mUserModel.getJwt()));
+
+            builder.setNegativeButton("NO", (dialogInterface, i) -> {});
+
+            return builder;
+        }
+
+        public AlertDialog.Builder buildDeleteChatDialog(final Context c, final int chatId) {
+
+            final AlertDialog.Builder builder = new AlertDialog.Builder(c);
+            builder.setTitle("Disclaimer!");
+            builder.setMessage("Are you sure you want to delete this chat room? This cannot be reversed.");
+
+            builder.setPositiveButton("YES", (dialog, i) -> mChatRoomModel.deleteChatRoom(chatId, mUserModel.getJwt()));
 
             builder.setNegativeButton("NO", (dialogInterface, i) -> {});
 

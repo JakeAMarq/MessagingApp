@@ -10,6 +10,7 @@
     <string name="menu_item_leave_chat_room">Leave chat room</string>
     <string name="menu_item_add_chat_member">Add user to chat room</string>
     <string name="menu_item_remove_chat_member">Remove user from chat room</string>
+    <string name="menu_item_delete_chat_room">Delete chat room</string>
 
     <string name="hint_first">First Name</string>
     <string name="hint_last">Last Name</string>
