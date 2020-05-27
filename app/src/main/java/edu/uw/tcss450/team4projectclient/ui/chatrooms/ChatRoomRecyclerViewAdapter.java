@@ -2,9 +2,11 @@ package edu.uw.tcss450.team4projectclient.ui.chatrooms;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.PopupMenu;
@@ -100,22 +102,28 @@ public class ChatRoomRecyclerViewAdapter extends RecyclerView.Adapter<ChatRoomRe
             binding.optionsMenuChatRoom.setOnClickListener(view -> {
                 //creating a popup menu
                 PopupMenu popup = new PopupMenu(mCtx, this.binding.optionsMenuChatRoom);
+
                 //inflating menu from xml resource
-                popup.inflate(R.menu.chat_room_owner_menu);
+                if (chatRoom.getOwner().equals(mUserModel.getEmail())) {
+                    popup.inflate(R.menu.chat_room_owner_menu);
+                } else {
+                    popup.inflate(R.menu.chat_room_menu);
+                }
+
                 //adding click listener
                 popup.setOnMenuItemClickListener(item -> {
                     switch (item.getItemId()) {
                         case R.id.menu_item_leave_chat_room:
-                            buildLeaveChatDialog(mCtx, chatRoom.getChatId()).show();
+                            buildLeaveChatDialog(mCtx, chatRoom.getId()).show();
                             break;
                         case R.id.menu_item_add_user_to_chat_room:
-                            // TODO: Add add user functionality
+
                             break;
                         case R.id.menu_item_remove_user_from_chat_room:
                             // TODO: Add remove user functionality
                             break;
                         case R.id.menu_item_delete_chat_room:
-                            buildDeleteChatDialog(mCtx, chatRoom.getChatId()).show();
+                            buildDeleteChatDialog(mCtx, chatRoom.getId()).show();
                             break;
                     }
                     return false;
@@ -123,7 +131,7 @@ public class ChatRoomRecyclerViewAdapter extends RecyclerView.Adapter<ChatRoomRe
                 //displaying the popup
                 popup.show();
             });
-            binding.textChatRoomTitle.setText(mChatRoomModel.getChatRoomName(chatRoom.getChatId()));
+            binding.textChatRoomTitle.setText(chatRoom.getName());
             binding.textLastMessage.setText(chatRoom.getLastMessage());
         }
 
@@ -133,7 +141,7 @@ public class ChatRoomRecyclerViewAdapter extends RecyclerView.Adapter<ChatRoomRe
             builder.setTitle("Disclaimer!");
             builder.setMessage("Are you sure you want to leave the chat room?");
 
-            builder.setPositiveButton("YES", (dialog, i) -> mChatRoomModel.leaveChatRoom(chatId, mUserModel.getEmail(), mUserModel.getJwt()));
+            builder.setPositiveButton("YES", (dialog, i) -> mChatRoomModel.removeUserFromChatRoom(chatId, mUserModel.getEmail(), mUserModel.getJwt()));
 
             builder.setNegativeButton("NO", (dialogInterface, i) -> {});
 
@@ -152,7 +160,6 @@ public class ChatRoomRecyclerViewAdapter extends RecyclerView.Adapter<ChatRoomRe
 
             return builder;
         }
-
     }
 
 }

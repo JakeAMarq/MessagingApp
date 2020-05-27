@@ -40,10 +40,10 @@ public class ChatFragment extends Fragment {
         mUserModel = provider.get(UserInfoViewModel.class);
         mChatModel = provider.get(MessageViewModel.class);
         mChatRoom = ChatFragmentArgs.fromBundle(getArguments()).getChatRoom();
-        mChatModel.getFirstMessages(mChatRoom.getChatId(), mUserModel.getJwt());
+        mChatModel.getFirstMessages(mChatRoom.getId(), mUserModel.getJwt());
 
         ((MainActivity) getActivity())
-                .setActionBarTitle("Chat Room ID: " + mChatRoom.getChatId());
+                .setActionBarTitle("Chat Room ID: " + mChatRoom.getId());
     }
 
     @Override
@@ -73,11 +73,11 @@ public class ChatFragment extends Fragment {
         //When the user scrolls to the top of the RV, the swiper list will "refresh"
         //The user is out of messages, go out to the service and get more
         binding.swipeContainer.setOnRefreshListener(() -> {
-            mChatModel.getNextMessages(mChatRoom.getChatId(), mUserModel.getJwt());
+            mChatModel.getNextMessages(mChatRoom.getId(), mUserModel.getJwt());
         });
 
 //        mChatModel.addMessageObserver(HARD_CODED_CHAT_ID, getViewLifecycleOwner(),
-        mChatModel.addMessageObserver(mChatRoom.getChatId(), getViewLifecycleOwner(),
+        mChatModel.addMessageObserver(mChatRoom.getId(), getViewLifecycleOwner(),
                 list -> {
                     // TODO: Find solution for scroll position
                     /*
@@ -94,7 +94,7 @@ public class ChatFragment extends Fragment {
 
         //Send button was clicked. Send the message via the SendViewModel
         binding.buttonSend.setOnClickListener(button -> {
-            mSendModel.sendMessage(mChatRoom.getChatId(),
+            mSendModel.sendMessage(mChatRoom.getId(),
                     mUserModel.getJwt(),
                     binding.editMessage.getText().toString());
         });

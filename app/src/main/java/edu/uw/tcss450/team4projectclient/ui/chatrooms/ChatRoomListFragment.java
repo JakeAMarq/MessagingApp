@@ -1,5 +1,7 @@
 package edu.uw.tcss450.team4projectclient.ui.chatrooms;
 
+import android.app.AlertDialog;
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -12,12 +14,19 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import edu.uw.tcss450.team4projectclient.R;
 import edu.uw.tcss450.team4projectclient.databinding.FragmentChatRoomListBinding;
 import edu.uw.tcss450.team4projectclient.model.UserInfoViewModel;
+import edu.uw.tcss450.team4projectclient.ui.chat.ChatRoom;
 import edu.uw.tcss450.team4projectclient.ui.chat.MessageViewModel;
 
 /**
@@ -83,7 +92,18 @@ public class ChatRoomListFragment extends Fragment {
 
         if (view instanceof RecyclerView) {
             ((RecyclerView) view).setAdapter(
-                    new ChatRoomRecyclerViewAdapter(mMessageModel.getChatRooms(), getActivity()));
+                    new ChatRoomRecyclerViewAdapter(getChatRooms(), getActivity()));
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.add_chat_room:
+                buildAddChatRoomDialog().show();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 
@@ -93,11 +113,38 @@ public class ChatRoomListFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
     }
 
+    public List<ChatRoom> getChatRooms() {
+        List<ChatRoom> chatRooms = mChatRoomModel.getChatRooms();
+        for (int i = 0; i < chatRooms.size(); i++) {
+            chatRooms.get(i).setMessages(mMessageModel.getMessageListByChatId(chatRooms.get(i).getId()));
+        }
+        chatRooms.sort((ChatRoom chatRoom1, ChatRoom chatRoom2) -> chatRoom2.getLastTimeStamp().compareTo(chatRoom1.getLastTimeStamp()));
+        return chatRooms;
+    }
+
     /**
      * Refreshes the RecyclerView by attaching an entirely new adapter to it
      */
     public void updateMessages() {
-        mRecyclerView.setAdapter(new ChatRoomRecyclerViewAdapter(mMessageModel.getChatRooms(), getActivity()));
+        mRecyclerView.setAdapter(new ChatRoomRecyclerViewAdapter(getChatRooms(), getActivity()));
+    }
+
+    private AlertDialog.Builder buildAddChatRoomDialog(){
+        LayoutInflater inflater = LayoutInflater.from(getContext());
+        View subView = inflater.inflate(R.layout.dialog_add_chat_room, null);
+        final EditText subEditText = (EditText)subView.findViewById(R.id.edit_chat_room_name);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Add a chat room");
+        builder.setView(subView);
+        AlertDialog alertDialog = builder.create();
+
+        builder.setPositiveButton("Add", (dialog, which) -> mChatRoomModel.addChatRoom(subEditText.getText().toString(), mUserModel.getEmail(), mUserModel.getJwt()));
+
+        builder.setNegativeButton("Cancel", (dialog, which) -> {
+        });
+
+        return builder;
     }
 
 

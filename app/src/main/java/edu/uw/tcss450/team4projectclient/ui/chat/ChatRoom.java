@@ -12,20 +12,25 @@ public class ChatRoom implements Serializable {
     /**
      * ChatId of chat room
      */
-    private final int mChatId;
+    private final int mId;
+
+    private final String mName;
+
+    private final String mOwner;
 
     /**
      * Messages in chat room
      */
-    private final List<ChatMessage> mMessages;
-
+    private List<ChatMessage> mMessages;
 
     /**
      * Creates an instance of ChatRoom with no messages in it
      * @param chatId chatId of chat room
      */
-    public ChatRoom(int chatId) {
-        mChatId = chatId;
+    public ChatRoom(final int chatId, final String name, final String owner) {
+        mId = chatId;
+        mName = name;
+        mOwner = owner;
         mMessages = new ArrayList<>();
     }
 
@@ -34,23 +39,25 @@ public class ChatRoom implements Serializable {
      * @param chatId chatId of chat room
      * @param messages list of messages in chat room
      */
-    public ChatRoom(int chatId, List<ChatMessage> messages) {
-        mChatId = chatId;
+    public ChatRoom(final int chatId, final String name, final String owner, final List<ChatMessage> messages) {
+        mId = chatId;
+        mName = name;
+        mOwner = owner;
         mMessages = messages;
     }
 
-    /**
-     * Returns chatId of chat room
-     * @return chatId of chat room
-     */
-    public int getChatId() {
-        return mChatId;
+    public int getId() {
+        return mId;
     }
 
-    /**
-     * Returns list of the messages in the chat room
-     * @return list of the messages in the chat room
-     */
+    public String getName() {
+        return mName;
+    }
+
+    public String getOwner() {
+        return mOwner;
+    }
+
     public List<ChatMessage> getMessages() {
         return mMessages;
     }
@@ -76,10 +83,10 @@ public class ChatRoom implements Serializable {
     }
 
     /**
-     * Adds message to chat room
-     * @param message the message
+     * Sets chatroom messages
+     * @param messages the messages
      */
-    public void addMessage(final ChatMessage message) {
-        mMessages.add(message);
+    public void setMessages(List<ChatMessage> messages) {
+        mMessages = messages;
     }
 }

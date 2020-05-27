@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
 
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
             if (destination.getId() == R.id.navigation_chat_room) {
-                mCurrentChatId = ChatFragmentArgs.fromBundle(arguments).getChatRoom().getChatId();
+                mCurrentChatId = ChatFragmentArgs.fromBundle(arguments).getChatRoom().getId();
                 //When the user navigates to a chat room, decrease the new message count by however
                 //many unread message are in that chat room.
                 if (mUnreadMessageCounts.containsKey(mCurrentChatId)) {

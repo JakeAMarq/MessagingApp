@@ -20,6 +20,7 @@ import org.json.JSONObject;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +30,7 @@ import java.util.Optional;
 import edu.uw.tcss450.team4projectclient.R;
 import edu.uw.tcss450.team4projectclient.io.RequestQueueSingleton;
 import edu.uw.tcss450.team4projectclient.ui.chat.ChatMessage;
+import edu.uw.tcss450.team4projectclient.ui.chat.ChatRoom;
 
 /**
  * ViewModel that (for now) only serves to get the list of chatids for the chat rooms the user
@@ -39,7 +41,9 @@ public class ChatRoomViewModel extends AndroidViewModel {
     /**
      * List of chatIds.
      */
-    private MutableLiveData<Map<Integer, String>> mChatRooms;
+//    private MutableLiveData<Map<Integer, String>> mChatRooms;
+
+    private MutableLiveData<Map<Integer, ChatRoom>> mChatRooms;
 
     public ChatRoomViewModel(@NonNull Application application) {
         super(application);
@@ -51,13 +55,17 @@ public class ChatRoomViewModel extends AndroidViewModel {
      * @param owner LifeCycleOwner
      * @param observer Observer function
      */
-    public void addObserver(LifecycleOwner owner, Observer<? super Map<Integer, String>> observer) {
+    public void addObserver(LifecycleOwner owner, Observer<? super Map<Integer, ChatRoom>> observer) {
         mChatRooms.observe(owner, observer);
     }
 
-    public String getChatRoomName(final int chatId) {
-        Map<Integer, String> chatRooms = mChatRooms.getValue();
-        return chatRooms.containsKey(chatId) ? chatRooms.get(chatId) : null;
+    public List<ChatRoom> getChatRooms() {
+        List<ChatRoom> chatRooms = new ArrayList<>();
+        Map<Integer, ChatRoom> map = mChatRooms.getValue();
+        if (map != null) {
+            chatRooms.addAll(map.values());
+        }
+        return chatRooms;
     }
 
     /**
@@ -95,10 +103,49 @@ public class ChatRoomViewModel extends AndroidViewModel {
         //code here will run
     }
 
-    /**
-     *
-     */
-    public void leaveChatRoom(final int chatId, final String email, final String jwt) {
+    public void addUserToChatRoom(final int chatId, final String email, final String jwt) {
+        String url = getApplication().getResources().getString(R.string.base_url) +
+                "chats/";
+
+        JSONObject body = new JSONObject();
+        try {
+            body.put("chatId", chatId);
+            body.put("email", email);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        Request request = new JsonObjectRequest(
+                Request.Method.PUT,
+                url,
+                body,
+                response -> {
+//                    Map<Integer, String> chatRooms = mChatRooms.getValue();
+//                    chatRooms.remove(chatId);
+//                    mChatRooms.setValue(chatRooms);
+//                    getChatIds(jwt);
+                },
+                this::handleError) {
+
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                // add headers <key,value>
+                headers.put("Authorization", jwt);
+                return headers;
+            }
+        };
+
+        request.setRetryPolicy(new DefaultRetryPolicy(
+                10_000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        //Instantiate the RequestQueue and add the request to the queue
+        RequestQueueSingleton.getInstance(getApplication().getApplicationContext())
+                .addToRequestQueue(request);
+    }
+
+    public void removeUserFromChatRoom(final int chatId, final String email, final String jwt) {
         String url = getApplication().getResources().getString(R.string.base_url) +
                 "chats/" +
                 chatId + "/" +
@@ -109,9 +156,10 @@ public class ChatRoomViewModel extends AndroidViewModel {
                 url,
                 null, //no body for this get request
                 response -> {
-                    Map<Integer, String> chatRooms = mChatRooms.getValue();
-                    chatRooms.remove(chatId);
-                    mChatRooms.setValue(chatRooms);
+//                    Map<Integer, String> chatRooms = mChatRooms.getValue();
+//                    chatRooms.remove(chatId);
+//                    mChatRooms.setValue(chatRooms);
+                    getChatIds(jwt);
                 },
                 this::handleError) {
 
@@ -136,7 +184,7 @@ public class ChatRoomViewModel extends AndroidViewModel {
     /**
      *
      */
-    public void addChatRoom(final String chatRoomName, final String jwt) {
+    public void addChatRoom(final String chatRoomName, final String ownerEmail, final String jwt) {
         String url = getApplication().getResources().getString(R.string.base_url) +
                 "chats/";
 
@@ -153,10 +201,14 @@ public class ChatRoomViewModel extends AndroidViewModel {
                 body, //no body for this get request
                 response -> {
                     try {
-                        int newChatId = response.getInt("chatid");
-                        String newChatName = response.getString("name");
-                        Map<Integer, String> chatRooms = mChatRooms.getValue();
-                        chatRooms.put(newChatId, newChatName);
+                        int newChatId = response.getInt("chatID");
+                        ChatRoom chatRoom = new ChatRoom(
+                                newChatId,
+                                chatRoomName,
+                                ownerEmail
+                        );
+                        Map<Integer, ChatRoom> chatRooms = mChatRooms.getValue();
+                        chatRooms.put(newChatId, chatRoom);
                         mChatRooms.setValue(chatRooms);
                     } catch (JSONException e) {
                         Log.e("JSON PARSE ERROR", "Found in addChatRoom handleSuccess");
@@ -195,7 +247,7 @@ public class ChatRoomViewModel extends AndroidViewModel {
                 url,
                 null, //no body for this get request
                 response -> {
-                    Map<Integer, String> chatRooms = mChatRooms.getValue();
+                    Map<Integer, ChatRoom> chatRooms = mChatRooms.getValue();
                     chatRooms.remove(chatId);
                     mChatRooms.setValue(chatRooms);
                 },
@@ -224,7 +276,7 @@ public class ChatRoomViewModel extends AndroidViewModel {
      * @param response JSONObject returned from request in getChatIds
      */
     private void handleSuccess(final JSONObject response) {
-        Map<Integer, String> chatRooms = new HashMap<>();
+        Map<Integer, ChatRoom> chatRooms = new HashMap<>();
         if (!response.has("rows")) {
             throw new IllegalStateException("Unexpected response in ChatRoomViewModel: " + response);
         }
@@ -233,8 +285,12 @@ public class ChatRoomViewModel extends AndroidViewModel {
             for(int i = 0; i < messages.length(); i++) {
                 JSONObject message = messages.getJSONObject(i);
                 int chatId = message.getInt("chatid");
-                String chatName = message.getString("name");
-                chatRooms.put(chatId, chatName);
+                ChatRoom chatRoom = new ChatRoom(
+                        chatId,
+                        message.getString("name"),
+                        message.getString("email")
+                );
+                chatRooms.put(chatId, chatRoom);
             }
             mChatRooms.setValue(chatRooms);
         }catch (JSONException e) {
