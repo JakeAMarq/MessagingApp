@@ -27,7 +27,7 @@ import edu.uw.tcss450.team4projectclient.model.UserInfoViewModel;
 import edu.uw.tcss450.team4projectclient.services.PushReceiver;
 import edu.uw.tcss450.team4projectclient.ui.chat.ChatFragmentArgs;
 import edu.uw.tcss450.team4projectclient.ui.chat.ChatMessage;
-import edu.uw.tcss450.team4projectclient.ui.chat.ChatViewModel;
+import edu.uw.tcss450.team4projectclient.ui.chat.MessageViewModel;
 
 /**
  * Activity containing NavHostFragment for res/navigation/main_graph and bottom navigation
@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
 
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
             if (destination.getId() == R.id.navigation_chat_room) {
-                mCurrentChatId = ChatFragmentArgs.fromBundle(arguments).getChatRoom().getChatId();
+                mCurrentChatId = ChatFragmentArgs.fromBundle(arguments).getChatRoom().getId();
                 //When the user navigates to a chat room, decrease the new message count by however
                 //many unread message are in that chat room.
                 if (mUnreadMessageCounts.containsKey(mCurrentChatId)) {
@@ -151,9 +151,9 @@ public class MainActivity extends AppCompatActivity {
      */
     private class MainPushMessageReceiver extends BroadcastReceiver {
 
-        private ChatViewModel mModel =
+        private MessageViewModel mModel =
                 new ViewModelProvider(MainActivity.this)
-                        .get(ChatViewModel.class);
+                        .get(MessageViewModel.class);
 
         @Override
         public void onReceive(Context context, Intent intent) {

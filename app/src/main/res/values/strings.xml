@@ -6,6 +6,12 @@
     <string name="button_register">Register</string>
     <string name="button_verify">Verify</string>
 
+    <string name="menu_item_add_chat_room">Add a chat room</string>
+    <string name="menu_item_leave_chat_room">Leave chat room</string>
+    <string name="menu_item_add_chat_member">Add user to chat room</string>
+    <string name="menu_item_remove_chat_member">Remove user from chat room</string>
+    <string name="menu_item_delete_chat_room">Delete chat room</string>
+
     <string name="hint_first">First Name</string>
     <string name="hint_last">Last Name</string>
     <string name="hint_email">Email</string>
@@ -14,6 +20,7 @@
     <string name="hint_nickname">Nickname</string>
     <string name="hint_verification_code">Enter your code</string>
     <string name="hint_zipcode">Enter a valid zipcode</string>
+    <string name="hint_chat_room_name">Chat room name</string>
 
     <string name="title_contacts">Contacts</string>
     <string name="title_conversations">Conversations</string>
@@ -32,9 +39,6 @@
     <string name="text_hourly_weather">Hourly</string>
     <string name="text_daily_weather">Daily</string>
 
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="hint_email_sent">A code will be sent to your email.</string>
     <string name="button_send">Send</string>
     <string name="button_reset">Reset password</string>
@@ -46,4 +50,5 @@
     <string name="text_ice">Ice Theme</string>
     <string name="text_banana">Banana Theme</string>
     <string name="prefs_theme_key">theme</string>
+    <string name="option_menu_icon">⋮</string>
 </resources>
