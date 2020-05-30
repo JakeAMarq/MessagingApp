@@ -153,10 +153,10 @@ public class PushReceiver extends BroadcastReceiver {
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                     .setAutoCancel(true)
                     .setSmallIcon(R.drawable.ic_chat_notification)
-                    .setContentTitle("You've been added to " +
-                                        chatRoom.getOwner() + "'s chat room: " +
-                                        chatRoom.getName())
-                    .setContentText(chatRoom.getLastMessage())
+                    .setContentTitle("New Chat Room")
+                    .setContentText("You've been added to " +
+                            chatRoom.getOwner() + "'s chat room: " +
+                            chatRoom.getName())
                     .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                     .setContentIntent(pendingIntent);
 
