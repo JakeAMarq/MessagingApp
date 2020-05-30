@@ -38,11 +38,6 @@ import edu.uw.tcss450.team4projectclient.ui.chat.ChatRoom;
  */
 public class ChatRoomViewModel extends AndroidViewModel {
 
-    /**
-     * List of chatIds.
-     */
-//    private MutableLiveData<Map<Integer, String>> mChatRooms;
-
     private MutableLiveData<Map<Integer, ChatRoom>> mChatRooms;
 
     public ChatRoomViewModel(@NonNull Application application) {
@@ -66,6 +61,12 @@ public class ChatRoomViewModel extends AndroidViewModel {
             chatRooms.addAll(map.values());
         }
         return chatRooms;
+    }
+
+    public void addChatRoom(final int chatId, final ChatRoom chatRoom) {
+        Map<Integer, ChatRoom> chatRooms = mChatRooms.getValue();
+        chatRooms.put(chatId, chatRoom);
+        mChatRooms.setValue(chatRooms);
     }
 
     /**

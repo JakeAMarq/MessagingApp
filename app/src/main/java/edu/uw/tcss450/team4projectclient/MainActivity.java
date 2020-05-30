@@ -27,7 +27,9 @@ import edu.uw.tcss450.team4projectclient.model.UserInfoViewModel;
 import edu.uw.tcss450.team4projectclient.services.PushReceiver;
 import edu.uw.tcss450.team4projectclient.ui.chat.ChatFragmentArgs;
 import edu.uw.tcss450.team4projectclient.ui.chat.ChatMessage;
+import edu.uw.tcss450.team4projectclient.ui.chat.ChatRoom;
 import edu.uw.tcss450.team4projectclient.ui.chat.MessageViewModel;
+import edu.uw.tcss450.team4projectclient.ui.chatrooms.ChatRoomViewModel;
 
 /**
  * Activity containing NavHostFragment for res/navigation/main_graph and bottom navigation
@@ -38,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
     private MainPushMessageReceiver mPushMessageReceiver;
 
     private NewMessageCountViewModel mNewMessageModel;
+
+    private ChatRoomViewModel mChatRoomModel;
 
     AppBarConfiguration mAppBarConfiguration;
 
@@ -66,6 +70,8 @@ public class MainActivity extends AppCompatActivity {
         mCurrentChatId = 0;
         mUnreadMessageCounts = new HashMap<>();
 
+        ViewModelProvider provider = new ViewModelProvider(this);
+
         new ViewModelProvider(
                 this,
                 new UserInfoViewModel.UserInfoViewModelFactory(args.getEmail(), args.getJwt()))
@@ -83,7 +89,8 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
 
-        mNewMessageModel = new ViewModelProvider(this).get(NewMessageCountViewModel.class);
+        mNewMessageModel = provider.get(NewMessageCountViewModel.class);
+        mChatRoomModel = provider.get(ChatRoomViewModel.class);
 
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
             if (destination.getId() == R.id.navigation_chat_room) {
@@ -126,8 +133,10 @@ public class MainActivity extends AppCompatActivity {
         if (mPushMessageReceiver == null) {
             mPushMessageReceiver = new MainPushMessageReceiver();
         }
-        IntentFilter iFilter = new IntentFilter(PushReceiver.RECEIVED_NEW_MESSAGE);
-        registerReceiver(mPushMessageReceiver, iFilter);
+        IntentFilter msgFilter = new IntentFilter(PushReceiver.RECEIVED_NEW_MESSAGE);
+        IntentFilter chatFilter = new IntentFilter(PushReceiver.RECEIVED_NEW_CHAT);
+        registerReceiver(mPushMessageReceiver, msgFilter);
+        registerReceiver(mPushMessageReceiver, chatFilter);
     }
 
     @Override
@@ -161,16 +170,14 @@ public class MainActivity extends AppCompatActivity {
                     Navigation.findNavController(
                             MainActivity.this, R.id.nav_host_fragment);
             NavDestination nd = nc.getCurrentDestination();
-
             if (intent.hasExtra("chatMessage")) {
 
                 ChatMessage cm = (ChatMessage) intent.getSerializableExtra("chatMessage");
-                int chatId = intent.getIntExtra("chatid", 0);
+                int chatId = intent.getIntExtra("chatId", 0);
 
                 //If the user is not on the chat screen, update the
                 // NewMessageCountView Model
                 if (mCurrentChatId != chatId) {
-                    Log.e("test", chatId + "");
                     if (mUnreadMessageCounts.containsKey(chatId)) {
                         mUnreadMessageCounts.put(chatId, mUnreadMessageCounts.get(chatId) + 1);
                     } else {
@@ -181,7 +188,13 @@ public class MainActivity extends AppCompatActivity {
                 }
                 //Inform the view model holding chatroom messages of the new
                 //message.
-                mModel.addMessage(intent.getIntExtra("chatid", -1), cm);
+                mModel.addMessage(intent.getIntExtra("chatId", -1), cm);
+            } else if (intent.hasExtra("chatRoom")) {
+
+                ChatRoom chatRoom = (ChatRoom) intent.getSerializableExtra("chatRoomObject");
+                int chatId = intent.getIntExtra("chatId", 0);
+
+                mChatRoomModel.addChatRoom(chatId, chatRoom);
             }
         }
     }
