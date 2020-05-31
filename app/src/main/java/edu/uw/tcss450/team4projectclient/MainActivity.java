@@ -29,7 +29,7 @@ import edu.uw.tcss450.team4projectclient.ui.chat.ChatFragmentArgs;
 import edu.uw.tcss450.team4projectclient.ui.chat.ChatMessage;
 import edu.uw.tcss450.team4projectclient.ui.chat.ChatRoom;
 import edu.uw.tcss450.team4projectclient.ui.chat.MessageViewModel;
-import edu.uw.tcss450.team4projectclient.ui.chatrooms.ChatRoomViewModel;
+import edu.uw.tcss450.team4projectclient.ui.chatrooms.viewmodels.ChatRoomViewModel;
 
 /**
  * Activity containing NavHostFragment for res/navigation/main_graph and bottom navigation
@@ -42,6 +42,8 @@ public class MainActivity extends AppCompatActivity {
     private NewMessageCountViewModel mNewMessageModel;
 
     private ChatRoomViewModel mChatRoomModel;
+
+    private UserInfoViewModel mUserInfoModel;
 
     AppBarConfiguration mAppBarConfiguration;
 
@@ -72,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
 
         ViewModelProvider provider = new ViewModelProvider(this);
 
-        new ViewModelProvider(
+        mUserInfoModel = new ViewModelProvider(
                 this,
                 new UserInfoViewModel.UserInfoViewModelFactory(args.getEmail(), args.getJwt()))
                 .get(UserInfoViewModel.class);
@@ -194,7 +196,7 @@ public class MainActivity extends AppCompatActivity {
                 ChatRoom chatRoom = (ChatRoom) intent.getSerializableExtra("chatRoomObject");
                 int chatId = intent.getIntExtra("chatId", 0);
 
-                mChatRoomModel.addChatRoom(chatId, chatRoom);
+                mChatRoomModel.getChatRooms(mUserInfoModel.getJwt());
             }
         }
     }
