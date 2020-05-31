@@ -233,17 +233,25 @@ public class ChatRoomListFragment extends Fragment {
 
     private void observeRemoveUserFromChatResponse(final JSONObject response) {
         try {
-            if (response.has("success")) {Toast.makeText(getActivity(), "User removed from chat successfully", Toast.LENGTH_LONG).show();
-                Toast.makeText(getActivity(), "User removed from chat successfully", Toast.LENGTH_LONG).show();
+            if (response.has("success")) {
+                if (response.getString("email").equals(mUserModel.getEmail())) {
+                    int chatId = response.getInt("chatId");
+                    if (mChatRooms.containsKey(chatId)) {
+                        mChatRooms.remove(chatId);
+                        updateMessages();
+                    }
+                } else {
+                    Toast.makeText(getContext(), "User removed from chat successfully", Toast.LENGTH_LONG).show();
+                }
             } else if (response.has("error")) {
                 Toast.makeText(getContext(), "Error removing user from chat: " + response.getString("error"), Toast.LENGTH_LONG).show();
             } else {
-                Toast.makeText(getActivity(), "Unknown error occurred attempting to remove user from chat", Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), "Unknown error occurred attempting to remove user from chat", Toast.LENGTH_LONG).show();
             }
         } catch (JSONException e){
             Log.e("JSON PARSE ERROR", "Found in observeRemoveUserFromChatResponse");
             Log.e("JSON PARSE ERROR", "Message: " + e.getMessage());
-            Toast.makeText(getActivity(), "Unknown error occurred attempting to remove user from chat", Toast.LENGTH_LONG).show();
+            Toast.makeText(getContext(), "Unknown error occurred attempting to remove user from chat", Toast.LENGTH_LONG).show();
         }
     }
 
