@@ -19,7 +19,6 @@ import java.util.List;
 import edu.uw.tcss450.team4projectclient.R;
 import edu.uw.tcss450.team4projectclient.databinding.FragmentChatCardBinding;
 import edu.uw.tcss450.team4projectclient.model.UserInfoViewModel;
-import edu.uw.tcss450.team4projectclient.ui.chat.ChatRoom;
 import edu.uw.tcss450.team4projectclient.ui.chatrooms.viewmodels.ChatRoomAddDeleteViewModel;
 import edu.uw.tcss450.team4projectclient.ui.chatrooms.viewmodels.ChatRoomAddRemoveUserViewModel;
 import edu.uw.tcss450.team4projectclient.ui.chatrooms.viewmodels.ChatRoomViewModel;

@@ -15,7 +15,7 @@ import org.json.JSONException;
 import edu.uw.tcss450.team4projectclient.AuthActivity;
 import edu.uw.tcss450.team4projectclient.R;
 import edu.uw.tcss450.team4projectclient.ui.chat.ChatMessage;
-import edu.uw.tcss450.team4projectclient.ui.chat.ChatRoom;
+import edu.uw.tcss450.team4projectclient.ui.chatrooms.ChatRoom;
 import me.pushy.sdk.Pushy;
 
 import static android.app.ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND;

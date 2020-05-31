@@ -24,7 +24,6 @@ import java.util.Objects;
 
 import edu.uw.tcss450.team4projectclient.R;
 import edu.uw.tcss450.team4projectclient.io.RequestQueueSingleton;
-import edu.uw.tcss450.team4projectclient.ui.chat.ChatRoom;
 
 public class ChatRoomAddDeleteViewModel extends AndroidViewModel {
 

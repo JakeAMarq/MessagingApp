@@ -1,4 +1,4 @@
-package edu.uw.tcss450.team4projectclient.ui.chat;
+package edu.uw.tcss450.team4projectclient.ui.chatrooms;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -6,6 +6,8 @@ import org.json.JSONObject;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import edu.uw.tcss450.team4projectclient.ui.chat.ChatMessage;
 
 /**
  *

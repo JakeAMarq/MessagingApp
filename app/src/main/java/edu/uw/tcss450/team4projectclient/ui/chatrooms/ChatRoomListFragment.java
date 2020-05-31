@@ -25,13 +25,11 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import edu.uw.tcss450.team4projectclient.R;
 import edu.uw.tcss450.team4projectclient.databinding.FragmentChatRoomListBinding;
 import edu.uw.tcss450.team4projectclient.model.UserInfoViewModel;
-import edu.uw.tcss450.team4projectclient.ui.chat.ChatRoom;
 import edu.uw.tcss450.team4projectclient.ui.chat.MessageViewModel;
 import edu.uw.tcss450.team4projectclient.ui.chatrooms.viewmodels.ChatRoomAddDeleteViewModel;
 import edu.uw.tcss450.team4projectclient.ui.chatrooms.viewmodels.ChatRoomAddRemoveUserViewModel;
@@ -177,7 +175,16 @@ public class ChatRoomListFragment extends Fragment {
     }
 
     private void observeAddChatResponse(final JSONObject response) {
-
+        try {
+            ChatRoom chatRoom = new ChatRoom(
+                    response.getInt("chatId"),
+                    response.getString("chatName"),
+                    mUserModel.getEmail()
+            );
+            addChatRoom(chatRoom);
+        } catch (JSONException e) {
+            Toast.makeText(getActivity(), "Unknown error occurred attempting to create new chat", Toast.LENGTH_LONG).show();
+        }
     }
 
     private void observeDeleteChatResponse(final JSONObject response) {

@@ -14,23 +14,16 @@ import com.android.volley.Request;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 
 import edu.uw.tcss450.team4projectclient.R;
 import edu.uw.tcss450.team4projectclient.io.RequestQueueSingleton;
-import edu.uw.tcss450.team4projectclient.ui.chat.ChatMessage;
-import edu.uw.tcss450.team4projectclient.ui.chat.ChatRoom;
+import edu.uw.tcss450.team4projectclient.ui.chatrooms.ChatRoom;
 
 /**
  * ViewModel that (for now) only serves to get the list of chatids for the chat rooms the user
