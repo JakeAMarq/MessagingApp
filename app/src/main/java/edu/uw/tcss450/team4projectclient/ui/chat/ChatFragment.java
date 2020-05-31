@@ -16,6 +16,7 @@ import edu.uw.tcss450.team4projectclient.MainActivity;
 import edu.uw.tcss450.team4projectclient.R;
 import edu.uw.tcss450.team4projectclient.databinding.FragmentChatBinding;
 import edu.uw.tcss450.team4projectclient.model.UserInfoViewModel;
+import edu.uw.tcss450.team4projectclient.ui.chatrooms.ChatRoom;
 
 /**
  * A simple {@link Fragment} subclass.

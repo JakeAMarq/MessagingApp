@@ -1,8 +1,13 @@
-package edu.uw.tcss450.team4projectclient.ui.chat;
+package edu.uw.tcss450.team4projectclient.ui.chatrooms;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import edu.uw.tcss450.team4projectclient.ui.chat.ChatMessage;
 
 /**
  *
@@ -44,6 +49,13 @@ public class ChatRoom implements Serializable {
         mName = name;
         mOwner = owner;
         mMessages = messages;
+    }
+
+    public static ChatRoom createFromJsonString(final String crAsJson) throws JSONException {
+        final JSONObject chatRoom = new JSONObject(crAsJson);
+        return new ChatRoom(chatRoom.getInt("chatId"),
+                chatRoom.getString("chatName"),
+                chatRoom.getString("owner"));
     }
 
     public int getId() {
