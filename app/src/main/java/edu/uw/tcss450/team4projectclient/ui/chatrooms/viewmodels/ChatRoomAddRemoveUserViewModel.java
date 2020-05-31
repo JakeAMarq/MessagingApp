@@ -156,9 +156,10 @@ public class ChatRoomAddRemoveUserViewModel extends AndroidViewModel {
                 if (!data.contains("SQL Error on select from push token"))
                     response.put("error", new JSONObject(data).getString("message"));
                 else
+                    // User was successfully added, but there was a problem sending them a notification
                     response.put("success", true);
             } catch (JSONException e) {
-                // handle exception
+                Log.e("JSONException", "Found in handleAddUserError");
             }
             mAddUserResponse.setValue(response);
         }
@@ -182,7 +183,7 @@ public class ChatRoomAddRemoveUserViewModel extends AndroidViewModel {
             try {
                 response.put("error", new JSONObject(data).getString("message"));
             } catch (JSONException e) {
-                // handle exception
+                Log.e("JSONException", "Found in handleRemoveUserError");
             }
             mRemoveUserResponse.setValue(response);
         }

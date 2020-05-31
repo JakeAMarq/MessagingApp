@@ -13,6 +13,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -156,6 +157,10 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setTitle(title);
     }
 
+    public boolean hasUnreadMessages(final int chatId) {
+        return mUnreadMessageCounts.containsKey(chatId) && mUnreadMessageCounts.get(chatId) > 0;
+    }
+
     /**
      * A BroadcastReceiver that listens for messages sent from PushReceiver
      */
@@ -196,6 +201,7 @@ public class MainActivity extends AppCompatActivity {
                 int chatId = intent.getIntExtra("chatId", 0);
 
                 mChatRoomModel.getChatRooms(mUserInfoModel.getJwt());
+                Toast.makeText(MainActivity.this, "You've been added to chat room: " + chatRoom.getName(), Toast.LENGTH_LONG).show();
             }
         }
     }

@@ -63,8 +63,8 @@ public class ChatRoomAddDeleteViewModel extends AndroidViewModel {
                 Request.Method.POST,
                 url,
                 body, //no body for this get request
-                this::handleAddChatSuccess,
-                this::handleError) {
+                this::setAddChatResponse,
+                this::handleAddChatError) {
 
             @Override
             public Map<String, String> getHeaders() {
@@ -96,8 +96,8 @@ public class ChatRoomAddDeleteViewModel extends AndroidViewModel {
                 Request.Method.DELETE,
                 url,
                 null, //no body for this get request
-                this::handleDeleteChatSuccess,
-                this::handleError) {
+                this::setDeleteChatResponse,
+                this::handleDeleteChatError) {
 
             @Override
             public Map<String, String> getHeaders() {
@@ -117,27 +117,19 @@ public class ChatRoomAddDeleteViewModel extends AndroidViewModel {
                 .addToRequestQueue(request);
     }
 
-    private void handleAddChatSuccess(JSONObject response) {
-        if (response.has("success")) {
-            mAddChatResponse.setValue(response);
-        } else {
-            Log.e("ChatRoomAddDeleteViewModel", "Unexpected response from add chat request");
-        }
+    private void setAddChatResponse(final JSONObject response) {
+        mAddChatResponse.setValue(response);
     }
 
-    private void handleDeleteChatSuccess(JSONObject response) {
-        if (response.has("success")) {
-            mDeleteChatResponse.setValue(response);
-        } else {
-            Log.e("ChatRoomAddDeleteViewModel", "Unexpected response from delete chat request");
-        }
+    private void setDeleteChatResponse(JSONObject response) {
+        mDeleteChatResponse.setValue(response);
     }
 
     /**
      * Handles error in request in getChatIds
      * @param error VolleyError returned from request in getChatIds
      */
-    private void handleError(final VolleyError error) {
+    private void handleAddChatError(final VolleyError error) {
         if (Objects.isNull(error.networkResponse)) {
             Log.e("NETWORK ERROR", error.getMessage());
         }
@@ -147,6 +139,37 @@ public class ChatRoomAddDeleteViewModel extends AndroidViewModel {
                     error.networkResponse.statusCode +
                             " " +
                             data);
+            JSONObject response = new JSONObject();
+            try {
+                response.put("error", new JSONObject(data).getString("message"));
+            } catch (JSONException e) {
+                Log.e("JSON Exception", "Found in handleAddChatError");
+            }
+            mAddChatResponse.setValue(response);
+        }
+    }
+
+    /**
+     * Handles error in request in getChatIds
+     * @param error VolleyError returned from request in getChatIds
+     */
+    private void handleDeleteChatError(final VolleyError error) {
+        if (Objects.isNull(error.networkResponse)) {
+            Log.e("NETWORK ERROR", error.getMessage());
+        }
+        else {
+            String data = new String(error.networkResponse.data, Charset.defaultCharset());
+            Log.e("CLIENT ERROR",
+                    error.networkResponse.statusCode +
+                            " " +
+                            data);
+            JSONObject response = new JSONObject();
+            try {
+                response.put("error", new JSONObject(data).getString("message"));
+            } catch (JSONException e) {
+                Log.e("JSON Exception", "Found in handleDeleteChatError");
+            }
+            mDeleteChatResponse.setValue(response);
         }
     }
 }

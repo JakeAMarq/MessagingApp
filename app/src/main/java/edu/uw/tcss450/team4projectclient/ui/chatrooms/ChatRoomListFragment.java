@@ -23,8 +23,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import edu.uw.tcss450.team4projectclient.R;
@@ -72,12 +74,12 @@ public class ChatRoomListFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ViewModelProvider provider = new ViewModelProvider(getActivity());
+        mChatRooms = new HashMap<>();
+        mUserModel = provider.get(UserInfoViewModel.class);
         mMessageModel = provider.get(MessageViewModel.class);
         mChatRoomModel = provider.get(ChatRoomViewModel.class);
         mAddDeleteChatModel = provider.get(ChatRoomAddDeleteViewModel.class);
         mAddRemoveUserModel = provider.get(ChatRoomAddRemoveUserViewModel.class);
-        mUserModel = provider.get(UserInfoViewModel.class);
-        mChatRooms = new HashMap<>();
     }
 
     @Override
@@ -91,17 +93,6 @@ public class ChatRoomListFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mRecyclerView = FragmentChatRoomListBinding.bind(view).listRoot;
-//        mChatRoomModel.addObserver(getViewLifecycleOwner(), integerStringMap -> {
-//            Log.d("ChatRoomListFragment", "Chat room observer called");
-//            mMessageModel.clearChatRooms();
-//            for (int chatId : integerStringMap.keySet()) {
-//                mMessageModel.addMessageObserver(chatId,
-//                        getViewLifecycleOwner(),
-//                        response -> updateMessages());
-//                mMessageModel.getFirstMessages(chatId, mUserModel.getJwt());
-//            }
-//            if (integerStringMap.isEmpty()) updateMessages();
-//        });
 
         mChatRoomModel.addObserver(getViewLifecycleOwner(), this::observeGetChatRoomsResponse);
         mAddDeleteChatModel.addAddChatResponseObserver(getViewLifecycleOwner(), this::observeAddChatResponse);
@@ -144,84 +135,115 @@ public class ChatRoomListFragment extends Fragment {
     }
 
     private void observeGetChatRoomsResponse(final JSONObject response) {
-        mChatRooms.clear();
         try {
-            JSONArray messages = response.getJSONArray("rows");
-            for(int i = 0; i < messages.length(); i++) {
-                JSONObject message = messages.getJSONObject(i);
-                int chatId = message.getInt("chatid");
-                ChatRoom chatRoom = new ChatRoom(
-                        chatId,
-                        message.getString("name"),
-                        message.getString("email")
-                );
-                mChatRooms.put(chatId, chatRoom);
+            if (response.has("rows")) {
+                mChatRooms.clear();
+                JSONArray messages = response.getJSONArray("rows");
+                for(int i = 0; i < messages.length(); i++) {
+                    JSONObject message = messages.getJSONObject(i);
+                    int chatId = message.getInt("chatid");
+                    ChatRoom chatRoom = new ChatRoom(
+                            chatId,
+                            message.getString("name"),
+                            message.getString("email")
+                    );
+                    mChatRooms.put(chatId, chatRoom);
+                }
+
+                mMessageModel.clearChatRooms();
+                for (int chatId : mChatRooms.keySet()) {
+                    mMessageModel.addMessageObserver(chatId,
+                            getViewLifecycleOwner(),
+                            theResponse -> {
+                                mChatRooms.get(chatId).setMessages(mMessageModel.getMessageListByChatId(chatId));
+                                updateMessages();
+                            });
+                    mMessageModel.getFirstMessages(chatId, mUserModel.getJwt());
+                }
+            } else if (response.has("error")) {
+                Toast.makeText(getContext(), "Error retrieving chats: " + response.getString("error"), Toast.LENGTH_LONG).show();
             }
 
-            mMessageModel.clearChatRooms();
-            for (int chatId : mChatRooms.keySet()) {
-                mMessageModel.addMessageObserver(chatId,
-                        getViewLifecycleOwner(),
-                        theResponse -> {
-                            mChatRooms.get(chatId).setMessages(mMessageModel.getMessageListByChatId(chatId));
-                            updateMessages();
-                        });
-                mMessageModel.getFirstMessages(chatId, mUserModel.getJwt());
-            }
         } catch (JSONException e) {
             Log.e("JSON PARSE ERROR", "Found in observeGetChatRoomsResponse");
             Log.e("JSON PARSE ERROR", "Message: " + e.getMessage());
+            Toast.makeText(getContext(), "Unknown error occurred retrieving chats from server", Toast.LENGTH_LONG).show();
         }
     }
 
     private void observeAddChatResponse(final JSONObject response) {
         try {
-            ChatRoom chatRoom = new ChatRoom(
-                    response.getInt("chatId"),
-                    response.getString("chatName"),
-                    mUserModel.getEmail()
-            );
-            addChatRoom(chatRoom);
+            if (response.has("success")) {
+                ChatRoom chatRoom = new ChatRoom(
+                        response.getInt("chatId"),
+                        response.getString("chatName"),
+                        mUserModel.getEmail()
+                );
+                addChatRoom(chatRoom);
+
+                Toast.makeText(getContext(), "New chat: " + chatRoom.getName() + " added successfully", Toast.LENGTH_LONG).show();
+            } else if (response.has("error")) {
+                Toast.makeText(getContext(), "Error creating chat: " + response.getString("error"), Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(getContext(), "Unknown error occurred attempting to create new chat", Toast.LENGTH_LONG).show();
+            }
         } catch (JSONException e) {
-            Toast.makeText(getActivity(), "Unknown error occurred attempting to create new chat", Toast.LENGTH_LONG).show();
+            Log.e("JSON PARSE ERROR", "Found in observeAddChatResponse");
+            Log.e("JSON PARSE ERROR", "Message: " + e.getMessage());
+            Toast.makeText(getContext(), "Unknown error occurred attempting to create new chat", Toast.LENGTH_LONG).show();
         }
     }
 
     private void observeDeleteChatResponse(final JSONObject response) {
         try {
-            int chatId = response.getInt("chatId");
-            if (mChatRooms.containsKey(chatId)) {
-                mChatRooms.remove(chatId);
-                updateMessages();
+            if (response.has("success")) {
+                int chatId = response.getInt("chatId");
+                if (mChatRooms.containsKey(chatId)) {
+                    mChatRooms.remove(chatId);
+                    updateMessages();
+                }
+            } else if (response.has("error")) {
+                Toast.makeText(getContext(), "Error deleting chat: " + response.getString("error"), Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(getContext(), "Unknown error occurred attempting to delete chat", Toast.LENGTH_LONG).show();
             }
         } catch (JSONException e) {
             Log.e("JSON PARSE ERROR", "Found in observeDeleteChatResponse");
             Log.e("JSON PARSE ERROR", "Message: " + e.getMessage());
+            Toast.makeText(getContext(), "Unknown error occurred attempting to delete chat", Toast.LENGTH_LONG).show();
         }
 
     }
 
     private void observeAddUserToChatResponse(final JSONObject response) {
         try {
-            if (response.has("error")) {
-                Toast.makeText(getActivity(), response.getString("error"), Toast.LENGTH_LONG).show();
-            } else {
+            if (response.has("success")) {
                 Toast.makeText(getActivity(), "User added to chat successfully", Toast.LENGTH_LONG).show();
+            } else if (response.has("error")) {
+                Toast.makeText(getContext(), "Error adding user to chat: " + response.getString("error"), Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(getActivity(), "Unknown error occurred attempting to add user to chat", Toast.LENGTH_LONG).show();
             }
         } catch (JSONException e){
+            Log.e("JSON PARSE ERROR", "Found in observeAddUserToChatResponse");
+            Log.e("JSON PARSE ERROR", "Message: " + e.getMessage());
             Toast.makeText(getActivity(), "Unknown error occurred attempting to add user to chat", Toast.LENGTH_LONG).show();
         }
     }
 
     private void observeRemoveUserFromChatResponse(final JSONObject response) {
         try {
-            if (response.has("error")) {
-                Toast.makeText(getActivity(), response.getString("error"), Toast.LENGTH_LONG).show();
-            } else {
+            if (response.has("success")) {Toast.makeText(getActivity(), "User removed from chat successfully", Toast.LENGTH_LONG).show();
                 Toast.makeText(getActivity(), "User removed from chat successfully", Toast.LENGTH_LONG).show();
+            } else if (response.has("error")) {
+                Toast.makeText(getContext(), "Error removing user from chat: " + response.getString("error"), Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(getActivity(), "Unknown error occurred attempting to remove user from chat", Toast.LENGTH_LONG).show();
             }
         } catch (JSONException e){
-            Toast.makeText(getActivity(), "Unknown error occurred attempting to add user to chat", Toast.LENGTH_LONG).show();
+            Log.e("JSON PARSE ERROR", "Found in observeRemoveUserFromChatResponse");
+            Log.e("JSON PARSE ERROR", "Message: " + e.getMessage());
+            Toast.makeText(getActivity(), "Unknown error occurred attempting to remove user from chat", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -229,7 +251,9 @@ public class ChatRoomListFragment extends Fragment {
      * Refreshes the RecyclerView by attaching an entirely new adapter to it
      */
     public void updateMessages() {
-        mRecyclerView.setAdapter(new ChatRoomRecyclerViewAdapter(new ArrayList<>(mChatRooms.values()), getActivity()));
+        List<ChatRoom> chatRooms = new ArrayList<>(mChatRooms.values());
+        chatRooms.sort((ChatRoom c1, ChatRoom c2) -> c2.getLastTimeStamp().compareTo(c1.getLastTimeStamp()));
+        mRecyclerView.setAdapter(new ChatRoomRecyclerViewAdapter(chatRooms, getActivity()));
     }
 
     private void showAddChatRoomDialog(){

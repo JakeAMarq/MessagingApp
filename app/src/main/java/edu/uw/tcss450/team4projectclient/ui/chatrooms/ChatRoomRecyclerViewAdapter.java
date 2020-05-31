@@ -2,6 +2,7 @@ package edu.uw.tcss450.team4projectclient.ui.chatrooms;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
+import edu.uw.tcss450.team4projectclient.MainActivity;
 import edu.uw.tcss450.team4projectclient.R;
 import edu.uw.tcss450.team4projectclient.databinding.FragmentChatCardBinding;
 import edu.uw.tcss450.team4projectclient.model.UserInfoViewModel;
@@ -49,7 +51,6 @@ public class ChatRoomRecyclerViewAdapter extends RecyclerView.Adapter<ChatRoomRe
      */
     public ChatRoomRecyclerViewAdapter(List<ChatRoom> chatRooms, Context context) {
         this.mChatRooms = chatRooms;
-        this.mChatRooms.sort((ChatRoom c1, ChatRoom c2) -> c2.getLastTimeStamp().compareTo(c1.getLastTimeStamp()));
         this.mCtx = context;
         ViewModelProvider provider = new ViewModelProvider((FragmentActivity) mCtx);
         mChatRoomModel = provider.get(ChatRoomViewModel.class);
@@ -105,6 +106,10 @@ public class ChatRoomRecyclerViewAdapter extends RecyclerView.Adapter<ChatRoomRe
         void setChatRoom(final ChatRoom chatRoom) {
             // Makes row clickable
             mView.setOnClickListener(view -> navigateToChatRoom(mView, chatRoom));
+
+            if (((MainActivity) mCtx).hasUnreadMessages(chatRoom.getId()))
+                binding.textLastMessage.setTypeface(null, Typeface.BOLD);
+
             binding.optionsMenuChatRoom.setOnClickListener(view -> {
                 //creating a popup menu
                 PopupMenu popup = new PopupMenu(mCtx, this.binding.optionsMenuChatRoom);
