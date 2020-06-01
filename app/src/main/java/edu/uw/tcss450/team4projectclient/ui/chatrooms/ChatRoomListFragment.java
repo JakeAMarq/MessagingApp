@@ -23,7 +23,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,9 +32,9 @@ import edu.uw.tcss450.team4projectclient.R;
 import edu.uw.tcss450.team4projectclient.databinding.FragmentChatRoomListBinding;
 import edu.uw.tcss450.team4projectclient.model.UserInfoViewModel;
 import edu.uw.tcss450.team4projectclient.ui.chat.MessageViewModel;
-import edu.uw.tcss450.team4projectclient.ui.chatrooms.viewmodels.ChatRoomAddDeleteViewModel;
-import edu.uw.tcss450.team4projectclient.ui.chatrooms.viewmodels.ChatRoomAddRemoveUserViewModel;
-import edu.uw.tcss450.team4projectclient.ui.chatrooms.viewmodels.ChatRoomViewModel;
+import edu.uw.tcss450.team4projectclient.ui.chatrooms.viewmodels.AddRemoveUsersViewModel;
+import edu.uw.tcss450.team4projectclient.ui.chatrooms.viewmodels.AddDeleteChatsViewModel;
+import edu.uw.tcss450.team4projectclient.ui.chatrooms.viewmodels.GetChatsViewModel;
 
 /**
  * Conversations page where user can see and navigate to multiple chat rooms
@@ -43,25 +42,39 @@ import edu.uw.tcss450.team4projectclient.ui.chatrooms.viewmodels.ChatRoomViewMod
 public class ChatRoomListFragment extends Fragment {
 
     /**
-     * ChatViewModel containing a map of chatIds and list of messages for respective chat rooms
-     * Used to get messages from server
+     * Map where keys are chat room IDs and values are their corresponding ChatRoom object
+     */
+    private Map<Integer, ChatRoom> mChatRooms;
+
+    /**
+     * The RecyclerView displaying the chat rooms
+     */
+    private RecyclerView mRecyclerView;
+
+    /**
+     * ViewModel used to store user's email and JWT
+     */
+    private UserInfoViewModel mUserModel;
+
+    /**
+     * ViewModel used to retrieve messages from server
      */
     private MessageViewModel mMessageModel;
 
     /**
-     * UserInfoViewModel containing user's email and JWT
+     * ViewModel used to retrieve chat rooms the user is in
      */
-    private UserInfoViewModel mUserModel;
+    private GetChatsViewModel mGetChatsModel;
 
-    private ChatRoomViewModel mChatRoomModel;
+    /**
+     * ViewModel used to create and delete chat rooms the user owns
+     */
+    private AddDeleteChatsViewModel mAddDeleteChatsModel;
 
-    private ChatRoomAddDeleteViewModel mAddDeleteChatModel;
-
-    private ChatRoomAddRemoveUserViewModel mAddRemoveUserModel;
-
-    private Map<Integer, ChatRoom> mChatRooms;
-
-    private RecyclerView mRecyclerView;
+    /**
+     * ViewModel used to add users to and remove users from chat rooms the user owns
+     */
+    private AddRemoveUsersViewModel mAddRemoveUsersModel;
 
     /**
      * Required empty public constructor
@@ -77,9 +90,9 @@ public class ChatRoomListFragment extends Fragment {
         mChatRooms = new HashMap<>();
         mUserModel = provider.get(UserInfoViewModel.class);
         mMessageModel = provider.get(MessageViewModel.class);
-        mChatRoomModel = provider.get(ChatRoomViewModel.class);
-        mAddDeleteChatModel = provider.get(ChatRoomAddDeleteViewModel.class);
-        mAddRemoveUserModel = provider.get(ChatRoomAddRemoveUserViewModel.class);
+        mGetChatsModel = provider.get(GetChatsViewModel.class);
+        mAddDeleteChatsModel = provider.get(AddDeleteChatsViewModel.class);
+        mAddRemoveUsersModel = provider.get(AddRemoveUsersViewModel.class);
     }
 
     @Override
@@ -94,13 +107,13 @@ public class ChatRoomListFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         mRecyclerView = FragmentChatRoomListBinding.bind(view).listRoot;
 
-        mChatRoomModel.addObserver(getViewLifecycleOwner(), this::observeGetChatRoomsResponse);
-        mAddDeleteChatModel.addAddChatResponseObserver(getViewLifecycleOwner(), this::observeAddChatResponse);
-        mAddDeleteChatModel.addDeleteChatResponseObserver(getViewLifecycleOwner(), this::observeDeleteChatResponse);
-        mAddRemoveUserModel.addAddUserResponseObserver(getViewLifecycleOwner(), this::observeAddUserToChatResponse);
-        mAddRemoveUserModel.addRemoveUserResponseObserver(getViewLifecycleOwner(), this::observeRemoveUserFromChatResponse);
+        mGetChatsModel.addObserver(getViewLifecycleOwner(), this::observeGetChatRoomsResponse);
+        mAddDeleteChatsModel.addAddChatResponseObserver(getViewLifecycleOwner(), this::observeAddChatResponse);
+        mAddDeleteChatsModel.addDeleteChatResponseObserver(getViewLifecycleOwner(), this::observeDeleteChatResponse);
+        mAddRemoveUsersModel.addAddUserResponseObserver(getViewLifecycleOwner(), this::observeAddUserToChatResponse);
+        mAddRemoveUsersModel.addRemoveUserResponseObserver(getViewLifecycleOwner(), this::observeRemoveUserFromChatResponse);
 
-        mChatRoomModel.getChatRooms(mUserModel.getJwt());
+        mGetChatsModel.getChatRooms(mUserModel.getJwt());
 
         updateMessages();
     }
@@ -122,6 +135,11 @@ public class ChatRoomListFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
     }
 
+    /**
+     * Adds a new ChatRoom to mChatRooms, setups up a message observer for it in mMessageModel, and
+     * retrieves the first messages from it
+     * @param chatRoom the ChatRoom
+     */
     private void addChatRoom(ChatRoom chatRoom) {
         mChatRooms.put(chatRoom.getId(), chatRoom);
         mMessageModel.getOrCreateMapEntry(chatRoom.getId()).removeObservers(getViewLifecycleOwner());
@@ -134,6 +152,10 @@ public class ChatRoomListFragment extends Fragment {
         mMessageModel.getFirstMessages(chatRoom.getId(), mUserModel.getJwt());
     }
 
+    /**
+     * Observer function that triggers when request from mGetChatsModel gets a response
+     * @param response the JSONObject response returned from request in mGetChatsModel
+     */
     private void observeGetChatRoomsResponse(final JSONObject response) {
         try {
             if (response.has("rows")) {
@@ -171,6 +193,10 @@ public class ChatRoomListFragment extends Fragment {
         }
     }
 
+    /**
+     * Observer function that triggers when request to create a chat from mAddDeleteChatsModel gets a response
+     * @param response the JSONObject response returned from request to create a chat in mAddDeleteChatsModel
+     */
     private void observeAddChatResponse(final JSONObject response) {
         try {
             if (response.has("success")) {
@@ -194,6 +220,10 @@ public class ChatRoomListFragment extends Fragment {
         }
     }
 
+    /**
+     * Observer function that triggers when request to delete a chat from mAddDeleteChatsModel gets a response
+     * @param response the JSONObject response returned from request to delete a chat in mAddDeleteChatsModel
+     */
     private void observeDeleteChatResponse(final JSONObject response) {
         try {
             if (response.has("success")) {
@@ -215,6 +245,10 @@ public class ChatRoomListFragment extends Fragment {
 
     }
 
+    /**
+     * Observer function that triggers when request to add a user to a chat from mAddRemoveUsersModel gets a response
+     * @param response the JSONObject response returned from request to add a user to a chat in mAddRemoveUsersModel
+     */
     private void observeAddUserToChatResponse(final JSONObject response) {
         try {
             if (response.has("success")) {
@@ -231,6 +265,10 @@ public class ChatRoomListFragment extends Fragment {
         }
     }
 
+    /**
+     * Observer function that triggers when request to remove a user from a chat from mAddRemoveUsersModel gets a response
+     * @param response the JSONObject response returned from request to remove a user from a chat in mAddRemoveUsersModel
+     */
     private void observeRemoveUserFromChatResponse(final JSONObject response) {
         try {
             if (response.has("success")) {
@@ -264,6 +302,10 @@ public class ChatRoomListFragment extends Fragment {
         mRecyclerView.setAdapter(new ChatRoomRecyclerViewAdapter(chatRooms, getActivity()));
     }
 
+    /**
+     * Shows an AlertDialog that asks the user from the name of the chat room they wish to create and sends the
+     * request if they click 'Add'
+     */
     private void showAddChatRoomDialog(){
         LayoutInflater inflater = LayoutInflater.from(getContext());
         View subView = inflater.inflate(R.layout.dialog_add_chat_room, null);
@@ -274,7 +316,7 @@ public class ChatRoomListFragment extends Fragment {
         builder.setView(subView);
         AlertDialog alertDialog = builder.create();
 
-        builder.setPositiveButton("Add", (dialog, which) -> mAddDeleteChatModel.addChatRoom(subEditText.getText().toString(), mUserModel.getJwt()));
+        builder.setPositiveButton("Add", (dialog, which) -> mAddDeleteChatsModel.addChatRoom(subEditText.getText().toString(), mUserModel.getJwt()));
 
         builder.setNegativeButton("Cancel", (dialog, which) -> {
         });

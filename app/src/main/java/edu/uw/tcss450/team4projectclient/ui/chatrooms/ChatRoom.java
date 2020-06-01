@@ -10,17 +10,23 @@ import java.util.List;
 import edu.uw.tcss450.team4projectclient.ui.chat.ChatMessage;
 
 /**
- *
+ * Class representing a chat room
  */
 public class ChatRoom implements Serializable {
 
     /**
-     * ChatId of chat room
+     * ID of chat room
      */
     private final int mId;
 
+    /**
+     * Name of chat room
+     */
     private final String mName;
 
+    /**
+     * Owner of chat room's email
+     */
     private final String mOwner;
 
     /**
@@ -51,6 +57,12 @@ public class ChatRoom implements Serializable {
         mMessages = messages;
     }
 
+    /**
+     * Returns an instance of ChatRoom created from the JSON string
+     * @param crAsJson the JSON string
+     * @return an instance of ChatRoom created from the JSON string
+     * @throws JSONException
+     */
     public static ChatRoom createFromJsonString(final String crAsJson) throws JSONException {
         final JSONObject chatRoom = new JSONObject(crAsJson);
         return new ChatRoom(chatRoom.getInt("chatId"),
@@ -58,18 +70,34 @@ public class ChatRoom implements Serializable {
                 chatRoom.getString("owner"));
     }
 
+    /**
+     * Returns the id of the chat room
+     * @return the id of the chat room
+     */
     public int getId() {
         return mId;
     }
 
+    /**
+     * Returns the name of the chat room
+     * @return the name of the chat room
+     */
     public String getName() {
         return mName;
     }
 
+    /**
+     * Returns the owner of the chat room's email
+     * @return the owner of the chat room's email
+     */
     public String getOwner() {
         return mOwner;
     }
 
+    /**
+     * Returns the list of messages in the chat room
+     * @return the list of messages in the chat room
+     */
     public List<ChatMessage> getMessages() {
         return mMessages;
     }
@@ -95,7 +123,7 @@ public class ChatRoom implements Serializable {
     }
 
     /**
-     * Sets chatroom messages
+     * Sets the chat room's messages
      * @param messages the messages
      */
     public void setMessages(List<ChatMessage> messages) {

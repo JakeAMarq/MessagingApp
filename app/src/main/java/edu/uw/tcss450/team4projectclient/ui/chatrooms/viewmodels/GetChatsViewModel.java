@@ -26,14 +26,21 @@ import edu.uw.tcss450.team4projectclient.io.RequestQueueSingleton;
 import edu.uw.tcss450.team4projectclient.ui.chatrooms.ChatRoom;
 
 /**
- * ViewModel that (for now) only serves to get the list of chatids for the chat rooms the user
- * is a part of
+ * ViewModel that handles the requests to the server for retrieving info of all the chat rooms
+ * that the user is in
  */
-public class ChatRoomViewModel extends AndroidViewModel {
+public class GetChatsViewModel extends AndroidViewModel {
 
+    /**
+     * MutableLiveData used to store response from server
+     */
     private MutableLiveData<JSONObject> mResponse;
 
-    public ChatRoomViewModel(@NonNull Application application) {
+    /**
+     * Creates an instance of GetChatsViewModel
+     * @param application Application object
+     */
+    public GetChatsViewModel(@NonNull Application application) {
         super(application);
         mResponse = new MutableLiveData<>();
     }
@@ -48,7 +55,7 @@ public class ChatRoomViewModel extends AndroidViewModel {
     }
 
     /**
-     * Requests to get chatid of every chat room the user is a part of from the server
+     * Requests to get the ID, name, and owner's email of every chat room the user is in from the server
      * @param jwt User's JWT
      */
     public void getChatRooms(final String jwt) {
@@ -81,20 +88,19 @@ public class ChatRoomViewModel extends AndroidViewModel {
     }
 
     /**
-     * Handles successful request from getChatIds
-     * @param response JSONObject returned from request in getChatIds
+     * Handles successful request from getChatRoomss
+     * @param response JSONObject returned from request in getChatRooms
      */
     private void handleSuccess(final JSONObject response) {
-        Map<Integer, ChatRoom> chatRooms = new HashMap<>();
         if (!response.has("rows")) {
-            throw new IllegalStateException("Unexpected response in ChatRoomViewModel: " + response);
+            throw new IllegalStateException("Unexpected response in GetChatsViewModel: " + response);
         }
         mResponse.setValue(response);
     }
 
     /**
-     * Handles error in request in getChatIds
-     * @param error VolleyError returned from request in getChatIds
+     * Handles error returned from request in getChatRooms
+     * @param error VolleyError returned from request in getChatRooms
      */
     private void handleError(final VolleyError error) {
         if (Objects.isNull(error.networkResponse)) {

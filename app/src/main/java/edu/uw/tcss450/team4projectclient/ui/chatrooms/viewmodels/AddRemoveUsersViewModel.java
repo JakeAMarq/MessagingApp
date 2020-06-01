@@ -25,46 +25,74 @@ import java.util.Objects;
 import edu.uw.tcss450.team4projectclient.R;
 import edu.uw.tcss450.team4projectclient.io.RequestQueueSingleton;
 
-public class ChatRoomAddDeleteViewModel extends AndroidViewModel {
+/**
+ * ViewModel that handles the requests to the server for adding users to chat rooms
+ * and removing users from chat rooms
+ */
+public class AddRemoveUsersViewModel extends AndroidViewModel {
 
-    private MutableLiveData<JSONObject> mAddChatResponse;
+    /**
+     * MutableLiveData used to store response from server when requesting to add a user to a chat room
+     */
+    private MutableLiveData<JSONObject> mAddUserResponse;
 
-    private MutableLiveData<JSONObject> mDeleteChatResponse;
+    /**
+     * MutableLiveData used to store response from server when requesting to remove a user from a chat room
+     */
+    private MutableLiveData<JSONObject> mRemoveUserResponse;
 
-    public ChatRoomAddDeleteViewModel(@NonNull Application application) {
+    /**
+     * Creates an instance of AddRemoveUsersViewModel
+     * @param application Application object
+     */
+    public AddRemoveUsersViewModel(@NonNull Application application) {
         super(application);
-        mAddChatResponse = new MutableLiveData<>();
-        mDeleteChatResponse = new MutableLiveData<>();
-    }
-
-    public void addAddChatResponseObserver(LifecycleOwner owner, Observer<? super JSONObject> observer) {
-        mAddChatResponse.observe(owner, observer);
-    }
-
-    public void addDeleteChatResponseObserver(LifecycleOwner owner, Observer<? super JSONObject> observer) {
-        mDeleteChatResponse.observe(owner, observer);
+        mAddUserResponse = new MutableLiveData<>();
+        mRemoveUserResponse = new MutableLiveData<>();
     }
 
     /**
-     *
+     * Adds observer to mAddUserResponse
+     * @param owner LifecyclerOwner
+     * @param observer Observer function
      */
-    public void addChatRoom(final String chatRoomName, final String jwt) {
+    public void addAddUserResponseObserver(LifecycleOwner owner, Observer<? super JSONObject> observer) {
+        mAddUserResponse.observe(owner, observer);
+    }
+
+    /**
+     * Adds observer to mRemoveUserResponse
+     * @param owner LifecyclerOwner
+     * @param observer Observer function
+     */
+    public void addRemoveUserResponseObserver(LifecycleOwner owner, Observer<? super JSONObject> observer) {
+        mRemoveUserResponse.observe(owner, observer);
+    }
+
+    /**
+     * Sends request to server to add a specific user to a specific chat room
+     * @param chatId the ID of the chat room to which the user will be added
+     * @param email the email of the user being added
+     * @param jwt the JWT of the user sending the request
+     */
+    public void addUserToChatRoom(final int chatId, final String email, final String jwt) {
         String url = getApplication().getResources().getString(R.string.base_url) +
                 "chats/";
 
         JSONObject body = new JSONObject();
         try {
-            body.put("name", chatRoomName);
+            body.put("chatId", chatId);
+            body.put("email", email);
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
         Request request = new JsonObjectRequest(
-                Request.Method.POST,
+                Request.Method.PUT,
                 url,
-                body, //no body for this get request
-                this::setAddChatResponse,
-                this::handleAddChatError) {
+                body,
+                this::setAddUserResponse,
+                this::handleAddUserError) {
 
             @Override
             public Map<String, String> getHeaders() {
@@ -82,22 +110,26 @@ public class ChatRoomAddDeleteViewModel extends AndroidViewModel {
         //Instantiate the RequestQueue and add the request to the queue
         RequestQueueSingleton.getInstance(getApplication().getApplicationContext())
                 .addToRequestQueue(request);
-
     }
 
     /**
-     *
+     * Sends request to server to remove a specific user from a specific chat room
+     * @param chatId the ID of the chat room from which the user will be removed
+     * @param email the email of the user being removed
+     * @param jwt the JWT of the user sending the request
      */
-    public void deleteChatRoom(final int chatId, final String jwt) {
+    public void removeUserFromChatRoom(final int chatId, final String email, final String jwt) {
         String url = getApplication().getResources().getString(R.string.base_url) +
-                "chats/" + chatId;
+                "chats/" +
+                chatId + "/" +
+                email;
 
         Request request = new JsonObjectRequest(
                 Request.Method.DELETE,
                 url,
                 null, //no body for this get request
-                this::setDeleteChatResponse,
-                this::handleDeleteChatError) {
+                this::setRemoveUserResponse,
+                this::handleRemoveUserError) {
 
             @Override
             public Map<String, String> getHeaders() {
@@ -117,19 +149,55 @@ public class ChatRoomAddDeleteViewModel extends AndroidViewModel {
                 .addToRequestQueue(request);
     }
 
-    private void setAddChatResponse(final JSONObject response) {
-        mAddChatResponse.setValue(response);
-    }
-
-    private void setDeleteChatResponse(JSONObject response) {
-        mDeleteChatResponse.setValue(response);
+    /**
+     * Sets value of mAddUserResponse
+     * @param response the new value
+     */
+    private void setAddUserResponse(final JSONObject response) {
+        mAddUserResponse.setValue(response);
     }
 
     /**
-     * Handles error in request in getChatIds
-     * @param error VolleyError returned from request in getChatIds
+     * Sets value of mRemoveUserResponse
+     * @param response the new value
      */
-    private void handleAddChatError(final VolleyError error) {
+    private void setRemoveUserResponse(final JSONObject response) {
+        mRemoveUserResponse.setValue(response);
+    }
+
+    /**
+     * Handles error returned from request in addUserToChatRoom
+     * @param error VolleyError returned from request in addUserToChatRoom
+     */
+    private void handleAddUserError(final VolleyError error) {
+        if (Objects.isNull(error.networkResponse)) {
+            Log.e("NETWORK ERROR", error.getMessage());
+        }
+        else {
+            String data = new String(error.networkResponse.data, Charset.defaultCharset());
+            Log.e("CLIENT ERROR",
+                    error.networkResponse.statusCode +
+                            " " +
+                            data);
+            JSONObject response = new JSONObject();
+            try {
+                if (!data.contains("SQL Error on select from push token"))
+                    response.put("error", new JSONObject(data).getString("message"));
+                else
+                    // User was successfully added, but there was a problem sending them a notification
+                    response.put("success", true);
+            } catch (JSONException e) {
+                Log.e("JSONException", "Found in handleAddUserError");
+            }
+            mAddUserResponse.setValue(response);
+        }
+    }
+
+    /**
+     * Handles error returned from request in removeUserFromChatRoom
+     * @param error VolleyError returned from request in removeUserFromChatRoom
+     */
+    private void handleRemoveUserError(final VolleyError error) {
         if (Objects.isNull(error.networkResponse)) {
             Log.e("NETWORK ERROR", error.getMessage());
         }
@@ -143,33 +211,9 @@ public class ChatRoomAddDeleteViewModel extends AndroidViewModel {
             try {
                 response.put("error", new JSONObject(data).getString("message"));
             } catch (JSONException e) {
-                Log.e("JSON Exception", "Found in handleAddChatError");
+                Log.e("JSONException", "Found in handleRemoveUserError");
             }
-            mAddChatResponse.setValue(response);
-        }
-    }
-
-    /**
-     * Handles error in request in getChatIds
-     * @param error VolleyError returned from request in getChatIds
-     */
-    private void handleDeleteChatError(final VolleyError error) {
-        if (Objects.isNull(error.networkResponse)) {
-            Log.e("NETWORK ERROR", error.getMessage());
-        }
-        else {
-            String data = new String(error.networkResponse.data, Charset.defaultCharset());
-            Log.e("CLIENT ERROR",
-                    error.networkResponse.statusCode +
-                            " " +
-                            data);
-            JSONObject response = new JSONObject();
-            try {
-                response.put("error", new JSONObject(data).getString("message"));
-            } catch (JSONException e) {
-                Log.e("JSON Exception", "Found in handleDeleteChatError");
-            }
-            mDeleteChatResponse.setValue(response);
+            mRemoveUserResponse.setValue(response);
         }
     }
 }
