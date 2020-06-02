@@ -1,7 +1,6 @@
 package edu.uw.tcss450.team4projectclient.ui.weather;
 
 import android.app.Application;
-import android.util.Base64;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -21,18 +20,17 @@ import org.json.JSONObject;
 
 import java.nio.charset.Charset;
 import java.util.Objects;
-/**
- * Team 4
- * This class helps a user log into their account.
- */
-public class WeatherViewModel extends AndroidViewModel {
+
+import edu.uw.tcss450.team4projectclient.R;
+
+public class FavoriteViewModel  extends AndroidViewModel {
     // keeps track of all fo the JSONObject responses.
     private MutableLiveData<JSONObject> mResponse;
     /**
      * constructor that initializes a mutable live data object.
      * @param application
      */
-    public WeatherViewModel(@NonNull Application application) {
+    public FavoriteViewModel(@NonNull Application application) {
         super(application);
         mResponse = new MutableLiveData<>();
         mResponse.setValue(new JSONObject());
@@ -73,37 +71,14 @@ public class WeatherViewModel extends AndroidViewModel {
             }
         }
     }
-    /**
-     * This methods sends request to check if user exists.
-     * @param zipcode a zipcode
-     */
-    public void connect(final String zipcode) {
-        //weather endpoint
-        String url = "https://team4-tcss450-project-server.herokuapp.com/weather/zipcode?zipcode=" + zipcode;
-        // sends a get request to the link String url
-        Request request = new JsonObjectRequest(
-                Request.Method.GET,
-                url,
-                null,
-                mResponse::setValue,
-                this::handleError) {
-        };
-        request.setRetryPolicy(new DefaultRetryPolicy(
-                10_000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        Volley.newRequestQueue(getApplication().getApplicationContext())
-                .add(request);
-    }
 
     /**
-     * This methods sends request to check if user exists.
-     * @param lat a latitude
-     * @param  lon a longitude
+     * This method retrieves all of the members favorite location
+     * @param memberid
      */
-    public void connect(final String lat, String lon) {
-        //weather endpoint
-        String url = "https://team4-tcss450-project-server.herokuapp.com/weather/coords?lat=" + lat + "&lon=" + lon;
+    public void connect(final int memberid) {
+        //favorite locations endpoint
+        String url = "https://team4-tcss450-project-server.herokuapp.com/favorites?memberid=" + memberid;
         // sends a get request to the link String url
         Request request = new JsonObjectRequest(
                 Request.Method.GET,
@@ -119,4 +94,77 @@ public class WeatherViewModel extends AndroidViewModel {
         Volley.newRequestQueue(getApplication().getApplicationContext())
                 .add(request);
     }
+    /**
+     * This methods deletes a location.
+     * @param memberid
+     * @param zipcode
+     */
+    public void connect(final int memberid, String zipcode) {
+        String url = "https://team4-tcss450-project-server.herokuapp.com/favorites/delete";
+        JSONObject body = new JSONObject();
+        try {
+            // all of the data that is being passed to the backend.
+            body.put("memberid", memberid);
+            body.put("zipcode", zipcode);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        // pushes the data to the backend.
+        Request request = new JsonObjectRequest(
+                Request.Method.POST,
+                url,
+                body,
+                mResponse::setValue,
+                this::handleError);
+
+        request.setRetryPolicy(new DefaultRetryPolicy(
+                10_000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+        // sending a request to connect to the backend.
+        Volley.newRequestQueue(getApplication().getApplicationContext()).add(request);
+    }
+    /**
+     * This methods deletes a location.
+     * @param memberid
+     * @param zipcode
+     * @param lat
+     * @param lon
+     * @param city
+     * @param state
+     */
+    public void connect(final int memberid, String zipcode,String lat, String lon, String city, String state) {
+        String url = "https://team4-tcss450-project-server.herokuapp.com/favorites/add";
+        JSONObject body = new JSONObject();
+        try {
+            // all of the data that is being passed to the backend.
+            body.put("memberid", memberid);
+            body.put("zipcode", zipcode);
+            body.put("lat", lat);
+            body.put("lon", lon);
+            body.put("city", city);
+            body.put("state", state);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        // pushes the data to the backend.
+        Request request = new JsonObjectRequest(
+                Request.Method.POST,
+                url,
+                body,
+                mResponse::setValue,
+                this::handleError);
+
+        request.setRetryPolicy(new DefaultRetryPolicy(
+                10_000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+        // sending a request to connect to the backend.
+        Volley.newRequestQueue(getApplication().getApplicationContext()).add(request);
+    }
+
 }

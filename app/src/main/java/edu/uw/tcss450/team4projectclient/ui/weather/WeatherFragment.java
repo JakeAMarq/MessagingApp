@@ -1,18 +1,26 @@
 package edu.uw.tcss450.team4projectclient.ui.weather;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import org.json.JSONArray;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -24,24 +32,33 @@ import java.util.Locale;
 
 import edu.uw.tcss450.team4projectclient.databinding.FragmentWeatherBinding;
 import edu.uw.tcss450.team4projectclient.utils.PasswordValidator;
-
+import edu.uw.tcss450.team4projectclient.R;
 import static edu.uw.tcss450.team4projectclient.utils.PasswordValidator.checkExcludeWhiteSpace;
-import static edu.uw.tcss450.team4projectclient.utils.PasswordValidator.checkPwdLength;
 
 /**
  * Weather page
  */
-public class WeatherFragment extends Fragment {
+public class WeatherFragment<LocationViewModel> extends Fragment {
     // static var for the zipcode
     public static String zipcode = "98402";
+    // static var for the lat
+    public static String mlat = "";
+    // static var for the Lon
+    public static String mlon = "";
+    // static var for the city
+    public static String mCity = "";
+    // static var for the state
+    public static String mState = "";
     // Binding to have access to all of the components in the xml.
     private FragmentWeatherBinding binding;
-    // This is the view model class to help with signing in
+    // This is the view model class to for the weather
     private WeatherViewModel mWeatherModel;
     //checks the zipcode entered is of length 5
     private PasswordValidator mZipcodeValidator = PasswordValidator.checkLength(5)
             .and(checkExcludeWhiteSpace())
             .and(PasswordValidator.checkOnlyDigits());
+
+
     /**
      * Required empty public constructor
      */
@@ -72,6 +89,7 @@ public class WeatherFragment extends Fragment {
         super.onCreate(savedInstanceState);
         // setting the view model
         mWeatherModel = new ViewModelProvider(getActivity()).get(WeatherViewModel.class);
+        setHasOptionsMenu(true);
     }
 
     /**
@@ -84,14 +102,35 @@ public class WeatherFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         //setting click listener to the search button
         binding.buttonSearchWeather.setOnClickListener(button -> validateZipcode());
+        binding.buttonFavorite.setOnClickListener(button -> changeFavs());
         //adding observing
         mWeatherModel.addResponseObserver(
                 getViewLifecycleOwner(),
                 this::observeResponse
         );
-//        Log.e("init binding", "bind " +binding.enterZipcode.getText().toString());
-        pullWeatherData();
+//        pullZipcodeWeatherData();
     }
+
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.weather, menu);
+        super.onCreateOptionsMenu(menu,inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.add_favorites) {
+            Navigation.findNavController(getView()).navigate(WeatherFragmentDirections
+                      .actionNavigationWeatherToFavoriteFragment());
+        } else if (id == R.id.choose_from_map){
+            Navigation.findNavController(getView()).navigate(WeatherFragmentDirections
+                      .actionNavigationWeatherToGoogleFragment());
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 
     /**
      * validate User's input for a valid zipcodes.
@@ -99,7 +138,7 @@ public class WeatherFragment extends Fragment {
     private void validateZipcode() {
         mZipcodeValidator.processResult(
                 mZipcodeValidator.apply(binding.enterZipcode.getText().toString()),
-                this::pullWeatherData,this::passwordError);
+                this::pullZipcodeWeatherData,this::passwordError);
     }
     /**
      * Sets user error.
@@ -121,21 +160,30 @@ public class WeatherFragment extends Fragment {
     /**
      * Sends all of the required information to the server to register the user.
      */
-    private void pullWeatherData() {
-
+    private void pullZipcodeWeatherData() {
         binding.layoutWait.setVisibility(View.VISIBLE);
         if (binding.enterZipcode.getText().toString().isEmpty()) {
             mWeatherModel.connect(zipcode);
         } else {
             mWeatherModel.connect(binding.enterZipcode.getText().toString());
         }
+    }
 
-
+    private void changeFavs() {
+        // if star is favorited
+        if (binding.buttonFavorite.isChecked()) {
+            binding.buttonFavorite.setChecked(false);
+            // make call to the back end to delete the city on the list
+            FavoriteFragment.deleteLocation(zipcode);
+        } else { // star is not favorited
+            // make calls to backend and add the city to the list
+            binding.buttonFavorite.setChecked(true);
+            FavoriteFragment.addLocation(zipcode,mlat, mlon, mCity, mState);
+        }
     }
 
     /**
-     * An observer on the HTTP Response from the web server. This observer should be
-     * attached to SignInViewModel.
+     * An observer on the HTTP Response from the web server.
      *
      * @param response the Response from the server
      */
@@ -173,9 +221,13 @@ public class WeatherFragment extends Fragment {
                   String weather = json.getString("weather").replace('\\',' ');
                   //call class that will add all information to fragment
                   new Weather(new JSONObject(weather), binding);
-                  if (!binding.enterZipcode.getText().toString().isEmpty()) {
-                      zipcode = binding.enterZipcode.getText().toString();
-                  }
+//                  if (!binding.enterZipcode.getText().toString().isEmpty()) {
+                      zipcode = json.getString("zip");
+                      mCity = city;
+                      mState = state;
+                      mlat = json.getString("lati");
+                      mlon = json.getString("longi");
+//                  }
                   binding.layoutWait.setVisibility(View.GONE);
                 } catch (JSONException e) {
                     Log.e("JSON Parse Error", e.getMessage());
