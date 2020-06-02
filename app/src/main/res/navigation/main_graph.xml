@@ -50,7 +50,7 @@
             tools:layout="@layout/fragment_chat" >
         <argument
             android:name="chatRoom"
-            app:argType="edu.uw.tcss450.team4projectclient.ui.chat.ChatRoom" />
+            app:argType="edu.uw.tcss450.team4projectclient.ui.chatrooms.ChatRoom" />
     </fragment>
     <fragment
             android:id="@+id/contactFragment"

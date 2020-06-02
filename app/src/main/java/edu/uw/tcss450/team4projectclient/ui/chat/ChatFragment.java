@@ -16,15 +16,31 @@ import edu.uw.tcss450.team4projectclient.MainActivity;
 import edu.uw.tcss450.team4projectclient.R;
 import edu.uw.tcss450.team4projectclient.databinding.FragmentChatBinding;
 import edu.uw.tcss450.team4projectclient.model.UserInfoViewModel;
+import edu.uw.tcss450.team4projectclient.ui.chatrooms.ChatRoom;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class ChatFragment extends Fragment {
 
+    /**
+     * The chat room that the fragment is displaying
+     */
     private ChatRoom mChatRoom;
+
+    /**
+     * The ViewModel that handles sending messages
+     */
     private ChatSendViewModel mSendModel;
+
+    /**
+     * The ViewModel that handles retrieving messages
+     */
     private MessageViewModel mChatModel;
+
+    /**
+     * The ViewModel containing the user's email and JWT
+     */
     private UserInfoViewModel mUserModel;
 
     public ChatFragment() {

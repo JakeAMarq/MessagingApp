@@ -1,5 +1,7 @@
 package edu.uw.tcss450.team4projectclient.ui.auth.signin;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,9 +14,12 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
+import com.auth0.android.jwt.JWT;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import edu.uw.tcss450.team4projectclient.R;
 import edu.uw.tcss450.team4projectclient.databinding.FragmentSignInBinding;
 import edu.uw.tcss450.team4projectclient.model.PushyTokenViewModel;
 import edu.uw.tcss450.team4projectclient.model.UserInfoViewModel;
@@ -62,6 +67,24 @@ public class SignInFragment extends Fragment {
         mSignInModel = new ViewModelProvider(getActivity()).get(SignInViewModel.class);
 
         mPushyTokenViewModel = new ViewModelProvider(getActivity()).get(PushyTokenViewModel.class);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        SharedPreferences prefs = getActivity().getSharedPreferences(
+                getString(R.string.keys_shared_prefs), Context.MODE_PRIVATE);
+        if (prefs.contains(getString(R.string.keys_prefs_jwt))) {
+            String token = prefs.getString(getString(R.string.keys_prefs_jwt), "");
+            JWT jwt = new JWT(token);
+            // Check to see if the web token is still valid or not. To make a JWT expire after a // longer or shorter time period, change the expiration time when the JWT is
+            // created on the web service.
+            if(!jwt.isExpired(0)) {
+                String email = jwt.getClaim("email").asString();
+                navigateToMainActivity(email, token);
+                return;
+            }
+        }
     }
     /**
      * Sets up the view for the fragment
@@ -150,9 +173,15 @@ public class SignInFragment extends Fragment {
      * @param jwt
      */
     private void navigateToMainActivity(String email, String jwt) {
+        if (binding.switchSignIn.isChecked()) { SharedPreferences prefs =
+                getActivity().getSharedPreferences( getString(R.string.keys_shared_prefs), Context.MODE_PRIVATE);
+            //Store the credentials in SharedPrefs
+            prefs.edit().putString(getString(R.string.keys_prefs_jwt), jwt).apply();
+        }
         SignInFragmentDirections.ActionSignInFragmentToMainActivity directions =
                 SignInFragmentDirections.actionSignInFragmentToMainActivity(email, jwt);
         Navigation.findNavController(getView()).navigate(directions);
+        getActivity().finish();
     }
 
     /**

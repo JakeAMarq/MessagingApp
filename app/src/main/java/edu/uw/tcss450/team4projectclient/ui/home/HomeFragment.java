@@ -79,9 +79,17 @@ public class HomeFragment extends Fragment {
             //TODO open a settings fragment
             startActivity(new Intent(getContext(),Home_Color.class));
             return true;
+        } else if (id == R.id.sign_out) {
+            signOut();
         }
         return super.onOptionsItemSelected(item);
     }
 
-
+    public void signOut() {
+        SharedPreferences prefs =
+                getActivity().getSharedPreferences( getString(R.string.keys_shared_prefs), Context.MODE_PRIVATE);
+        prefs.edit().remove(getString(R.string.keys_prefs_jwt)).apply();
+        //End the app completely
+        getActivity().finishAndRemoveTask();
+    }
 }

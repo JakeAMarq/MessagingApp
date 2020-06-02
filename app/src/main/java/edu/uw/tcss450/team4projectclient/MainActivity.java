@@ -13,7 +13,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -27,7 +27,9 @@ import edu.uw.tcss450.team4projectclient.model.UserInfoViewModel;
 import edu.uw.tcss450.team4projectclient.services.PushReceiver;
 import edu.uw.tcss450.team4projectclient.ui.chat.ChatFragmentArgs;
 import edu.uw.tcss450.team4projectclient.ui.chat.ChatMessage;
+import edu.uw.tcss450.team4projectclient.ui.chatrooms.ChatRoom;
 import edu.uw.tcss450.team4projectclient.ui.chat.MessageViewModel;
+import edu.uw.tcss450.team4projectclient.ui.chatrooms.viewmodels.GetChatsViewModel;
 
 /**
  * Activity containing NavHostFragment for res/navigation/main_graph and bottom navigation
@@ -35,23 +37,45 @@ import edu.uw.tcss450.team4projectclient.ui.chat.MessageViewModel;
  */
 public class MainActivity extends AppCompatActivity {
 
-    private MainPushMessageReceiver mPushMessageReceiver;
-
-    private NewMessageCountViewModel mNewMessageModel;
-
-    AppBarConfiguration mAppBarConfiguration;
-
+    /**
+     * Viewbinding of activity
+     */
     private ActivityMainBinding binding;
 
     /**
-     * Represents chatId of the chat room the user is currently in, 0 if user is not in a chat room
+     * chatId of the chat room the user is currently viewing, 0 if user is not viewing a chat room
      */
     private int mCurrentChatId;
 
     /**
-     * HashMap representing the number of unread messages per chatroom
+     * Broadcast receiver used to handle receiving Intents from PushReceiver
+     */
+    private MainPushMessageReceiver mPushMessageReceiver;
+
+    /**
+     * ViewModel used to store number of unread messages
+     */
+    private NewMessageCountViewModel mNewMessageModel;
+
+    /**
+     * ViewModel used to retrieve chat rooms the user is in
+     */
+    private GetChatsViewModel mGetChatsModel;
+
+    /**
+     * ViewModel used to store user's email and JWT
+     */
+    private UserInfoViewModel mUserInfoModel;
+
+    /**
+     * The AppBarConfiguration
+     */
+    AppBarConfiguration mAppBarConfiguration;
+
+    /**
+     * HashMap representing the number of unread messages per chat room
      * Keys - chatIds
-     * Values - number of unread messages in respective chatroom
+     * Values - number of unread messages in respective chat room
      */
     private  Map<Integer, Integer> mUnreadMessageCounts;
 
@@ -66,12 +90,16 @@ public class MainActivity extends AppCompatActivity {
         mCurrentChatId = 0;
         mUnreadMessageCounts = new HashMap<>();
 
-        new ViewModelProvider(
+
+        ViewModelProvider provider = new ViewModelProvider(this);
+        mUserInfoModel = new ViewModelProvider(
                 this,
                 new UserInfoViewModel.UserInfoViewModelFactory(args.getEmail(), args.getJwt()))
                 .get(UserInfoViewModel.class);
+        mGetChatsModel = provider.get(GetChatsViewModel.class);
+        mNewMessageModel = provider.get(NewMessageCountViewModel.class);
 
-        BottomNavigationView navView = findViewById(R.id.nav_view);
+
         mAppBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.navigation_home,
                 R.id.navigation_chat_room_list,
@@ -79,11 +107,10 @@ public class MainActivity extends AppCompatActivity {
                 R.id.navigation_weather)
                 .build();
 
+        BottomNavigationView navView = findViewById(R.id.nav_view);
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
-
-        mNewMessageModel = new ViewModelProvider(this).get(NewMessageCountViewModel.class);
 
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
             if (destination.getId() == R.id.navigation_chat_room) {
@@ -126,8 +153,10 @@ public class MainActivity extends AppCompatActivity {
         if (mPushMessageReceiver == null) {
             mPushMessageReceiver = new MainPushMessageReceiver();
         }
-        IntentFilter iFilter = new IntentFilter(PushReceiver.RECEIVED_NEW_MESSAGE);
-        registerReceiver(mPushMessageReceiver, iFilter);
+        IntentFilter msgFilter = new IntentFilter(PushReceiver.RECEIVED_NEW_MESSAGE);
+        IntentFilter chatFilter = new IntentFilter(PushReceiver.RECEIVED_NEW_CHAT);
+        registerReceiver(mPushMessageReceiver, msgFilter);
+        registerReceiver(mPushMessageReceiver, chatFilter);
     }
 
     @Override
@@ -147,6 +176,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
+     * Returns true if chat room has unread messages, false otherwise
+     * @param chatId ID of chat room
+     * @return true if chat room has unread messages, false otherwise
+     */
+    public boolean hasUnreadMessages(final int chatId) {
+        return mUnreadMessageCounts.containsKey(chatId) && mUnreadMessageCounts.get(chatId) > 0;
+    }
+
+    /**
      * A BroadcastReceiver that listens for messages sent from PushReceiver
      */
     private class MainPushMessageReceiver extends BroadcastReceiver {
@@ -161,16 +199,14 @@ public class MainActivity extends AppCompatActivity {
                     Navigation.findNavController(
                             MainActivity.this, R.id.nav_host_fragment);
             NavDestination nd = nc.getCurrentDestination();
-
             if (intent.hasExtra("chatMessage")) {
 
                 ChatMessage cm = (ChatMessage) intent.getSerializableExtra("chatMessage");
-                int chatId = intent.getIntExtra("chatid", 0);
+                int chatId = intent.getIntExtra("chatId", 0);
 
                 //If the user is not on the chat screen, update the
                 // NewMessageCountView Model
                 if (mCurrentChatId != chatId) {
-                    Log.e("test", chatId + "");
                     if (mUnreadMessageCounts.containsKey(chatId)) {
                         mUnreadMessageCounts.put(chatId, mUnreadMessageCounts.get(chatId) + 1);
                     } else {
@@ -181,7 +217,14 @@ public class MainActivity extends AppCompatActivity {
                 }
                 //Inform the view model holding chatroom messages of the new
                 //message.
-                mModel.addMessage(intent.getIntExtra("chatid", -1), cm);
+                mModel.addMessage(intent.getIntExtra("chatId", -1), cm);
+            } else if (intent.hasExtra("chatRoom")) {
+
+                ChatRoom chatRoom = (ChatRoom) intent.getSerializableExtra("chatRoomObject");
+                int chatId = intent.getIntExtra("chatId", 0);
+
+                mGetChatsModel.getChatRooms(mUserInfoModel.getJwt());
+                Toast.makeText(MainActivity.this, "You've been added to chat room: " + chatRoom.getName(), Toast.LENGTH_LONG).show();
             }
         }
     }

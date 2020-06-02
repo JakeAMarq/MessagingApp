@@ -4,12 +4,10 @@ import android.app.Application;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -29,7 +27,6 @@ import java.util.Objects;
 
 import edu.uw.tcss450.team4projectclient.R;
 import edu.uw.tcss450.team4projectclient.io.RequestQueueSingleton;
-import edu.uw.tcss450.team4projectclient.ui.chatrooms.ChatRoomViewModel;
 
 public class MessageViewModel extends AndroidViewModel {
 
@@ -76,7 +73,7 @@ public class MessageViewModel extends AndroidViewModel {
         return getOrCreateMapEntry(chatId).getValue();
     }
 
-    private MutableLiveData<List<ChatMessage>> getOrCreateMapEntry(final int chatId) {
+    public MutableLiveData<List<ChatMessage>> getOrCreateMapEntry(final int chatId) {
         if(!mMessages.containsKey(chatId)) {
             mMessages.put(chatId, new MutableLiveData<>(new ArrayList<>()));
         }

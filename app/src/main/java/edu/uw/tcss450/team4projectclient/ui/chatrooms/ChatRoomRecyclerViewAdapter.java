@@ -2,7 +2,7 @@ package edu.uw.tcss450.team4projectclient.ui.chatrooms;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,10 +17,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
+import edu.uw.tcss450.team4projectclient.MainActivity;
 import edu.uw.tcss450.team4projectclient.R;
 import edu.uw.tcss450.team4projectclient.databinding.FragmentChatCardBinding;
 import edu.uw.tcss450.team4projectclient.model.UserInfoViewModel;
-import edu.uw.tcss450.team4projectclient.ui.chat.ChatRoom;
+import edu.uw.tcss450.team4projectclient.ui.chatrooms.viewmodels.AddDeleteChatsViewModel;
+import edu.uw.tcss450.team4projectclient.ui.chatrooms.viewmodels.AddRemoveUsersViewModel;
 
 /**
  * RecyclerViewAdapter to display list of chat rooms in ChatRoomListFragment
@@ -32,11 +34,26 @@ public class ChatRoomRecyclerViewAdapter extends RecyclerView.Adapter<ChatRoomRe
      */
     private final List<ChatRoom> mChatRooms;
 
+    /**
+     * The Context of the RecyclerView
+     */
     private final Context mCtx;
 
-    private final ChatRoomViewModel mChatRoomModel;
+    /**
+     * ViewModel used to store user's email and JWT
+     */
+    private UserInfoViewModel mUserModel;
 
-    private final UserInfoViewModel mUserModel;
+    /**
+     * ViewModel used to create and delete chat rooms the user owns
+     */
+    private AddDeleteChatsViewModel mAddDeleteChatsModel;
+
+    /**
+     * ViewModel used to add users to and remove users from chat rooms the user owns
+     */
+    private AddRemoveUsersViewModel mAddRemoveUsersModel;
+
 
     /**
      * Creates an instance of ChatRoomRecyclerViewAdapter with a list of chat rooms
@@ -45,9 +62,12 @@ public class ChatRoomRecyclerViewAdapter extends RecyclerView.Adapter<ChatRoomRe
     public ChatRoomRecyclerViewAdapter(List<ChatRoom> chatRooms, Context context) {
         this.mChatRooms = chatRooms;
         this.mCtx = context;
+
         ViewModelProvider provider = new ViewModelProvider((FragmentActivity) mCtx);
-        mChatRoomModel = provider.get(ChatRoomViewModel.class);
         mUserModel = provider.get(UserInfoViewModel.class);
+        mAddDeleteChatsModel = provider.get(AddDeleteChatsViewModel.class);
+        mAddRemoveUsersModel = provider.get(AddRemoveUsersViewModel.class);
+
     }
 
     @NonNull
@@ -70,9 +90,9 @@ public class ChatRoomRecyclerViewAdapter extends RecyclerView.Adapter<ChatRoomRe
     }
 
     /**
-     * Navigates to ChatFragment containing messages from chatRoom
+     * Navigates to ChatFragment to display messages from chatRoom
      * @param view mView from ChatRoomViewHolder
-     * @param chatRoom chat room being passed to ChatFragment
+     * @param chatRoom ChatRoom being passed to ChatFragment
      */
     public void navigateToChatRoom(View view, ChatRoom chatRoom) {
         Navigation.findNavController(view).navigate(
@@ -80,123 +100,167 @@ public class ChatRoomRecyclerViewAdapter extends RecyclerView.Adapter<ChatRoomRe
                         .actionNavigationChatRoomsToChatFragment(chatRoom));
     }
 
-
-
     /**
      * Objects from this class represent an Individual row View from the List
-     * of rows in the Chat Room Recycler View.
+     * of rows in the ChatRoomRecyclerView.
      */
     public class ChatRoomViewHolder extends RecyclerView.ViewHolder {
+
+        /**
+         * The View of the chat card
+         */
         public final View mView;
+
+        /**
+         * The viewbinding of the chat card
+         */
         public FragmentChatCardBinding binding;
 
+        /**
+         * Creates an instance of ChatRoomViewHolder
+         * @param view the View
+         */
         public ChatRoomViewHolder(View view) {
             super(view);
             mView = view;
             binding = FragmentChatCardBinding.bind(view);
         }
 
+        /**
+         * Sets up the chat card by setting up the TextViews, the options menu, and the click listeners
+         * @param chatRoom the ChatRoom that the chat card represents
+         */
         void setChatRoom(final ChatRoom chatRoom) {
+
+            // Makes preview message bold if there are unread messages in the chat room
+            if (((MainActivity) mCtx).hasUnreadMessages(chatRoom.getId()))
+                binding.textLastMessage.setTypeface(null, Typeface.BOLD);
+
+            binding.textChatRoomTitle.setText(chatRoom.getName());
+            binding.textLastMessage.setText(chatRoom.getLastMessage());
+
             // Makes row clickable
             mView.setOnClickListener(view -> navigateToChatRoom(mView, chatRoom));
+
+            // Setting up options menu
             binding.optionsMenuChatRoom.setOnClickListener(view -> {
                 //creating a popup menu
                 PopupMenu popup = new PopupMenu(mCtx, this.binding.optionsMenuChatRoom);
 
-                //inflating menu from xml resource
+                /*
+                    If the user is the owner, inflate chat_room_owner_menu (that has additional
+                    options), else inflate chat_room_menu (where the only option is to leave the
+                    chat room).
+                 */
                 if (chatRoom.getOwner().equals(mUserModel.getEmail())) {
                     popup.inflate(R.menu.chat_room_owner_menu);
                 } else {
                     popup.inflate(R.menu.chat_room_menu);
                 }
 
-                //adding click listener
+                //adding click listener to menu items
                 popup.setOnMenuItemClickListener(item -> {
                     switch (item.getItemId()) {
                         case R.id.menu_item_leave_chat_room:
-                            buildLeaveChatDialog(mCtx, chatRoom.getId()).show();
+                            showLeaveChatDialog(mCtx, chatRoom.getId());
                             break;
                         case R.id.menu_item_add_user_to_chat_room:
-                            // TODO: Add feedback when user is added
-                            buildAddUserToChatRoomDialog(mCtx, chatRoom.getId()).show();
+                            showAddUserToChatRoomDialog(mCtx, chatRoom.getId());
                             break;
                         case R.id.menu_item_remove_user_from_chat_room:
-                            // TODO: Add feedback when user is removed
-                            buildRemoveUserFromChatRoomDialog(mCtx, chatRoom.getId()).show();
+                            showRemoveUserFromChatRoomDialog(mCtx, chatRoom.getId());
                             break;
                         case R.id.menu_item_delete_chat_room:
-                            buildDeleteChatDialog(mCtx, chatRoom.getId()).show();
+                            showDeleteChatDialog(mCtx, chatRoom.getId());
                             break;
                     }
                     return false;
                 });
-                //displaying the popup
+                //displaying the options menu
                 popup.show();
             });
-            binding.textChatRoomTitle.setText(chatRoom.getName());
-            binding.textLastMessage.setText(chatRoom.getLastMessage());
         }
 
-        private AlertDialog.Builder buildLeaveChatDialog(final Context c, final int chatId) {
+        /**
+         * Shows AlertDialog asking user to confirm they want to leave a chat room
+         * @param context Context
+         * @param chatId ID of the chat room the user is trying to leave
+         */
+        private void showLeaveChatDialog(final Context context, final int chatId) {
 
-            final AlertDialog.Builder builder = new AlertDialog.Builder(c);
+            final AlertDialog.Builder builder = new AlertDialog.Builder(context);
             builder.setTitle("Disclaimer!");
             builder.setMessage("Are you sure you want to leave the chat room?");
 
-            builder.setPositiveButton("YES", (dialog, i) -> mChatRoomModel.removeUserFromChatRoom(chatId, mUserModel.getEmail(), mUserModel.getJwt()));
+            builder.setPositiveButton("YES", (dialog, i) -> mAddRemoveUsersModel.removeUserFromChatRoom(chatId, mUserModel.getEmail(), mUserModel.getJwt()));
 
             builder.setNegativeButton("NO", (dialogInterface, i) -> {});
 
-            return builder;
+            builder.show();
         }
 
-        private AlertDialog.Builder buildDeleteChatDialog(final Context c, final int chatId) {
+        /**
+         * Shows AlertDialog asking user to confirm they want to delete a chat room
+         * @param context Context
+         * @param chatId ID of the chat room the user is trying to delete
+         */
+        private void showDeleteChatDialog(final Context context, final int chatId) {
 
-            final AlertDialog.Builder builder = new AlertDialog.Builder(c);
+            final AlertDialog.Builder builder = new AlertDialog.Builder(context);
             builder.setTitle("Disclaimer!");
             builder.setMessage("Are you sure you want to delete this chat room? This cannot be reversed.");
 
-            builder.setPositiveButton("YES", (dialog, i) -> mChatRoomModel.deleteChatRoom(chatId, mUserModel.getJwt()));
+            builder.setPositiveButton("YES", (dialog, i) -> mAddDeleteChatsModel.deleteChatRoom(chatId, mUserModel.getJwt()));
 
             builder.setNegativeButton("NO", (dialogInterface, i) -> {});
 
-            return builder;
+            builder.show();
         }
 
-        private AlertDialog.Builder buildAddUserToChatRoomDialog(final Context c, final int chatId){
-            LayoutInflater inflater = LayoutInflater.from(c);
+        /**
+         * Shows AlertDialog asking user to enter the email of the user they want to add to their chat room
+         * @param context Context
+         * @param chatId ID of the chat room the user is trying to add another user to
+         */
+        private void showAddUserToChatRoomDialog(final Context context, final int chatId){
+            LayoutInflater inflater = LayoutInflater.from(context);
             View subView = inflater.inflate(R.layout.dialog_add_user_to_chat_room, null);
             final EditText subEditText = (EditText)subView.findViewById(R.id.edit_user_email);
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(c);
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
             builder.setTitle("Add user to chat room");
             builder.setView(subView);
             AlertDialog alertDialog = builder.create();
 
-            builder.setPositiveButton("Add", (dialog, which) -> mChatRoomModel.addUserToChatRoom(chatId, subEditText.getText().toString(), mUserModel.getJwt()));
+            builder.setPositiveButton("Add", (dialog, which) -> mAddRemoveUsersModel.addUserToChatRoom(chatId, subEditText.getText().toString(), mUserModel.getJwt()));
 
             builder.setNegativeButton("Cancel", (dialog, which) -> {
             });
 
-            return builder;
+            builder.show();
         }
 
-        private AlertDialog.Builder buildRemoveUserFromChatRoomDialog(final Context c, final int chatId){
-            LayoutInflater inflater = LayoutInflater.from(c);
+        /**
+         * Shows AlertDialog asking user to enter the email of the user they want to remove from their chat room
+         * @param context Context
+         * @param chatId ID of the chat room the user is trying to remove another user from
+         */
+        private void showRemoveUserFromChatRoomDialog(final Context context, final int chatId){
+            LayoutInflater inflater = LayoutInflater.from(context);
             View subView = inflater.inflate(R.layout.dialog_add_user_to_chat_room, null);
             final EditText subEditText = (EditText)subView.findViewById(R.id.edit_user_email);
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(c);
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
             builder.setTitle("Remove user from chat room");
             builder.setView(subView);
             AlertDialog alertDialog = builder.create();
 
-            builder.setPositiveButton("Remove", (dialog, which) -> mChatRoomModel.removeUserFromChatRoom(chatId, subEditText.getText().toString(), mUserModel.getJwt()));
+            builder.setPositiveButton("Remove", (dialog, which) -> mAddRemoveUsersModel.removeUserFromChatRoom(chatId, subEditText.getText().toString(), mUserModel.getJwt()));
 
             builder.setNegativeButton("Cancel", (dialog, which) -> {
             });
 
-            return builder;
+            builder.show();
         }
     }
 
