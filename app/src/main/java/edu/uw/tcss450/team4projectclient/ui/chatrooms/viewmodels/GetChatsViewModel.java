@@ -1,4 +1,4 @@
-package edu.uw.tcss450.team4projectclient.ui.chatrooms;
+package edu.uw.tcss450.team4projectclient.ui.chatrooms.viewmodels;
 
 import android.app.Application;
 import android.util.Log;
@@ -14,51 +14,51 @@ import com.android.volley.Request;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.nio.charset.Charset;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 import edu.uw.tcss450.team4projectclient.R;
 import edu.uw.tcss450.team4projectclient.io.RequestQueueSingleton;
-import edu.uw.tcss450.team4projectclient.ui.chat.ChatMessage;
+import edu.uw.tcss450.team4projectclient.ui.chatrooms.ChatRoom;
 
 /**
- * ViewModel that (for now) only serves to get the list of chatids for the chat rooms the user
- * is a part of
+ * ViewModel that handles the requests to the server for retrieving info of all the chat rooms
+ * that the user is in
  */
-public class ChatRoomViewModel extends AndroidViewModel {
+public class GetChatsViewModel extends AndroidViewModel {
 
     /**
-     * List of chatIds.
+     * MutableLiveData used to store response from server
      */
-    private MutableLiveData<List<Integer>> mChatIds;
+    private MutableLiveData<JSONObject> mResponse;
 
-    public ChatRoomViewModel(@NonNull Application application) {
+    /**
+     * Creates an instance of GetChatsViewModel
+     * @param application Application object
+     */
+    public GetChatsViewModel(@NonNull Application application) {
         super(application);
-        mChatIds = new MutableLiveData<>();
+        mResponse = new MutableLiveData<>();
     }
 
     /**
      * Adds observer to mChatIds
-     * @param owner LifeCyclerOwner
+     * @param owner LifeCycleOwner
      * @param observer Observer function
      */
-    public void addObserver(LifecycleOwner owner, Observer<? super List<Integer>> observer) {
-        mChatIds.observe(owner, observer);
+    public void addObserver(LifecycleOwner owner, Observer<? super JSONObject> observer) {
+        mResponse.observe(owner, observer);
     }
 
     /**
-     * Requests to get chatid of every chat room the user is a part of from the server
+     * Requests to get the ID, name, and owner's email of every chat room the user is in from the server
      * @param jwt User's JWT
      */
-    public void getChatIds(final String jwt) {
+    public void getChatRooms(final String jwt) {
         String url = getApplication().getResources().getString(R.string.base_url) +
                 "chats/";
 
@@ -85,36 +85,22 @@ public class ChatRoomViewModel extends AndroidViewModel {
         //Instantiate the RequestQueue and add the request to the queue
         RequestQueueSingleton.getInstance(getApplication().getApplicationContext())
                 .addToRequestQueue(request);
-
-        //code here will run
     }
 
     /**
-     * Handles successful request from getChatIds
-     * @param response JSONObject returned from request in getChatIds
+     * Handles successful request from getChatRoomss
+     * @param response JSONObject returned from request in getChatRooms
      */
     private void handleSuccess(final JSONObject response) {
-        List<Integer> list = new ArrayList<>();
         if (!response.has("rows")) {
-            throw new IllegalStateException("Unexpected response in ChatRoomViewModel: " + response);
+            throw new IllegalStateException("Unexpected response in GetChatsViewModel: " + response);
         }
-        try {
-            JSONArray messages = response.getJSONArray("rows");
-            for(int i = 0; i < messages.length(); i++) {
-                JSONObject message = messages.getJSONObject(i);
-                int chatId = message.getInt("chatid");
-                list.add(chatId);
-            }
-            mChatIds.setValue(list);
-        }catch (JSONException e) {
-            Log.e("JSON PARSE ERROR", "Found in handle Success ChatRoomViewModel");
-            Log.e("JSON PARSE ERROR", "Error: " + e.getMessage());
-        }
+        mResponse.setValue(response);
     }
 
     /**
-     * Handles error in request in getChatIds
-     * @param error VolleyError returned from request in getChatIds
+     * Handles error returned from request in getChatRooms
+     * @param error VolleyError returned from request in getChatRooms
      */
     private void handleError(final VolleyError error) {
         if (Objects.isNull(error.networkResponse)) {

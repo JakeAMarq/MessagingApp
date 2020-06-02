@@ -1,5 +1,7 @@
 package edu.uw.tcss450.team4projectclient.ui.auth.signin;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,9 +14,12 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
+import com.auth0.android.jwt.JWT;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import edu.uw.tcss450.team4projectclient.R;
 import edu.uw.tcss450.team4projectclient.databinding.FragmentSignInBinding;
 import edu.uw.tcss450.team4projectclient.model.PushyTokenViewModel;
 import edu.uw.tcss450.team4projectclient.model.UserInfoViewModel;
@@ -63,6 +68,25 @@ public class SignInFragment extends Fragment {
 
         mPushyTokenViewModel = new ViewModelProvider(getActivity()).get(PushyTokenViewModel.class);
     }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        SharedPreferences prefs = getActivity().getSharedPreferences(
+                getString(R.string.keys_shared_prefs), Context.MODE_PRIVATE);
+        if (prefs.contains(getString(R.string.keys_prefs_jwt)) && prefs.contains("member_id")) {
+            String token = prefs.getString(getString(R.string.keys_prefs_jwt), "");
+            Integer member_id = prefs.getInt("member_id", 0);
+            JWT jwt = new JWT(token);
+            // Check to see if the web token is still valid or not. To make a JWT expire after a // longer or shorter time period, change the expiration time when the JWT is
+            // created on the web service.
+            if(!jwt.isExpired(0)) {
+                String email = jwt.getClaim("email").asString();
+                navigateToMainActivity(email, token, member_id);
+                return;
+            }
+        }
+    }
     /**
      * Sets up the view for the fragment
      * @param inflater
@@ -99,8 +123,8 @@ public class SignInFragment extends Fragment {
         );
         //making sure the email and password are not empty
         SignInFragmentArgs args = SignInFragmentArgs.fromBundle(getArguments());
-        binding.editEmail.setText(args.getEmail().equals("default") ? "" : args.getEmail());//test1@test.com
-        binding.editPassword.setText(args.getPassword().equals("default") ? "" : args.getPassword());
+        binding.editEmail.setText(args.getEmail().equals("default") ? "test1@test.com" : args.getEmail());//test1@test.com
+        binding.editPassword.setText(args.getPassword().equals("default") ? "test12345" : args.getPassword());
 
         //don't allow sign in until pushy token retrieved
         mPushyTokenViewModel.addTokenObserver(getViewLifecycleOwner(), token ->
@@ -149,10 +173,18 @@ public class SignInFragment extends Fragment {
      * @param email
      * @param jwt
      */
-    private void navigateToMainActivity(String email, String jwt) {
+    private void navigateToMainActivity(String email, String jwt, Integer id) {
+        if (binding.switchSignIn.isChecked()) { SharedPreferences prefs =
+                getActivity().getSharedPreferences( getString(R.string.keys_shared_prefs), Context.MODE_PRIVATE);
+            //Store the credentials in SharedPrefs
+            prefs.edit().putString(getString(R.string.keys_prefs_jwt), jwt).apply();
+            prefs.edit().putInt("member_id", id).apply();
+
+        }
         SignInFragmentDirections.ActionSignInFragmentToMainActivity directions =
-                SignInFragmentDirections.actionSignInFragmentToMainActivity(email, jwt);
+                SignInFragmentDirections.actionSignInFragmentToMainActivity(email, jwt, id);
         Navigation.findNavController(getView()).navigate(directions);
+        getActivity().finish();
     }
 
     /**
@@ -204,10 +236,12 @@ public class SignInFragment extends Fragment {
                     if(response.getString("verification").equals("1")) {
 
                         memberId_a = response.getInt("memberid");
+
                         mUserViewModel = new ViewModelProvider(getActivity(),
                                 new UserInfoViewModel.UserInfoViewModelFactory(
                                         binding.editEmail.getText().toString(),
-                                        response.getString("token")
+                                        response.getString("token"),
+                                        response.getInt("memberid")
                                 )).get(UserInfoViewModel.class);
                         sendPushyToken();
                     } else {
@@ -241,7 +275,8 @@ public class SignInFragment extends Fragment {
             } else {
                 navigateToMainActivity(
                         binding.editEmail.getText().toString(),
-                        mUserViewModel.getJwt()
+                        mUserViewModel.getJwt(),
+                        mUserViewModel.getId()
                 );
                 mPushyTokenViewModel.resetResponse();
             }

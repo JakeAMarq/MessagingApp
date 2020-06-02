@@ -46,6 +46,9 @@
         <action
             android:id="@+id/action_navigation_contacts_to_contactsPostFragment"
             app:destination="@id/contactsPostFragment" />
+        <action
+            android:id="@+id/action_navigation_contacts_to_pendingContacts"
+            app:destination="@id/pendingContacts" />
     </fragment>
     <fragment
             android:id="@+id/navigation_chat_room"
@@ -54,7 +57,7 @@
             tools:layout="@layout/fragment_chat" >
         <argument
             android:name="chatRoom"
-            app:argType="edu.uw.tcss450.team4projectclient.ui.chat.ChatRoom" />
+            app:argType="edu.uw.tcss450.team4projectclient.ui.chatrooms.ChatRoom" />
     </fragment>
     <fragment
             android:id="@+id/contactFragment"
@@ -91,4 +94,9 @@
         android:name="edu.uw.tcss450.team4projectclient.ui.weather.LocationFragment"
         android:label="fragment_google"
         tools:layout="@layout/fragment_location" />
+    <fragment
+        android:id="@+id/pendingContacts"
+        android:name="edu.uw.tcss450.team4projectclient.ui.contacts.PendingContacts"
+        android:label="fragment_pending_contacts"
+        tools:layout="@layout/fragment_pending_contacts" />
 </navigation>

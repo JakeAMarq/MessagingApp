@@ -33,6 +33,7 @@ public class ContactFragment extends Fragment {
     private ContactsViewModel mContactsViewModel;
     private AddContactsViewModel mAddContactsViewModel;
     private int memberId_b;
+    private UserInfoViewModel mUserModel;
     /**
      * Required empty public constructor
      */
@@ -48,6 +49,8 @@ public class ContactFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        ViewModelProvider provider = new ViewModelProvider(getActivity());
+        mUserModel = provider.get(UserInfoViewModel.class);
         mContactsViewModel = new ViewModelProvider(getActivity()).get(ContactsViewModel.class);
         mAddContactsViewModel = new ViewModelProvider(getActivity()).get(AddContactsViewModel.class);
     }
@@ -118,7 +121,7 @@ public class ContactFragment extends Fragment {
             binding.editLookupNickname.setError("You cannot be friends with yourself...");
         } else {
             mAddContactsViewModel.connect(
-                    SignInFragment.memberId_a,
+                    mUserModel.getId(),
                     memberId_b
             );
         }

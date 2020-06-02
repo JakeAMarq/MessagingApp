@@ -28,7 +28,7 @@ import java.util.Objects;
 import edu.uw.tcss450.team4projectclient.R;
 import edu.uw.tcss450.team4projectclient.io.RequestQueueSingleton;
 
-public class ChatViewModel extends AndroidViewModel {
+public class MessageViewModel extends AndroidViewModel {
 
     /**
      * A Map of Lists of Chat Messages.
@@ -37,23 +37,13 @@ public class ChatViewModel extends AndroidViewModel {
      */
     private Map<Integer, MutableLiveData<List<ChatMessage>>> mMessages;
 
-    public ChatViewModel(@NonNull Application application) {
+    public MessageViewModel(@NonNull Application application) {
         super(application);
         mMessages = new HashMap<>();
     }
 
-    /**
-     * Returns chat rooms sorted from most recent last message to oldest last message
-     * @return chat rooms sorted from most recent last message to oldest last message
-     */
-    public List<ChatRoom> getChatRooms() {
-        List<ChatRoom> result = new ArrayList<>();
-        for (int id : mMessages.keySet()) {
-            result.add(new ChatRoom(id, mMessages.get(id).getValue()));
-        }
-        // Sorts chat rooms from most recent last message to oldest last message
-        result.sort((ChatRoom chatRoom1, ChatRoom chatRoom2) -> chatRoom2.getLastTimeStamp().compareTo(chatRoom1.getLastTimeStamp()));
-        return result;
+    public void clearChatRooms() {
+        mMessages.clear();
     }
 
     /**
@@ -83,7 +73,7 @@ public class ChatViewModel extends AndroidViewModel {
         return getOrCreateMapEntry(chatId).getValue();
     }
 
-    private MutableLiveData<List<ChatMessage>> getOrCreateMapEntry(final int chatId) {
+    public MutableLiveData<List<ChatMessage>> getOrCreateMapEntry(final int chatId) {
         if(!mMessages.containsKey(chatId)) {
             mMessages.put(chatId, new MutableLiveData<>(new ArrayList<>()));
         }
@@ -212,8 +202,8 @@ public class ChatViewModel extends AndroidViewModel {
                 } else {
                     // this shouldn't happen but could with the asynchronous
                     // nature of the application
-                    Log.wtf("Chat message already received",
-                            "Or duplicate id:" + cMessage.getMessageId());
+//                    Log.wtf("Chat message already received",
+//                            "Or duplicate id:" + cMessage.getMessageId());
                 }
 
             }
