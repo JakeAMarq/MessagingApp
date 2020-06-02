@@ -35,6 +35,7 @@ import edu.uw.tcss450.team4projectclient.MainActivity;
 import edu.uw.tcss450.team4projectclient.R;
 import edu.uw.tcss450.team4projectclient.databinding.FragmentContactsBinding;
 import edu.uw.tcss450.team4projectclient.databinding.FragmentSignInBinding;
+import edu.uw.tcss450.team4projectclient.model.UserInfoViewModel;
 import edu.uw.tcss450.team4projectclient.ui.auth.signin.SignInFragment;
 import edu.uw.tcss450.team4projectclient.ui.auth.signin.SignInFragmentDirections;
 
@@ -52,6 +53,10 @@ public class ContactsFragment extends Fragment {
     private List<ContactsPost> myContacts;
     private ContactsRecyclerViewAdapter myAdapter;
     public static DeleteContactsViewModel mDeleteContactsViewModel;
+    /**
+     * The ViewModel containing the user's email and JWT
+     */
+    private UserInfoViewModel mUserModel;
 
 
     /**
@@ -76,6 +81,8 @@ public class ContactsFragment extends Fragment {
         memberId_b = new ArrayList<>();
         myContacts = new ArrayList<>();
         primaryKey = new ArrayList<>();
+        ViewModelProvider provider = new ViewModelProvider(getActivity());
+        mUserModel = provider.get(UserInfoViewModel.class);
         mDeleteContactsViewModel = new ViewModelProvider(getActivity()).get(DeleteContactsViewModel.class);
     }
 
@@ -147,7 +154,7 @@ public class ContactsFragment extends Fragment {
      */
     private void verifyAuthWithServer() {
         mFetchViewModel.connect(
-                SignInFragment.memberId_a);
+                mUserModel.getId());
     }
 
     /**

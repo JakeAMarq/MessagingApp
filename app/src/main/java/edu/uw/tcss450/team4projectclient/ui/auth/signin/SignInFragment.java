@@ -74,14 +74,15 @@ public class SignInFragment extends Fragment {
         super.onStart();
         SharedPreferences prefs = getActivity().getSharedPreferences(
                 getString(R.string.keys_shared_prefs), Context.MODE_PRIVATE);
-        if (prefs.contains(getString(R.string.keys_prefs_jwt))) {
+        if (prefs.contains(getString(R.string.keys_prefs_jwt)) && prefs.contains("member_id")) {
             String token = prefs.getString(getString(R.string.keys_prefs_jwt), "");
+            Integer member_id = prefs.getInt("member_id", 0);
             JWT jwt = new JWT(token);
             // Check to see if the web token is still valid or not. To make a JWT expire after a // longer or shorter time period, change the expiration time when the JWT is
             // created on the web service.
             if(!jwt.isExpired(0)) {
                 String email = jwt.getClaim("email").asString();
-                navigateToMainActivity(email, token);
+                navigateToMainActivity(email, token, member_id);
                 return;
             }
         }
@@ -172,14 +173,16 @@ public class SignInFragment extends Fragment {
      * @param email
      * @param jwt
      */
-    private void navigateToMainActivity(String email, String jwt) {
+    private void navigateToMainActivity(String email, String jwt, Integer id) {
         if (binding.switchSignIn.isChecked()) { SharedPreferences prefs =
                 getActivity().getSharedPreferences( getString(R.string.keys_shared_prefs), Context.MODE_PRIVATE);
             //Store the credentials in SharedPrefs
             prefs.edit().putString(getString(R.string.keys_prefs_jwt), jwt).apply();
+            prefs.edit().putInt("member_id", id).apply();
+
         }
         SignInFragmentDirections.ActionSignInFragmentToMainActivity directions =
-                SignInFragmentDirections.actionSignInFragmentToMainActivity(email, jwt);
+                SignInFragmentDirections.actionSignInFragmentToMainActivity(email, jwt, id);
         Navigation.findNavController(getView()).navigate(directions);
         getActivity().finish();
     }
@@ -233,10 +236,12 @@ public class SignInFragment extends Fragment {
                     if(response.getString("verification").equals("1")) {
 
                         memberId_a = response.getInt("memberid");
+
                         mUserViewModel = new ViewModelProvider(getActivity(),
                                 new UserInfoViewModel.UserInfoViewModelFactory(
                                         binding.editEmail.getText().toString(),
-                                        response.getString("token")
+                                        response.getString("token"),
+                                        response.getInt("memberid")
                                 )).get(UserInfoViewModel.class);
                         sendPushyToken();
                     } else {
@@ -270,7 +275,8 @@ public class SignInFragment extends Fragment {
             } else {
                 navigateToMainActivity(
                         binding.editEmail.getText().toString(),
-                        mUserViewModel.getJwt()
+                        mUserViewModel.getJwt(),
+                        mUserViewModel.getId()
                 );
                 mPushyTokenViewModel.resetResponse();
             }

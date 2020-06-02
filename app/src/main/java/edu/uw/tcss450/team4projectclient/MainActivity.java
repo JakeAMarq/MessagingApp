@@ -13,6 +13,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.material.badge.BadgeDrawable;
@@ -30,6 +31,8 @@ import edu.uw.tcss450.team4projectclient.ui.chat.ChatMessage;
 import edu.uw.tcss450.team4projectclient.ui.chatrooms.ChatRoom;
 import edu.uw.tcss450.team4projectclient.ui.chat.MessageViewModel;
 import edu.uw.tcss450.team4projectclient.ui.chatrooms.viewmodels.GetChatsViewModel;
+import edu.uw.tcss450.team4projectclient.ui.contacts.AddContactsViewModel;
+import edu.uw.tcss450.team4projectclient.ui.contacts.ContactsPost;
 
 /**
  * Activity containing NavHostFragment for res/navigation/main_graph and bottom navigation
@@ -61,6 +64,8 @@ public class MainActivity extends AppCompatActivity {
      * ViewModel used to retrieve chat rooms the user is in
      */
     private GetChatsViewModel mGetChatsModel;
+
+   // private AddContactsViewModel mAddContacts;
 
     /**
      * ViewModel used to store user's email and JWT
@@ -94,10 +99,11 @@ public class MainActivity extends AppCompatActivity {
         ViewModelProvider provider = new ViewModelProvider(this);
         mUserInfoModel = new ViewModelProvider(
                 this,
-                new UserInfoViewModel.UserInfoViewModelFactory(args.getEmail(), args.getJwt()))
+                new UserInfoViewModel.UserInfoViewModelFactory(args.getEmail(), args.getJwt(), args.getMemberId()))
                 .get(UserInfoViewModel.class);
         mGetChatsModel = provider.get(GetChatsViewModel.class);
         mNewMessageModel = provider.get(NewMessageCountViewModel.class);
+       // mAddContacts = provider.get(AddContactsViewModel.class);
 
 
         mAppBarConfiguration = new AppBarConfiguration.Builder(
@@ -155,8 +161,10 @@ public class MainActivity extends AppCompatActivity {
         }
         IntentFilter msgFilter = new IntentFilter(PushReceiver.RECEIVED_NEW_MESSAGE);
         IntentFilter chatFilter = new IntentFilter(PushReceiver.RECEIVED_NEW_CHAT);
+        IntentFilter contactFilter = new IntentFilter(PushReceiver.RECEIVED_NEW_CONTACT);
         registerReceiver(mPushMessageReceiver, msgFilter);
         registerReceiver(mPushMessageReceiver, chatFilter);
+        registerReceiver(mPushMessageReceiver, contactFilter);
     }
 
     @Override
@@ -225,6 +233,9 @@ public class MainActivity extends AppCompatActivity {
 
                 mGetChatsModel.getChatRooms(mUserInfoModel.getJwt());
                 Toast.makeText(MainActivity.this, "You've been added to chat room: " + chatRoom.getName(), Toast.LENGTH_LONG).show();
+            } else if (intent.hasExtra("contactsPost")) {
+                ContactsPost contactsPost = (ContactsPost) intent.getSerializableExtra("contactsPost");
+                Log.e("I AM HEREEEEE", "YOOOOOOOOOOO");
             }
         }
     }
