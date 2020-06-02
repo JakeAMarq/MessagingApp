@@ -73,12 +73,9 @@ public class ContactsPostFragment extends Fragment {
                 this::observeResponse);
         args = ContactsPostFragmentArgs.fromBundle(getArguments());
         FragmentContactsPostBinding binding = FragmentContactsPostBinding.bind(getView());
-        binding.textPubdate.setText(args.getContact().getPubDate());
-        binding.textTitle.setText(args.getContact().getTitle());
-        final String preview = Html.fromHtml(
-                args.getContact().getTeaser(),
-                Html.FROM_HTML_MODE_COMPACT)
-                .toString();
+        binding.textPubdate.setText(args.getContact().getUserName());
+        binding.textTitle.setText(args.getContact().getFName());
+        final String preview = "";
         binding.textPreview.setText(preview);
         //Note we are using an Intent here to start the default system web browser
         binding.buttonUrl.setOnClickListener(button -> verifyAuthWithServer());
@@ -118,7 +115,7 @@ public class ContactsPostFragment extends Fragment {
             } else {
 
                 // navigate to Contacts to login the user.
-                Toast.makeText(getContext(), "You've Deleted " + args.getContact().getPubDate(), Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), "You've Deleted " + args.getContact().getUserName(), Toast.LENGTH_LONG).show();
                // getActivity().getSupportFragmentManager().popBackStackImmediate();
                 Navigation.findNavController(getView()).navigate(ContactsPostFragmentDirections.actionContactsPostFragmentToNavigationContacts3());
                 //Navigation.findNavController(getView()).navigate(ContactFragmentDirections.actionContactFragmentToNavigationContacts());

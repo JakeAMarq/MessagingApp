@@ -39,6 +39,9 @@
         <action
             android:id="@+id/action_navigation_contacts_to_contactsPostFragment"
             app:destination="@id/contactsPostFragment" />
+        <action
+            android:id="@+id/action_navigation_contacts_to_pendingContacts"
+            app:destination="@id/pendingContacts" />
     </fragment>
     <fragment
             android:id="@+id/navigation_chat_room"
@@ -74,4 +77,9 @@
         android:name="edu.uw.tcss450.team4projectclient.ui.home.ColorFragment"
         android:label="fragment_color"
         tools:layout="@layout/fragment_color" />
+    <fragment
+        android:id="@+id/pendingContacts"
+        android:name="edu.uw.tcss450.team4projectclient.ui.contacts.PendingContacts"
+        android:label="fragment_pending_contacts"
+        tools:layout="@layout/fragment_pending_contacts" />
 </navigation>

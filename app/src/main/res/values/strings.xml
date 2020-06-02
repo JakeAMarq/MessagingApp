@@ -33,6 +33,7 @@
     <string name="enter_nickname">Enter user\'s nickname</string>
     <string name="title_add">Add User</string>
     <string name="add_new_contact_btn">ADD NEW CONTACT</string>
+    <string name="pending_contact_btn">PENDING CONTACT</string>
     <string name="title_lookup_textview"> ADD CONTACT</string>
     <string name="text_verification">A verification code has been sent to your email.</string>
     <string name="title_location_search">Location</string>
@@ -51,4 +52,7 @@
     <string name="text_banana">Banana Theme</string>
     <string name="prefs_theme_key">theme</string>
     <string name="option_menu_icon">⋮</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

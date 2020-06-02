@@ -19,30 +19,30 @@ import androidx.recyclerview.widget.RecyclerView;
 import edu.uw.tcss450.team4projectclient.R;
 import edu.uw.tcss450.team4projectclient.databinding.FragmentContactCardBinding;
 
-public class ContactsRecyclerViewAdapter extends RecyclerView.Adapter<ContactsRecyclerViewAdapter.ContactsViewHolder> {
+public class PendingContactsRecyclerViewAdapter extends RecyclerView.Adapter<PendingContactsRecyclerViewAdapter.PendingContactsViewHolder> {
 
     //Store all of the blogs to present
-    private final List<ContactsPost> mContacts;
+    private final List<PendingContactsInfo> mContacts;
     private Context context;
 
     private Integer key;
 
-    public ContactsRecyclerViewAdapter(List<ContactsPost> items) {
+    public PendingContactsRecyclerViewAdapter(List<PendingContactsInfo> items) {
         this.mContacts = items;
     }
 
     @NonNull
     @Override
-    public ContactsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public PendingContactsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         context = parent.getContext();
-        return new ContactsViewHolder(LayoutInflater
+        return new PendingContactsViewHolder(LayoutInflater
                 .from(parent.getContext())
-                .inflate(R.layout.fragment_contact_card, parent, false));
+                .inflate(R.layout.fragment_pendcontact_card, parent, false));
 
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ContactsViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull PendingContactsViewHolder holder, int position) {
         holder.setBlog(mContacts.get(position));
     }
 
@@ -54,10 +54,10 @@ public class ContactsRecyclerViewAdapter extends RecyclerView.Adapter<ContactsRe
      * Objects from this class represent an Individual row View from the List
      * of rows in the Blog Recycler View.
      */
-    public class ContactsViewHolder extends RecyclerView.ViewHolder {
+    public class PendingContactsViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
         public FragmentContactCardBinding binding;
-        public ContactsViewHolder(View view) {
+        public PendingContactsViewHolder(View view) {
             super(view);
             mView = view;
             binding = FragmentContactCardBinding.bind(view);
@@ -70,10 +70,12 @@ public class ContactsRecyclerViewAdapter extends RecyclerView.Adapter<ContactsRe
          */
         private void verifyAuthWithServer(Integer pKey) {
 
-            ContactsFragment.mDeleteContactsViewModel.connect(mContacts.get(getAdapterPosition()).getMprimaryKey()
+            PendingContacts.mAcceptContact.accept_contact(mContacts.get(getAdapterPosition()).getMprimaryKey(),
+                    mContacts.get(getAdapterPosition()).getWantedPrimaryA(),
+                    mContacts.get(getAdapterPosition()).getWantedPrimaryB()
             );
         }
-//        /**
+        //        /**
 //         * When the button is clicked in the more state, expand the card to display
 //         * the blog preview and switch the icon to the less state. When the button
 //         * is clicked in the less state, shrink the card and switch the icon to the
@@ -95,16 +97,16 @@ public class ContactsRecyclerViewAdapter extends RecyclerView.Adapter<ContactsRe
 //                                R.drawable.ic_more_grey_24dp));
 //            }
 //        }
-        void setBlog(final ContactsPost blog) {
+        void setBlog(final PendingContactsInfo blog) {
 //            Navigation.findNavController(mView).navigate(
 //                    ContactsFragmentDirections
 //                            .actionNavigationContactsToContactsPostFragment(blog)
             //key = blog.getMprimaryKey();
-           // Log.e("pppp", String.valueOf(mContacts.get(getAdapterPosition()).getMprimaryKey()));
+            // Log.e("pppp", String.valueOf(mContacts.get(getAdapterPosition()).getMprimaryKey()));
 
 
             binding.buttonFullPost.setOnClickListener(view -> buildDialog(context).show());
-                    //TODO add navigation later step
+            //TODO add navigation later step
 //            );
             binding.textTitle.setText("First Name : " + blog.getFName()  + "\nLast Name: " + blog.getLastName());
             binding.textPubdate.setText(blog.getUserName());
@@ -122,7 +124,7 @@ public class ContactsRecyclerViewAdapter extends RecyclerView.Adapter<ContactsRe
 
             final AlertDialog.Builder builder = new AlertDialog.Builder(c);
             builder.setTitle("Disclaimer!");
-            builder.setMessage("Are you sure you want to delete the contact?");
+            builder.setMessage("Are you sure you want to accept this contact?");
 
             builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
 
