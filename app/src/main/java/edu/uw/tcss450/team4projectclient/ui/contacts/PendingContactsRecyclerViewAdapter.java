@@ -73,7 +73,14 @@ public class PendingContactsRecyclerViewAdapter extends RecyclerView.Adapter<Pen
             PendingContacts.mAcceptContact.accept_contact(mContacts.get(getAdapterPosition()).getMprimaryKey(),
                     mContacts.get(getAdapterPosition()).getWantedPrimaryA(),
                     mContacts.get(getAdapterPosition()).getWantedPrimaryB()
+
             );
+            if (getItemCount() > 1) {
+                PendingContacts.check = 1;
+            } else {
+                PendingContacts.check = 2;
+            }
+
         }
         //        /**
 //         * When the button is clicked in the more state, expand the card to display
@@ -105,7 +112,7 @@ public class PendingContactsRecyclerViewAdapter extends RecyclerView.Adapter<Pen
             // Log.e("pppp", String.valueOf(mContacts.get(getAdapterPosition()).getMprimaryKey()));
 
 
-            binding.buttonFullPost.setOnClickListener(view -> buildDialog(context).show());
+            binding.buttonFullPost.setOnClickListener(view -> {buildDialog(context).show();});
             //TODO add navigation later step
 //            );
             binding.textTitle.setText("First Name : " + blog.getFName()  + "\nLast Name: " + blog.getLastName());

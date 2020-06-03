@@ -18,6 +18,7 @@ import org.json.JSONObject;
 
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
+import edu.uw.tcss450.team4projectclient.MainActivity;
 import edu.uw.tcss450.team4projectclient.R;
 import edu.uw.tcss450.team4projectclient.databinding.FragmentContactBinding;
 import edu.uw.tcss450.team4projectclient.databinding.FragmentContactsBinding;
@@ -34,6 +35,7 @@ public class ContactFragment extends Fragment {
     private AddContactsViewModel mAddContactsViewModel;
     private int memberId_b;
     private UserInfoViewModel mUserModel;
+    private int check  = 0;
     /**
      * Required empty public constructor
      */
@@ -48,7 +50,8 @@ public class ContactFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        ((MainActivity) getActivity())
+                .setActionBarTitle("Add a Contact");
         ViewModelProvider provider = new ViewModelProvider(getActivity());
         mUserModel = provider.get(UserInfoViewModel.class);
         mContactsViewModel = new ViewModelProvider(getActivity()).get(ContactsViewModel.class);
@@ -97,7 +100,8 @@ public class ContactFragment extends Fragment {
         this.binding.wantedLastNameTextview.setVisibility(View.INVISIBLE);
         this.binding.resultsContactsTextview.setVisibility(View.INVISIBLE);
         this.binding.buttonSearchContact.setOnClickListener(button -> verifyAuthWithServer());
-        this.binding.buttonAddContact.setOnClickListener(button -> verifyAuthWithServerAdd());
+        this.binding.buttonAddContact.setOnClickListener(button -> {verifyAuthWithServerAdd();
+        check = 1;});
     }
 
     /**
@@ -180,8 +184,16 @@ public class ContactFragment extends Fragment {
                     Log.e("JSON Parse Error", e.getMessage());
                 }
             } else {
-
-                Toast.makeText(getContext(), "You added the given user", Toast.LENGTH_LONG).show();
+                if (check == 1) {
+                    Toast.makeText(getContext(), "You added the given user", Toast.LENGTH_LONG).show();
+                    check = 0;
+                } else {
+                    this.binding.buttonAddContact.setVisibility(View.INVISIBLE);
+                    this.binding.wantedUsernameTextview.setVisibility(View.INVISIBLE);
+                    this.binding.wantedFirstNameTextview.setVisibility(View.INVISIBLE);
+                    this.binding.wantedLastNameTextview.setVisibility(View.INVISIBLE);
+                    this.binding.resultsContactsTextview.setVisibility(View.INVISIBLE);
+                }
 
                 //Navigation.findNavController(getView()).navigate(ContactFragmentDirections.actionContactFragmentToNavigationContacts());
             }

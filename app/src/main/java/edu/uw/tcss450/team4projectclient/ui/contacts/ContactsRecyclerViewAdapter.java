@@ -72,6 +72,9 @@ public class ContactsRecyclerViewAdapter extends RecyclerView.Adapter<ContactsRe
 
             ContactsFragment.mDeleteContactsViewModel.connect(mContacts.get(getAdapterPosition()).getMprimaryKey()
             );
+            if (getItemCount() == 1) {
+                ContactsFragment.check = 1;
+            }
         }
 //        /**
 //         * When the button is clicked in the more state, expand the card to display
