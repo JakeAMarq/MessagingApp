@@ -59,7 +59,7 @@ public class ChatFragment extends Fragment {
         mChatModel.getFirstMessages(mChatRoom.getId(), mUserModel.getJwt());
 
         ((MainActivity) getActivity())
-                .setActionBarTitle("Chat Room ID: " + mChatRoom.getId());
+                .setActionBarTitle(mChatRoom.getName());
     }
 
     @Override
