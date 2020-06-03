@@ -53,6 +53,7 @@ public class ContactsFragment extends Fragment {
     private List<ContactsPost> myContacts;
     private ContactsRecyclerViewAdapter myAdapter;
     public static DeleteContactsViewModel mDeleteContactsViewModel;
+    public static int check = 0;
     /**
      * The ViewModel containing the user's email and JWT
      */
@@ -140,9 +141,17 @@ public class ContactsFragment extends Fragment {
                     Log.e("JSON Parse Error", e.getMessage());
                 }
             } else {
+                if (check == 1) {
+//                    Toast.makeText(getContext(), "Y")
+                    myAdapter = new ContactsRecyclerViewAdapter(new ArrayList<ContactsPost>());
+                    myView.setAdapter(
+                            myAdapter);
+                    check = 0;
 
+                }
                 verifyAuthWithServer();
             }
+            verifyAuthWithServer();
         } else {
             Log.e("JSON Response", "No Response");
         }

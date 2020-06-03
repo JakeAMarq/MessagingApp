@@ -106,5 +106,9 @@
         android:id="@+id/pendingContacts"
         android:name="edu.uw.tcss450.team4projectclient.ui.contacts.PendingContacts"
         android:label="fragment_pending_contacts"
-        tools:layout="@layout/fragment_pending_contacts" />
+        tools:layout="@layout/fragment_pending_contacts" >
+        <action
+            android:id="@+id/action_pendingContacts_to_navigation_contacts"
+            app:destination="@id/navigation_contacts" />
+    </fragment>
 </navigation>

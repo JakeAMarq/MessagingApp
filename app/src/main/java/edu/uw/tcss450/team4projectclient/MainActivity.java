@@ -44,6 +44,7 @@ import edu.uw.tcss450.team4projectclient.ui.chat.MessageViewModel;
 import edu.uw.tcss450.team4projectclient.ui.chatrooms.viewmodels.GetChatsViewModel;
 import edu.uw.tcss450.team4projectclient.ui.contacts.AddContactsViewModel;
 import edu.uw.tcss450.team4projectclient.ui.contacts.ContactsPost;
+import edu.uw.tcss450.team4projectclient.ui.contacts.FetchContactsViewModel;
 
 /**
  * Activity containing NavHostFragment for res/navigation/main_graph and bottom navigation
@@ -76,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private GetChatsViewModel mGetChatsModel;
 
-   // private AddContactsViewModel mAddContacts;
+    private FetchContactsViewModel mFetchContactsModel;
 
     /**
      * ViewModel used to store user's email and JWT
@@ -133,6 +134,7 @@ public class MainActivity extends AppCompatActivity {
                 new UserInfoViewModel.UserInfoViewModelFactory(args.getEmail(), args.getJwt(), args.getMemberId()))
                 .get(UserInfoViewModel.class);
         mGetChatsModel = provider.get(GetChatsViewModel.class);
+        mFetchContactsModel = provider.get(FetchContactsViewModel.class);
         mNewMessageModel = provider.get(NewMessageCountViewModel.class);
        // mAddContacts = provider.get(AddContactsViewModel.class);
 
@@ -355,9 +357,13 @@ public class MainActivity extends AppCompatActivity {
 
                 mGetChatsModel.getChatRooms(mUserInfoModel.getJwt());
                 Toast.makeText(MainActivity.this, "You've been added to chat room: " + chatRoom.getName(), Toast.LENGTH_LONG).show();
-            } else if (intent.hasExtra("contactsPost")) {
-                ContactsPost contactsPost = (ContactsPost) intent.getSerializableExtra("contactsPost");
-                Log.e("I AM HEREEEEE", "YOOOOOOOOOOO");
+            } else if (intent.hasExtra("sender")) {
+                String sender = intent.getStringExtra("sender");
+                Toast.makeText(MainActivity.this, sender + " has requested to add you as a contact.", Toast.LENGTH_LONG).show();
+            } else if (intent.hasExtra("accepter")) {
+                String accepter = intent.getStringExtra("accepter");
+                mFetchContactsModel.connect(mUserInfoModel.getId());
+                Toast.makeText(MainActivity.this, accepter + " has accepted your contact request.", Toast.LENGTH_LONG).show();
             }
         }
     }

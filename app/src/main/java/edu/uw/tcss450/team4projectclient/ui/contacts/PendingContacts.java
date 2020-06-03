@@ -19,7 +19,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
+import edu.uw.tcss450.team4projectclient.MainActivity;
 import edu.uw.tcss450.team4projectclient.R;
 import edu.uw.tcss450.team4projectclient.ui.auth.signin.SignInFragment;
 
@@ -34,6 +36,7 @@ public class PendingContacts extends Fragment {
     private RecyclerView myView;
     private List<PendingContactsInfo> myContacts;
     public static AcceptUserViewModel mAcceptContact;
+    public static int check = 0;
 
     private PendingContactsRecyclerViewAdapter myAdapter;
 
@@ -45,6 +48,8 @@ public class PendingContacts extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        ((MainActivity) getActivity())
+                .setActionBarTitle("Pending Contacts");
         mFetchViewModel = new ViewModelProvider(getActivity()).get(FetchPendingContactsViewModel.class);
         firstName = new ArrayList<>();
         lastName = new ArrayList<>();
@@ -54,6 +59,7 @@ public class PendingContacts extends Fragment {
         myContacts = new ArrayList<>();
         primaryKey = new ArrayList<>();
         mAcceptContact = new ViewModelProvider(getActivity()).get(AcceptUserViewModel.class);
+        verifyAuthWithServer();
     }
 
     @Override
@@ -79,7 +85,7 @@ public class PendingContacts extends Fragment {
         mAcceptContact.addResponseObserver(
                 getViewLifecycleOwner(),
                 this::observeResponseAccept);
-        verifyAuthWithServer();
+
     }
 
     private void verifyAuthWithServer() {
@@ -103,7 +109,21 @@ public class PendingContacts extends Fragment {
                 }
             } else {
 
-                verifyAuthWithServer();
+              //  verifyAuthWithServer();
+
+                if (check == 1) {
+                    Navigation.findNavController(getView()).navigate(PendingContactsDirections.actionPendingContactsToNavigationContacts());
+                    Log.e("hahaha", "NOOOOOOO");
+                    check = 0;
+                } else if (check == 2) {
+                   // Navigation.findNavController(getView()).navigate(PendingContactsDirections.actionPendingContactsToNavigationContacts());
+                    Log.e("hahaha", "NOOOOOOO");
+                    myAdapter = new PendingContactsRecyclerViewAdapter(new ArrayList<PendingContactsInfo>());
+                    myView.setAdapter(
+                            myAdapter);
+                    check = 0;
+                }
+
             }
         } else {
             Log.e("JSON Response", "No Response");
