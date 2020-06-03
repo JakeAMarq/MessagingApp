@@ -207,7 +207,7 @@ public class ChatRoomListFragment extends Fragment {
                 );
                 addChatRoom(chatRoom);
 
-                Toast.makeText(getContext(), "New chat: " + chatRoom.getName() + " added successfully", Toast.LENGTH_LONG).show();
+//                Toast.makeText(getContext(), "New chat: " + chatRoom.getName() + " added successfully", Toast.LENGTH_LONG).show();
             } else if (response.has("error")) {
                 Toast.makeText(getContext(), "Error creating chat: " + response.getString("error"), Toast.LENGTH_LONG).show();
             } else {
