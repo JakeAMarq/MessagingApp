@@ -52,9 +52,9 @@ public class WeatherFragment<LocationViewModel> extends Fragment {
     // static var for the state
     public static String mState = "";
     // Binding to have access to all of the components in the xml.
-    private FragmentWeatherBinding binding;
+    private static FragmentWeatherBinding binding;
     // This is the view model class to for the weather
-    private WeatherViewModel mWeatherModel;
+    private static WeatherViewModel mWeatherModel;
     //checks the zipcode entered is of length 5
     private PasswordValidator mZipcodeValidator = PasswordValidator.checkLength(5)
             .and(checkExcludeWhiteSpace())
@@ -131,10 +131,12 @@ public class WeatherFragment<LocationViewModel> extends Fragment {
         );
 //        pullZipcodeWeatherData();
         // if zipcode is null then pull gps location otherwise hold on to last selected zip
+        Log.e("zip", zipcode);
         if (zipcode.equals("\0")){
             //get gps location
-            mLocModel.getCurrentLocation();
-            Log.e("GetLoc", mLocModel.getCurrentLocation().toString());
+            String lat = String.valueOf(mLocModel.getCurrentLocation().getLatitude());
+            String lon = String.valueOf(mLocModel.getCurrentLocation().getLongitude());
+            mWeatherModel.connect(lat, lon);
         }
     }
 
@@ -194,6 +196,14 @@ public class WeatherFragment<LocationViewModel> extends Fragment {
         } else {
             mWeatherModel.connect(binding.enterZipcode.getText().toString());
         }
+    }
+
+    public static void sendCoords(String lat, String lon) {
+        mWeatherModel.connect(lat, lon);
+    }
+
+    public static  void checkStar(){
+        binding.buttonFavorite.setChecked(true);
     }
 
     private void changeFavs() {
@@ -262,6 +272,7 @@ public class WeatherFragment<LocationViewModel> extends Fragment {
 
 //                  }
                         mFavoriteModel.connect(mUserModel.getId());
+
                         binding.layoutWait.setVisibility(View.GONE);
 
                     }

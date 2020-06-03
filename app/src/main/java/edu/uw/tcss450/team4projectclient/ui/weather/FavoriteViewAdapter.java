@@ -43,6 +43,7 @@ public class FavoriteViewAdapter  extends RecyclerView.Adapter<FavoriteViewAdapt
     @Override
     public FavoriteViewAdapter.FavoriteViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         // bind the holder to fragment_favorite_card
+        Log.e("RETURN  ", "damnnn");
         return new FavoriteViewHolder(LayoutInflater
                 .from(parent.getContext())
                 .inflate(R.layout.fragment_favorite_card, parent, false));
@@ -87,7 +88,7 @@ public class FavoriteViewAdapter  extends RecyclerView.Adapter<FavoriteViewAdapt
             binding.buittonMore.setOnClickListener(this::handleMoreOrLess);
             binding.buttonDelete.setOnClickListener(button -> delete());
             binding.buttonCityState.setOnClickListener(button -> updateWeatherZip());
-            binding.buittonMore.setVisibility(View.GONE);
+
 
         }
 
@@ -96,14 +97,16 @@ public class FavoriteViewAdapter  extends RecyclerView.Adapter<FavoriteViewAdapt
          *
          */
         private void delete() {
-
             FavoriteFragment.deleteLocation(mMemberid, favData.getZipcode());
         }
 
         private void updateWeatherZip() {
-            WeatherFragment.zipcode =  favData.getZipcode();
+            WeatherFragment.sendCoords(favData.getLat(),favData.getLong());
+
             //navigate back to weather frag
-            Navigation.findNavController(mView).navigate(FavoriteFragmentDirections.actionFavoriteFragmentToNavigationWeather());
+            Navigation.findNavController(mView).navigate(FavoriteFragmentDirections
+                      .actionFavoriteFragmentToNavigationWeather());
+
         }
 
         /**
@@ -117,7 +120,6 @@ public class FavoriteViewAdapter  extends RecyclerView.Adapter<FavoriteViewAdapt
             sb.append("\nLatitude: " + fav.getLat());
             sb.append("\nLongitude: " + fav.getLong());
             binding.textPreview.setText(sb.toString());
-            Log.e("SETTTTTTADAPTER", "id" + mMemberid);
             favData = fav;
 
         }

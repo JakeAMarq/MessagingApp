@@ -129,7 +129,7 @@ public class FavoriteFragment extends Fragment {
                     } else if (type.equals("favorites")) {
                         List<FavoriteData> favs = getLocations(new JSONArray(json.getString("locations")));
 //                        Log.e("DATA", favs.toString());
-                        binding.RVFavorites.setAdapter(new FavoriteViewAdapter(favs, mUserModel.getId()));
+                        binding.listRoot.setAdapter(new FavoriteViewAdapter(favs, mUserModel.getId()));
 
                     }
 //                    binding.layoutWait.setVisibility(View.GONE);

@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -54,7 +55,10 @@ public class LocationFragment extends Fragment  implements OnMapReadyCallback, G
         Log.e("ooooo", "lol");
         mModel.addLocationObserver(getViewLifecycleOwner(), location -> {
             Log.e("yayyyy", location.toString());
-            binding.textLatLong.setText(location.toString());
+            String lat = String.valueOf(location.getLatitude());
+            String lon = String.valueOf(location.getLongitude());
+            binding.textLatitude.setText("Latitude: " + lat);
+            binding.textLongitude.setText("Longitude: " + lon);
         });
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -62,6 +66,16 @@ public class LocationFragment extends Fragment  implements OnMapReadyCallback, G
                 (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         //add this fragment as the OnMapReadyCallback -> See onMapReady()
         mapFragment.getMapAsync(this);
+
+        binding.buttonSearchWeather.setOnClickListener(button -> sendWeatherData());
+    }
+
+    private void sendWeatherData() {
+        String lat = binding.textLatitude.getText().toString();
+        String lon = binding.textLongitude.getText().toString();
+        WeatherFragment.sendCoords(lat.substring(10), lon.substring(11));
+        Navigation.findNavController(getView()).navigate(LocationFragmentDirections
+                                               .actionGoogleFragmentToNavigationWeather());
     }
 
     @Override
@@ -92,7 +106,11 @@ public class LocationFragment extends Fragment  implements OnMapReadyCallback, G
         mMap.animateCamera(
                 CameraUpdateFactory.newLatLngZoom(
                         latLng, mMap.getCameraPosition().zoom));
-        binding.textLatLong.setText(latLng.toString());
+//        binding.textLatLong.setText(latLng.toString());
+        String lat = String.valueOf(latLng.latitude);
+        String lon = String.valueOf(latLng.longitude);
+        binding.textLatitude.setText("Latitude: " + lat.substring(0,10));
+        binding.textLongitude.setText("Longitude: " + lon.substring(0,10));
 
     }
 }
