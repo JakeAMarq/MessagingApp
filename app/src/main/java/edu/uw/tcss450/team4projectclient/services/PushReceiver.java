@@ -51,6 +51,10 @@ public class PushReceiver extends BroadcastReceiver {
             case "chat":
                 handleChatReceived(context, intent);
                 break;
+            case "contact":
+                handleContactRequestReceived(context, intent);
+            case "accepted":
+                handleRequestAccepted(context, intent);
         }
 
 
@@ -159,6 +163,104 @@ public class PushReceiver extends BroadcastReceiver {
                     .setContentText("You've been added to " +
                             chatRoom.getOwner() + "'s chat room: " +
                             chatRoom.getName())
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                    .setContentIntent(pendingIntent);
+
+            // Automatically configure a ChatMessageNotification Channel for devices running Android O+
+            Pushy.setNotificationChannel(builder, context);
+
+            // Get an instance of the NotificationManager service
+            NotificationManager notificationManager =
+                    (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
+
+            // Build the notification and display it
+            notificationManager.notify(1, builder.build());
+        }
+    }
+
+    private void handleContactRequestReceived(Context context, Intent intent) {
+        String sender = intent.getStringExtra("sender");
+
+        ActivityManager.RunningAppProcessInfo appProcessInfo = new ActivityManager.RunningAppProcessInfo();
+        ActivityManager.getMyMemoryState(appProcessInfo);
+
+        if (appProcessInfo.importance == IMPORTANCE_FOREGROUND || appProcessInfo.importance == IMPORTANCE_VISIBLE) {
+            //app is in the foreground so send the message to the active Activities
+            Log.d("PUSHY", "New contact request received in foreground from " + sender);
+
+            //create an Intent to broadcast a chat to other parts of the app.
+            Intent i = new Intent(RECEIVED_NEW_CHAT);
+            i.putExtra("sender", sender);
+            i.putExtras(intent.getExtras());
+
+            context.sendBroadcast(i);
+
+        } else {
+            //app is in the background so create and post a notification
+            Log.d("PUSHY", "New contact request received in background from " + sender);
+
+            Intent i = new Intent(context, AuthActivity.class);
+            i.putExtras(intent.getExtras());
+
+            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,
+                    i, PendingIntent.FLAG_UPDATE_CURRENT);
+
+            //research more on notifications the how to display them
+            //https://developer.android.com/guide/topics/ui/notifiers/notifications
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
+                    .setAutoCancel(true)
+                    .setSmallIcon(R.drawable.ic_chat_notification)
+                    .setContentTitle("New Contact Request")
+                    .setContentText(sender + " has sent you a contact request.")
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                    .setContentIntent(pendingIntent);
+
+            // Automatically configure a ChatMessageNotification Channel for devices running Android O+
+            Pushy.setNotificationChannel(builder, context);
+
+            // Get an instance of the NotificationManager service
+            NotificationManager notificationManager =
+                    (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
+
+            // Build the notification and display it
+            notificationManager.notify(1, builder.build());
+        }
+    }
+
+    private void handleRequestAccepted(Context context, Intent intent) {
+        String accepter = intent.getStringExtra("accepter");
+
+        ActivityManager.RunningAppProcessInfo appProcessInfo = new ActivityManager.RunningAppProcessInfo();
+        ActivityManager.getMyMemoryState(appProcessInfo);
+
+        if (appProcessInfo.importance == IMPORTANCE_FOREGROUND || appProcessInfo.importance == IMPORTANCE_VISIBLE) {
+            //app is in the foreground so send the message to the active Activities
+            Log.d("PUSHY", "New contact request accept received in foreground from " + accepter);
+
+            //create an Intent to broadcast a chat to other parts of the app.
+            Intent i = new Intent(RECEIVED_NEW_CHAT);
+            i.putExtra("accepter", accepter);
+            i.putExtras(intent.getExtras());
+
+            context.sendBroadcast(i);
+
+        } else {
+            //app is in the background so create and post a notification
+            Log.d("PUSHY", "New contact request accept received in background from " + accepter);
+
+            Intent i = new Intent(context, AuthActivity.class);
+            i.putExtras(intent.getExtras());
+
+            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,
+                    i, PendingIntent.FLAG_UPDATE_CURRENT);
+
+            //research more on notifications the how to display them
+            //https://developer.android.com/guide/topics/ui/notifiers/notifications
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
+                    .setAutoCancel(true)
+                    .setSmallIcon(R.drawable.ic_chat_notification)
+                    .setContentTitle("Contact Request Accepted")
+                    .setContentText(accepter + " has sent accepeted your contact request.")
                     .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                     .setContentIntent(pendingIntent);
 

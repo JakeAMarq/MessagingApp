@@ -29,6 +29,7 @@ public class AuthActivity extends AppCompatActivity {
 
         //If it is not already running, start the Pushy listening service
         Pushy.listen(this);
+        Pushy.unregister(getApplicationContext());
 
         // Check whether the user has granted us the READ/WRITE_EXTERNAL_STORAGE permissions
         if (ContextCompat.checkSelfPermission(getApplicationContext(),
