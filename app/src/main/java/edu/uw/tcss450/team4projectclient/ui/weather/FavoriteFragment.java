@@ -20,6 +20,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.uw.tcss450.team4projectclient.MainActivity;
 import edu.uw.tcss450.team4projectclient.R;
 import edu.uw.tcss450.team4projectclient.databinding.FragmentFavoriteBinding;
 import edu.uw.tcss450.team4projectclient.model.UserInfoViewModel;
@@ -48,6 +49,9 @@ public class FavoriteFragment extends Fragment {
         ViewModelProvider provider = new ViewModelProvider(getActivity());
         mFavoriteModel = new ViewModelProvider(getActivity()).get(FavoriteViewModel.class);
         mUserModel = provider.get(UserInfoViewModel.class);
+        ((MainActivity) getActivity())
+                .setActionBarTitle("Favorites");
+
     }
 
     @Override
