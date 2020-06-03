@@ -359,11 +359,13 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "You've been added to chat room: " + chatRoom.getName(), Toast.LENGTH_LONG).show();
             } else if (intent.hasExtra("sender")) {
                 String sender = intent.getStringExtra("sender");
-                Toast.makeText(MainActivity.this, sender + " has requested to add you as a contact.", Toast.LENGTH_LONG).show();
+                if (sender != null)
+                    Toast.makeText(MainActivity.this, sender + " has requested to add you as a contact.", Toast.LENGTH_LONG).show();
             } else if (intent.hasExtra("accepter")) {
                 String accepter = intent.getStringExtra("accepter");
                 mFetchContactsModel.connect(mUserInfoModel.getId());
-                Toast.makeText(MainActivity.this, accepter + " has accepted your contact request.", Toast.LENGTH_LONG).show();
+                if (accepter != null)
+                    Toast.makeText(MainActivity.this, accepter + " has accepted your contact request.", Toast.LENGTH_LONG).show();
             }
         }
     }
