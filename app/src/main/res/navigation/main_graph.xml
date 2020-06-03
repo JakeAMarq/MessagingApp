@@ -27,7 +27,14 @@
             android:id="@+id/navigation_weather"
             android:name="edu.uw.tcss450.team4projectclient.ui.weather.WeatherFragment"
             android:label="@string/title_weather"
-            tools:layout="@layout/fragment_weather" />
+            tools:layout="@layout/fragment_weather" >
+        <action
+            android:id="@+id/action_navigation_weather_to_favoriteFragment"
+            app:destination="@id/favoriteFragment" />
+        <action
+            android:id="@+id/action_navigation_weather_to_googleFragment"
+            app:destination="@id/googleFragment" />
+    </fragment>
     <fragment
             android:id="@+id/navigation_contacts"
             android:name="edu.uw.tcss450.team4projectclient.ui.contacts.ContactsFragment"
@@ -77,6 +84,20 @@
         android:name="edu.uw.tcss450.team4projectclient.ui.home.ColorFragment"
         android:label="fragment_color"
         tools:layout="@layout/fragment_color" />
+    <fragment
+        android:id="@+id/favoriteFragment"
+        android:name="edu.uw.tcss450.team4projectclient.ui.weather.FavoriteFragment"
+        android:label="fragment_favorite"
+        tools:layout="@layout/fragment_favorite" >
+        <action
+            android:id="@+id/action_favoriteFragment_to_navigation_weather"
+            app:destination="@id/navigation_weather" />
+    </fragment>
+    <fragment
+        android:id="@+id/googleFragment"
+        android:name="edu.uw.tcss450.team4projectclient.ui.weather.LocationFragment"
+        android:label="fragment_google"
+        tools:layout="@layout/fragment_location" />
     <fragment
         android:id="@+id/pendingContacts"
         android:name="edu.uw.tcss450.team4projectclient.ui.contacts.PendingContacts"

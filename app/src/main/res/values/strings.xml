@@ -19,7 +19,7 @@
     <string name="hint_password_again">Confirm password</string>
     <string name="hint_nickname">Nickname</string>
     <string name="hint_verification_code">Enter your code</string>
-    <string name="hint_zipcode">Enter a valid zipcode</string>
+    <string name="hint_zipcode">Enter a zipcode</string>
     <string name="hint_chat_room_name">Chat room name</string>
 
     <string name="title_contacts">Contacts</string>
@@ -51,6 +51,9 @@
     <string name="text_ice">Ice Theme</string>
     <string name="text_banana">Banana Theme</string>
     <string name="prefs_theme_key">theme</string>
+    <string name="menu_favorite">FAVORITE LOCATIONS</string>
+    <string name="menu_gps">GOOGLE MAP LOCATIONS</string>
+    <string name="title_activity_maps">Map</string>
     <string name="option_menu_icon">⋮</string>
 
     <string name="switch_sign_in">Stay Signed in</string>
