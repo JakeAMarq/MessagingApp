@@ -119,4 +119,6 @@ public class WeatherViewModel extends AndroidViewModel {
         Volley.newRequestQueue(getApplication().getApplicationContext())
                 .add(request);
     }
+
+
 }

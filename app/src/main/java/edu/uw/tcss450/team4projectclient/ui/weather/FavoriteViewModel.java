@@ -21,7 +21,6 @@ import org.json.JSONObject;
 import java.nio.charset.Charset;
 import java.util.Objects;
 
-import edu.uw.tcss450.team4projectclient.R;
 
 public class FavoriteViewModel  extends AndroidViewModel {
     // keeps track of all fo the JSONObject responses.
@@ -127,7 +126,7 @@ public class FavoriteViewModel  extends AndroidViewModel {
         Volley.newRequestQueue(getApplication().getApplicationContext()).add(request);
     }
     /**
-     * This methods deletes a location.
+     * This methods aads a location.
      * @param memberid
      * @param zipcode
      * @param lat
@@ -142,8 +141,8 @@ public class FavoriteViewModel  extends AndroidViewModel {
             // all of the data that is being passed to the backend.
             body.put("memberid", memberid);
             body.put("zipcode", zipcode);
-            body.put("lat", lat);
-            body.put("lon", lon);
+            body.put("latitude", lat);
+            body.put("longitude", lon);
             body.put("city", city);
             body.put("state", state);
 

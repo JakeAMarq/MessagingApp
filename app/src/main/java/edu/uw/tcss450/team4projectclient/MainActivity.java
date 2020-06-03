@@ -38,7 +38,6 @@ import edu.uw.tcss450.team4projectclient.model.UserInfoViewModel;
 import edu.uw.tcss450.team4projectclient.services.PushReceiver;
 import edu.uw.tcss450.team4projectclient.ui.chat.ChatFragmentArgs;
 import edu.uw.tcss450.team4projectclient.ui.chat.ChatMessage;
-import edu.uw.tcss450.team4projectclient.ui.chat.ChatViewModel;
 import edu.uw.tcss450.team4projectclient.ui.weather.LocationViewModel;
 import edu.uw.tcss450.team4projectclient.ui.chatrooms.ChatRoom;
 import edu.uw.tcss450.team4projectclient.ui.chat.MessageViewModel;
@@ -254,7 +253,7 @@ public class MainActivity extends AppCompatActivity {
                         public void onSuccess(Location location) {
                             // Got last known location. In some rare situations this can be null.
                             if (location != null) {
-                                Log.d("LOCATION", location.toString());
+                                Log.wtf("LOCATION", location.toString());
                                 if (mLocationModel == null) {
                                     mLocationModel = new ViewModelProvider(MainActivity.this)
                                             .get(LocationViewModel.class);
@@ -280,7 +279,7 @@ public class MainActivity extends AppCompatActivity {
         }
         IntentFilter iFilter = new IntentFilter(PushReceiver.RECEIVED_NEW_MESSAGE);
         registerReceiver(mPushMessageReceiver, iFilter);
-        startLocationUpdates();
+//        startLocationUpdates();
         IntentFilter msgFilter = new IntentFilter(PushReceiver.RECEIVED_NEW_MESSAGE);
         IntentFilter chatFilter = new IntentFilter(PushReceiver.RECEIVED_NEW_CHAT);
         IntentFilter contactFilter = new IntentFilter(PushReceiver.RECEIVED_NEW_CONTACT);
@@ -295,7 +294,7 @@ public class MainActivity extends AppCompatActivity {
         if (mPushMessageReceiver != null){
             unregisterReceiver(mPushMessageReceiver);
         }
-        stopLocationUpdates();
+//        stopLocationUpdates();
     }
 
     /**

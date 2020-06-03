@@ -1,5 +1,7 @@
 package edu.uw.tcss450.team4projectclient.ui.weather;
 
+import androidx.annotation.NonNull;
+
 public class FavoriteData {
     // the Latitude of weather displayed
     private String mLatitude;
@@ -49,4 +51,11 @@ public class FavoriteData {
      */
     public String getZipcode () { return mZipcode;}
 
+    @NonNull
+    @Override
+    public String toString() {
+        return "Lat: " + mLatitude  +  " Lon: " +
+                 mLongitude + " zip: " + mZipcode +
+                " city: " + mCity  +" state: " + mState;
+    }
 }

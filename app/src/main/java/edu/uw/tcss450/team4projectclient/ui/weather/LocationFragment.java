@@ -54,7 +54,7 @@ public class LocationFragment extends Fragment  implements OnMapReadyCallback, G
         Log.e("ooooo", "lol");
         mModel.addLocationObserver(getViewLifecycleOwner(), location -> {
             Log.e("yayyyy", location.toString());
-//            binding.textLatLong.setText(location.toString());
+            binding.textLatLong.setText(location.toString());
         });
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -92,7 +92,7 @@ public class LocationFragment extends Fragment  implements OnMapReadyCallback, G
         mMap.animateCamera(
                 CameraUpdateFactory.newLatLngZoom(
                         latLng, mMap.getCameraPosition().zoom));
-//        binding.textLatLong.setText(latLng.toString());
+        binding.textLatLong.setText(latLng.toString());
 
     }
 }

@@ -88,7 +88,11 @@
         android:id="@+id/favoriteFragment"
         android:name="edu.uw.tcss450.team4projectclient.ui.weather.FavoriteFragment"
         android:label="fragment_favorite"
-        tools:layout="@layout/fragment_favorite" />
+        tools:layout="@layout/fragment_favorite" >
+        <action
+            android:id="@+id/action_favoriteFragment_to_navigation_weather"
+            app:destination="@id/navigation_weather" />
+    </fragment>
     <fragment
         android:id="@+id/googleFragment"
         android:name="edu.uw.tcss450.team4projectclient.ui.weather.LocationFragment"

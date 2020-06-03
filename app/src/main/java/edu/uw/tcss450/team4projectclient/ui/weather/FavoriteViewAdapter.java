@@ -1,29 +1,39 @@
 package edu.uw.tcss450.team4projectclient.ui.weather;
 
 import android.graphics.drawable.Icon;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
 import edu.uw.tcss450.team4projectclient.R;
 import edu.uw.tcss450.team4projectclient.databinding.FragmentFavoriteCardBinding;
-import edu.uw.tcss450.team4projectclient.ui.auth.signin.SignInFragment;
 
 public class FavoriteViewAdapter  extends RecyclerView.Adapter<FavoriteViewAdapter.FavoriteViewHolder> {
     //List of type FavoriteData for each card
     public List<FavoriteData> favoritesData;
     /**
+     * The ViewModel containing the user's email and JWT
+     */
+    private static int mMemberid;
+
+    /**
      * required constructor
      * @param favs
      */
-    public FavoriteViewAdapter ( List<FavoriteData> favs) {
+    public FavoriteViewAdapter ( List<FavoriteData> favs, int memberid) {
         favoritesData = favs;
+        mMemberid = memberid;
+//        Log.e("SIZE: ", String.valueOf(favoritesData.size()));
     }
+
     /**
      * Gets called when each card gets created.
      * @param parent
@@ -45,6 +55,7 @@ public class FavoriteViewAdapter  extends RecyclerView.Adapter<FavoriteViewAdapt
     @Override
     public void onBindViewHolder(@NonNull FavoriteViewHolder holder, int position) {
         holder.setFavoriteData(favoritesData.get(position));
+        Log.e("onbind viewholder", String.valueOf(position));
     }
     /**
      * returns size of the card set
@@ -69,10 +80,14 @@ public class FavoriteViewAdapter  extends RecyclerView.Adapter<FavoriteViewAdapt
         public FavoriteViewHolder(View view) {
             super(view);
             mView = view;
+            Log.e("ADAPTER", "id" + mMemberid);
             //sets the binding
             binding = FragmentFavoriteCardBinding.bind(view);
+
             binding.buittonMore.setOnClickListener(this::handleMoreOrLess);
             binding.buttonDelete.setOnClickListener(button -> delete());
+            binding.buttonCityState.setOnClickListener(button -> updateWeatherZip());
+            binding.buittonMore.setVisibility(View.GONE);
 
         }
 
@@ -81,7 +96,14 @@ public class FavoriteViewAdapter  extends RecyclerView.Adapter<FavoriteViewAdapt
          *
          */
         private void delete() {
-            FavoriteFragment.deleteLocation(favData.getZipcode());
+
+            FavoriteFragment.deleteLocation(mMemberid, favData.getZipcode());
+        }
+
+        private void updateWeatherZip() {
+            WeatherFragment.zipcode =  favData.getZipcode();
+            //navigate back to weather frag
+            Navigation.findNavController(mView).navigate(FavoriteFragmentDirections.actionFavoriteFragmentToNavigationWeather());
         }
 
         /**
@@ -90,11 +112,13 @@ public class FavoriteViewAdapter  extends RecyclerView.Adapter<FavoriteViewAdapt
          */
         public void setFavoriteData(FavoriteData fav) {
             binding.buttonCityState.setText(fav.getCity() + " , " + fav.getState());
+            // navigate to weather fragment
             StringBuilder sb = new StringBuilder("Zipcode: " + fav.getZipcode());
             sb.append("\nLatitude: " + fav.getLat());
             sb.append("\nLongitude: " + fav.getLong());
             binding.textPreview.setText(sb.toString());
-
+            Log.e("SETTTTTTADAPTER", "id" + mMemberid);
+            favData = fav;
 
         }
         /**
