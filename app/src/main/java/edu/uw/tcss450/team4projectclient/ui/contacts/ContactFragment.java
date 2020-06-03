@@ -171,8 +171,18 @@ public class ContactFragment extends Fragment {
     private void observeResponseAdd(final JSONObject response) {
 
         Log.e("oooooo", String.valueOf(response));
+        String err = "";
+        if (response.has("code")) {
+            try {
+                err = new JSONObject(
+                        response.getString("data").
+                                replace("'", "\"")).getString("message");
+            } catch (JSONException e) {
+                Log.e("JSON Parse Error", e.getMessage());
+            }
+        }
         if (response.length() > 0) {
-            if (response.has("code")) {
+            if (response.has("code") && !err.contains("push token")) {
                 try {
                     binding.editLookupNickname.setError(
                             "Error Authenticating: " +
