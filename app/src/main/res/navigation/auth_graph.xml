@@ -6,7 +6,7 @@
         app:startDestination="@id/signInFragment">
     <fragment
             android:id="@+id/signInFragment"
-            android:name="edu.uw.tcss450.team4projectclient.ui.auth.signin.SignInFragment"
+            android:name="com.JakeAMarq.MessagingApp.ui.auth.signin.SignInFragment"
             android:label="fragment_sign_in"
             tools:layout="@layout/fragment_sign_in" >
         <action
@@ -26,7 +26,7 @@
     </fragment>
     <fragment
             android:id="@+id/registerFragment"
-            android:name="edu.uw.tcss450.team4projectclient.ui.auth.register.RegisterFragment"
+            android:name="com.JakeAMarq.MessagingApp.ui.auth.register.RegisterFragment"
             android:label="fragment_register"
             tools:layout="@layout/fragment_register" >
         <action
@@ -35,7 +35,7 @@
     </fragment>
     <activity
             android:id="@+id/mainActivity"
-            android:name="edu.uw.tcss450.team4projectclient.MainActivity"
+            android:name="com.JakeAMarq.MessagingApp.MainActivity"
             android:label="activity_main"
             tools:layout="@layout/activity_main" >
         <argument

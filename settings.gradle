@@ -1,2 +1,2 @@
-rootProject.name='Team 4 Project Client'
+rootProject.name='Messaging App'
 include ':app'

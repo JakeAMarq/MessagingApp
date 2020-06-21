@@ -1,20 +1,72 @@
 <resources>
-    <string name="app_name">Team 4 Project Client</string>
+    <string name="app_name">Message App</string>
+    <string name="base_url">https://jakeamarq-messaging-app.herokuapp.com/</string>
 
     <string name="button_sign_in">Sign In</string>
     <string name="button_register">Register</string>
+    <string name="button_verify">Verify</string>
+
+    <string name="menu_item_add_chat_room">Add a chat room</string>
+    <string name="menu_item_leave_chat_room">Leave chat room</string>
+    <string name="menu_item_add_chat_member">Add user to chat room</string>
+    <string name="menu_item_remove_chat_member">Remove user from chat room</string>
+    <string name="menu_item_delete_chat_room">Delete chat room</string>
 
     <string name="hint_first">First Name</string>
     <string name="hint_last">Last Name</string>
     <string name="hint_email">Email</string>
     <string name="hint_password">Password</string>
     <string name="hint_password_again">Confirm password</string>
+    <string name="hint_nickname">Nickname</string>
+    <string name="hint_verification_code">Enter your code</string>
+    <string name="hint_zipcode">Enter a zipcode</string>
+    <string name="hint_chat_room_name">Chat room name</string>
 
     <string name="title_contacts">Contacts</string>
     <string name="title_conversations">Conversations</string>
     <string name="title_weather">Weather</string>
     <string name="title_home">Home</string>
+    <string name="title_chat">Chat</string>
+    <string name="title_Search">Search</string>
+    <string name="button_forgot_password">forgot password</string>
+
+    <string name="enter_nickname">Enter user\'s nickname</string>
+    <string name="title_add">Add User</string>
+    <string name="add_new_contact_btn">ADD NEW CONTACT</string>
+    <string name="pending_contact_btn">PENDING CONTACT</string>
+    <string name="title_lookup_textview"> ADD CONTACT</string>
+    <string name="text_verification">A verification code has been sent to your email.</string>
+    <string name="title_location_search">Location</string>
+    <string name="text_hourly_weather">Hourly</string>
+    <string name="text_daily_weather">Daily</string>
+
+    <string name="hint_email_sent">A code will be sent to your email.</string>
+    <string name="button_send">Send</string>
+    <string name="button_reset">Reset password</string>
+    <string name="hint_new_password">new password</string>
+    <string name="Settings_Change_Color">CHANGE COLOR THEME</string>
+    <string name="text_vibrant">Vibrant Theme</string>
+    <string name="text_dark">Dark Theme</string>
+    <string name="text_fall">Fall Theme</string>
+    <string name="text_ice">Ice Theme</string>
+    <string name="text_banana">Banana Theme</string>
+    <string name="prefs_theme_key">theme</string>
+    <string name="menu_favorite">FAVORITE LOCATIONS</string>
+    <string name="menu_gps">GOOGLE MAP LOCATIONS</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="option_menu_icon">⋮</string>
+
+    <string name="switch_sign_in">Stay Signed in</string>
+    <string name="keys_shared_prefs">My Auth App Shared Prefs</string>
+    <string name="keys_prefs_jwt">Sharded Prefs JWT</string>
+    <string name="action_sign_out">Sign Out</string>
+    <string name="menu_item_message">Message</string>
+    <string name="menu_item_remove_from_contacts">Remove from contacts</string>
+    <string name="menu_item_transfer_ownership">Transfer ownership</string>
+    <string name="menu_item_add_new_contact">Add new contact</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="hint_new_contact_search">Username/email/name</string>
+
 </resources>

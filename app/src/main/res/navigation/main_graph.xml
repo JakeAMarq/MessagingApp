@@ -7,40 +7,56 @@
 
     <fragment
             android:id="@+id/navigation_home"
-            android:name="edu.uw.tcss450.team4projectclient.ui.home.HomeFragment"
+            android:name="com.JakeAMarq.MessagingApp.ui.home.HomeFragment"
             android:label="@string/title_home"
             tools:layout="@layout/fragment_home" />
     <fragment
             android:id="@+id/navigation_contacts"
-            android:name="edu.uw.tcss450.team4projectclient.ui.contacts.ContactsFragment"
+            android:name="com.JakeAMarq.MessagingApp.ui.contacts.ContactsFragment"
             android:label="@string/title_contacts"
             tools:layout="@layout/fragment_contacts">
         <action
                 android:id="@+id/action_navigation_contacts_to_contactFragment"
                 app:destination="@id/contactFragment" />
+        <action
+            android:id="@+id/action_navigation_contacts_to_addContactFragment"
+            app:destination="@id/addContactFragment" />
     </fragment>
     <fragment
-            android:id="@+id/navigation_conversations"
-            android:name="edu.uw.tcss450.team4projectclient.ui.chat.ConversationsFragment"
+            android:id="@+id/navigation_chat_room_list"
+            android:name="com.JakeAMarq.MessagingApp.ui.chatrooms.ChatRoomListFragment"
             android:label="@string/title_conversations"
             tools:layout="@layout/fragment_conversations">
         <action
                 android:id="@+id/action_navigation_conversations_to_chatFragment"
-                app:destination="@id/chatFragment" />
+                app:destination="@id/navigation_chat_room" />
     </fragment>
     <fragment
             android:id="@+id/navigation_weather"
-            android:name="edu.uw.tcss450.team4projectclient.ui.weather.WeatherFragment"
+            android:name="com.JakeAMarq.MessagingApp.ui.weather.WeatherFragment"
             android:label="@string/title_weather"
             tools:layout="@layout/fragment_weather" />
     <fragment
             android:id="@+id/contactFragment"
-            android:name="edu.uw.tcss450.team4projectclient.ui.contacts.ContactFragment"
+            android:name="com.JakeAMarq.MessagingApp.ui.contacts.ContactFragment"
             android:label="fragment_contact"
-            tools:layout="@layout/fragment_contact" />
+            tools:layout="@layout/fragment_contact" >
+        <argument
+            android:name="contact"
+            app:argType="com.JakeAMarq.MessagingApp.ui.contacts.Contact" />
+    </fragment>
     <fragment
-            android:id="@+id/chatFragment"
-            android:name="edu.uw.tcss450.team4projectclient.ui.chat.ChatFragment"
+            android:id="@+id/navigation_chat_room"
+            android:name="com.JakeAMarq.MessagingApp.ui.chat.ChatFragment"
             android:label="fragment_chat"
-            tools:layout="@layout/fragment_chat" />
+            tools:layout="@layout/fragment_chat" >
+        <argument
+            android:name="chatRoom"
+            app:argType="com.JakeAMarq.MessagingApp.ui.chatrooms.ChatRoom" />
+    </fragment>
+    <fragment
+        android:id="@+id/addContactFragment"
+        android:name="com.JakeAMarq.MessagingApp.ui.contacts.AddContactFragment"
+        android:label="fragment_add_contact"
+        tools:layout="@layout/fragment_add_contact" />
 </navigation>
