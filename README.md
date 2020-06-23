@@ -110,5 +110,10 @@ All jokes aside, I have plans for a home page and a weather page and I'm debatin
 
 # API Info
 
-I created a collection of API endpoints for the back-end of this app using NodeJS/Express. For the source code and/or documentation of these endpoints, go to: <br>
-https://github.com/JakeAMarq/MessagingAppServer
+I created a collection of API endpoints for the back-end of this app using NodeJS/Express.<br>
+<br>
+For the documentation of these endpoints, go to: <br>
+https://github.com/JakeAMarq/MessagingAppServer <br>
+<br>
+For the source code, go to: <br>
+https://jakeamarq-messaging-app.herokuapp.com/doc/
