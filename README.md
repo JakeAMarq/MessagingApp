@@ -15,7 +15,7 @@ Hi! My name's Jake Marquardt and this is an android application where users can 
     - [Creating a chat room](#creating-a-chat-room)
     - [Adding or removing users from a chat room](#adding-or-removing-users-from-a-chat-room)
     - [Deleting a chat room](#deleting-a-chat-room)
-- [Coming soon<sup>tm](#coming-soonsuptm)
+- [Coming soon<sup>tm](#coming-soontm)
 
 # Installing the application
 
