@@ -16,6 +16,7 @@ Hi! My name's Jake Marquardt and this is an android application where users can 
     - [Adding or removing users from a chat room](#adding-or-removing-users-from-a-chat-room)
     - [Deleting a chat room](#deleting-a-chat-room)
 - [Coming soon<sup>tm](#coming-soontm)
+- [API Info](#api-info)
 
 # Installing the application
 
@@ -106,3 +107,8 @@ All jokes aside, I have plans for a home page and a weather page and I'm debatin
 - Forgot/change password
 - Ability to stay signed in after exiting the application
 - Ability to transfer ownership of chat rooms
+
+# API Info
+
+I created a collection of API endpoints for the back-end of this app using NodeJS/Express. For the source code and/or documentation of these endpoints, go to: <br>
+https://github.com/JakeAMarq/MessagingAppServer
