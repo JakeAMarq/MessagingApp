@@ -86,7 +86,7 @@ public class ChatRoomListFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ViewModelProvider provider = new ViewModelProvider(getActivity());
+        ViewModelProvider provider = new ViewModelProvider(requireActivity());
         mChatRooms = new HashMap<>();
         mUserModel = provider.get(UserInfoViewModel.class);
         mMessageModel = provider.get(MessageViewModel.class);
@@ -114,8 +114,6 @@ public class ChatRoomListFragment extends Fragment {
         mAddRemoveUsersModel.addRemoveUserResponseObserver(getViewLifecycleOwner(), this::observeRemoveUserFromChatResponse);
 
         mGetChatsModel.getChatRooms(mUserModel.getJwt());
-
-        updateMessages();
     }
 
     @Override
@@ -299,7 +297,12 @@ public class ChatRoomListFragment extends Fragment {
     public void updateMessages() {
         List<ChatRoom> chatRooms = new ArrayList<>(mChatRooms.values());
         chatRooms.sort((ChatRoom c1, ChatRoom c2) -> c2.getLastTimeStamp().compareTo(c1.getLastTimeStamp()));
-        mRecyclerView.setAdapter(new ChatRoomRecyclerViewAdapter(chatRooms, getActivity()));
+//        mRecyclerView.setAdapter(new ChatRoomRecyclerViewAdapter(chatRooms, getActivity()));
+        if (mRecyclerView.getAdapter() == null) {
+            mRecyclerView.setAdapter(new ChatRoomRecyclerViewAdapter(chatRooms, getContext()));
+        } else {
+            ((ChatRoomRecyclerViewAdapter) mRecyclerView.getAdapter()).updateChatRooms(chatRooms);
+        }
     }
 
     /**

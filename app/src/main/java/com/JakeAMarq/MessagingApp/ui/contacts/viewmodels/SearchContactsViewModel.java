@@ -11,27 +11,21 @@ import androidx.lifecycle.Observer;
 
 import com.JakeAMarq.MessagingApp.R;
 import com.JakeAMarq.MessagingApp.io.RequestQueueSingleton;
-import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
-import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.VolleyLog;
-import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
 public class SearchContactsViewModel extends AndroidViewModel {
+    // TODO: Search existing contacts
 
     private MutableLiveData<JSONObject> mNewContactsResponse;
     private MutableLiveData<JSONObject> mExistingContactsResponse;
@@ -52,24 +46,14 @@ public class SearchContactsViewModel extends AndroidViewModel {
 
     public void searchNew(final String user, final String jwt) {
         String url = getApplication().getResources().getString(R.string.base_url) +
-                "contacts/search/new/";
-
-        JSONObject body = new JSONObject();
-        try {
-            body.put("user", user);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        Log.e("SearchNewContactsRequestBody", body.toString());
+                "contacts/search/new/?user=" + user;
 
         Request request = new JsonObjectRequest(
                 Request.Method.GET,
                 url,
-                body,
+                null,
                 mNewContactsResponse::setValue,
                 this::handleSearchNewError) {
-
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
@@ -90,22 +74,14 @@ public class SearchContactsViewModel extends AndroidViewModel {
 
     public void searchExisting(final String user, final String jwt) {
         String url = getApplication().getResources().getString(R.string.base_url) +
-                "contacts/search/existing/";
-
-        JSONObject body = new JSONObject();
-        try {
-            body.put("user", user);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+                "contacts/search/existing/?user=" + user;
 
         Request request = new JsonObjectRequest(
                 Request.Method.GET,
                 url,
-                body,
+                null,
                 mExistingContactsResponse::setValue,
                 this::handleSearchExistingError) {
-
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();

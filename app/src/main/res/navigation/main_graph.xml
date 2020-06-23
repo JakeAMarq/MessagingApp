@@ -57,6 +57,6 @@
     <fragment
         android:id="@+id/addContactFragment"
         android:name="com.JakeAMarq.MessagingApp.ui.contacts.AddContactFragment"
-        android:label="fragment_add_contact"
+        android:label="@string/title_add_new_contact"
         tools:layout="@layout/fragment_add_contact" />
 </navigation>

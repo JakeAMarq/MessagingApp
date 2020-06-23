@@ -32,7 +32,7 @@ public class ChatRoomRecyclerViewAdapter extends RecyclerView.Adapter<ChatRoomRe
     /**
      * The list of chat rooms being displayed
      */
-    private final List<ChatRoom> mChatRooms;
+    private List<ChatRoom> mChatRooms;
 
     /**
      * The Context of the RecyclerView
@@ -98,6 +98,11 @@ public class ChatRoomRecyclerViewAdapter extends RecyclerView.Adapter<ChatRoomRe
         Navigation.findNavController(view).navigate(
                 ChatRoomListFragmentDirections
                         .actionNavigationConversationsToChatFragment(chatRoom));
+    }
+
+    public void updateChatRooms(List<ChatRoom> chatRooms) {
+        mChatRooms = chatRooms;
+        this.notifyDataSetChanged();
     }
 
     /**

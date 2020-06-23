@@ -37,14 +37,15 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_contact_search_results"
-        android:layout_width="wrap_content"
+        android:name="com.JakeAMarq.MessagingApp.ui.contacts.AddContactFragment"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-
-        android:orientation="horizontal"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
+        android:orientation="vertical"
         app:layoutManager="LinearLayoutManager"
-        app:layout_constraintTop_toBottomOf="@+id/edit_contact_search_param"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:listitem="@layout/fragment_contact_card"/>
+        app:layout_constraintTop_toBottomOf="@+id/button_contact_search"
+        tools:context="com.JakeAMarq.MessagingApp.ui.contacts.AddContactFragment"
+        tools:listitem="@layout/fragment_contact_card" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
