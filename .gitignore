@@ -12,11 +12,11 @@
 .externalNativeBuild
 .cxx
 
-/build/*
-!/build/outputs
-/build/outputs/*
-!/build/outputs/apk
-/build/outputs/apk/*
-!/build/outputs/apk/debug
-/build/outputs/apk/debug/*
-!/build/outputs/apk/debug/app-debug.apk
+/app/build/*
+!/app/build/outputs
+/app/build/outputs/*
+!/app/build/outputs/apk
+/app/build/outputs/apk/*
+!/app/build/outputs/apk/debug
+/app/build/outputs/apk/debug/*
+!/app/build/outputs/apk/debug/app-debug.apk
