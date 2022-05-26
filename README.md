@@ -1,6 +1,6 @@
 # Messaging App
 
-Hi! My name's Jake Marquardt and this is an android application where users can chat with their friends. I'm making it as a side project for my resume/portfolio so I don't have any plans to put it on the Google Play Store at the moment, but I will provide the APK here once I have the minimum functionality that I'd like to have in my first version.
+This is an Android application that allows users to instant message one another. This is just a side project for my resume/portfolio so I don't have any plans to put it on the Play Store at the moment, but I'll eventually provide the APK here.
 
 (Note: Instructions in this document on how to perform certain functions within the app may be outdated at times as I'm making rapid changes)
 
@@ -15,17 +15,14 @@ Hi! My name's Jake Marquardt and this is an android application where users can 
     - [Creating a chat room](#creating-a-chat-room)
     - [Adding or removing users from a chat room](#adding-or-removing-users-from-a-chat-room)
     - [Deleting a chat room](#deleting-a-chat-room)
-- [Coming soon<sup>tm](#coming-soontm)
+- [Roadmap](#roadmap)
 - [API Info](#api-info)
 
 # Installing the application
 
-Download the APK: coming soon<sup>tm</sup>
+- Download the APK (which I'll eventually provide here)
 
-To install the APK on your device, follow the instruction found here:<br>
-https://www.wikihow.com/Install-APK-Files-from-a-PC-on-Android
-
-All jokes aside, I have plans for a home page and a weather page and I'm debating on scrapping them as I'm not sure what purpose they really serve. Once I decide and implement a couple more things, I'll put the APK up for download.<br>
+- Follow [these instructions](https://www.wikihow.com/Install-APK-Files-from-a-PC-on-Android) to install the APK on your Android device
 <br>
 
 # Creating an account
@@ -100,7 +97,7 @@ All jokes aside, I have plans for a home page and a weather page and I'm debatin
 - Tap "Delete chat room"
 - Tap Yes/OK on the pop-up to confirm you wish to delete the chat room
 
-# Coming soon<sup>tm
+# Roadmap
 
 - Version 1.0 APK
 - Email verification
@@ -110,10 +107,8 @@ All jokes aside, I have plans for a home page and a weather page and I'm debatin
 
 # API Info
 
-I created a collection of API endpoints for the back-end of this app using NodeJS/Express.<br>
+I created a collection of API endpoints for the back-end of this app using NodeJS/ExpressJS.<br>
 <br>
-For the documentation of these endpoints, go to: <br>
-https://github.com/JakeAMarq/MessagingAppServer <br>
+For the documentation of these endpoints, go [here](https://jakeamarq-messaging-app.herokuapp.com/doc/)
 <br>
-For the source code, go to: <br>
-https://jakeamarq-messaging-app.herokuapp.com/doc/
+For the source code, go [here](https://github.com/JakeAMarq/MessagingAppServer)
